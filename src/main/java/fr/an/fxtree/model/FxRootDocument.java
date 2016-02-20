@@ -7,7 +7,7 @@ import java.util.Map;
 
 public abstract class FxRootDocument extends FXContainerNode {
 
-    private FxNodeFactory nodeFactory;
+    private FxNodeFactoryRegistry nodeFactory;
     
     private FxNode childContent;
     
@@ -15,7 +15,7 @@ public abstract class FxRootDocument extends FXContainerNode {
     
     // ------------------------------------------------------------------------
     
-    protected FxRootDocument(FxNodeFactory nodeFactory) {
+    protected FxRootDocument(FxNodeFactoryRegistry nodeFactory) {
         super(null, null);
         if (nodeFactory == null) throw new IllegalArgumentException();
         this.nodeFactory = nodeFactory;
@@ -33,7 +33,7 @@ public abstract class FxRootDocument extends FXContainerNode {
         return visitor.visitRoot(this, param);
     }
     
-    public FxNodeFactory getNodeFactory() {
+    public FxNodeFactoryRegistry getNodeFactory() {
         return nodeFactory;
     }
 
@@ -53,11 +53,20 @@ public abstract class FxRootDocument extends FXContainerNode {
 
     @Override
     public void remove(FxNode node) {
-        if (node.getParent() != this) throw new IllegalArgumentException();
-        node._setParent(null, null);
+        if (node != childContent) throw new IllegalArgumentException();
+        childContent._setParent(null, null);
         this.childContent = null;
     }
 
+    @Override
+    public FxNode remove(FxChildId childId) {
+        if (childContent == null || childId != childContent.getChildId()) throw new IllegalArgumentException();
+        childContent._setParent(null, null);
+        FxNode res = childContent;
+        this.childContent = null;
+        return res;
+    }
+    
     public void setContent(FxNode node) {
         if (node == childContent) return;
         if (childContent != null) {
@@ -76,5 +85,6 @@ public abstract class FxRootDocument extends FXContainerNode {
     public Object putExtraParam(String key, Object value) {
         return extraParams.put(key, value);
     }
-    
+
 }
+

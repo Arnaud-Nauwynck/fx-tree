@@ -4,13 +4,13 @@ import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
-import fr.an.fxtree.model.FxNodeFactory;
+import fr.an.fxtree.model.FxNodeFactoryRegistry;
 import fr.an.fxtree.model.FxNullNode;
 import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.FxPOJONode;
 import fr.an.fxtree.model.FxTextNode;
 
-public abstract class FxMemNodeFactory extends FxNodeFactory {
+public abstract class FxMemNodeFactory extends FxNodeFactoryRegistry {
 
     @Override
     public FxArrayNode newArray() {
