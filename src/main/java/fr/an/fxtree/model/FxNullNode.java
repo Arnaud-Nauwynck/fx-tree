@@ -11,6 +11,11 @@ public class FxNullNode extends FxValueNode {
     // ------------------------------------------------------------------------
     
     @Override
+    public final FxNodeType getNodeType() {
+        return FxNodeType.NULL;
+    }
+
+    @Override
     public void accept(FxTreeVisitor visitor) {
         visitor.visitNullValue(this);
     }

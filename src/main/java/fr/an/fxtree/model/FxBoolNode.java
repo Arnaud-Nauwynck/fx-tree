@@ -11,6 +11,11 @@ public abstract class FxBoolNode extends FxValueNode {
     // ------------------------------------------------------------------------
     
     @Override
+    public final FxNodeType getNodeType() {
+        return FxNodeType.BOOLEAN;
+    }
+
+    @Override
     public void accept(FxTreeVisitor visitor) {
         visitor.visitBoolValue(this);
     }

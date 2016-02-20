@@ -13,6 +13,11 @@ public abstract class FxObjNode extends FXContainerNode {
     // ------------------------------------------------------------------------
     
     @Override
+    public final FxNodeType getNodeType() {
+        return FxNodeType.OBJECT;
+    }
+
+    @Override
     public void accept(FxTreeVisitor visitor) {
         visitor.visitObj(this);
     }
@@ -30,6 +35,8 @@ public abstract class FxObjNode extends FXContainerNode {
 
     public abstract <T extends FxNode> T put(String name, Class<T> clss);
 
+    public abstract <T extends FxNode> T get(String name);
+    
     @Override
     public abstract void remove(FxNode child);
 

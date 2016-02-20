@@ -11,6 +11,11 @@ public abstract class FxPOJONode extends FxValueNode {
     // ------------------------------------------------------------------------
     
     @Override
+    public final FxNodeType getNodeType() {
+        return FxNodeType.POJO;
+    }
+
+    @Override
     public void accept(FxTreeVisitor visitor) {
         visitor.visitPOJOValue(this);
     }

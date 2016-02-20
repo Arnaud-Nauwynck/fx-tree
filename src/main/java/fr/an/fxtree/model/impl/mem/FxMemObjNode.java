@@ -34,6 +34,11 @@ public class FxMemObjNode extends FxObjNode {
         return _children.values();
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends FxNode> T get(String name) {
+        return (T) _children.get(name);
+    }
+    
     @Override
     public <T extends FxNode> T put(String name, Class<T> clss) {
         T res = getNodeFactory().newNode(clss);

@@ -11,6 +11,11 @@ public abstract class FxTextNode extends FxValueNode {
     // ------------------------------------------------------------------------
     
     @Override
+    public final FxNodeType getNodeType() {
+        return FxNodeType.STRING;
+    }
+
+    @Override
     public void accept(FxTreeVisitor visitor) {
         visitor.visitTextValue(this);
     }

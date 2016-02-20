@@ -39,5 +39,5 @@ public abstract class FXContainerNode extends FxNode {
         }
         super._setParent(parent, childId);
     }
-
+    
 }

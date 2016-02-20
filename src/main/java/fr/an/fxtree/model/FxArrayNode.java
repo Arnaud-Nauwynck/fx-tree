@@ -13,6 +13,11 @@ public abstract class FxArrayNode extends FXContainerNode {
     // ------------------------------------------------------------------------
     
     @Override
+    public final FxNodeType getNodeType() {
+        return FxNodeType.ARRAY;
+    }
+
+    @Override
     public void accept(FxTreeVisitor visitor) {
         visitor.visitArray(this);
     }

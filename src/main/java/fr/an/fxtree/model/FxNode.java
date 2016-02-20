@@ -31,4 +31,33 @@ public abstract class FxNode {
         this.childId = childId;
     }
     
+    
+    public abstract FxNodeType getNodeType();
+
+    public final boolean isValueNode() {
+        switch (getNodeType()) {
+            case ARRAY: case OBJECT: case MISSING:
+                return false;
+            default:
+                return true;
+        }
+    }
+
+    public final boolean isContainerNode() {
+        final FxNodeType type = getNodeType();
+        return type == FxNodeType.OBJECT || type == FxNodeType.ARRAY;
+    }
+
+    public final boolean isMissingNode() {
+        return getNodeType() == FxNodeType.MISSING;
+    }
+
+    public final boolean isArray() {
+        return getNodeType() == FxNodeType.ARRAY;
+    }
+
+    public final boolean isObject() {
+        return getNodeType() == FxNodeType.OBJECT;
+    }
+    
 }

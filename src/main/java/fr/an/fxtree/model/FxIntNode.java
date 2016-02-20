@@ -11,6 +11,11 @@ public abstract class FxIntNode extends FxValueNode {
     // ------------------------------------------------------------------------
     
     @Override
+    public final FxNodeType getNodeType() {
+        return FxNodeType.NUMBER;
+    }
+
+    @Override
     public void accept(FxTreeVisitor visitor) {
         visitor.visitIntValue(this);
     }

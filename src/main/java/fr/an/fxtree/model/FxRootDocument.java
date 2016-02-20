@@ -24,6 +24,11 @@ public abstract class FxRootDocument extends FXContainerNode {
     // ------------------------------------------------------------------------
 
     @Override
+    public FxNodeType getNodeType() {
+        return FxNodeType.OBJECT; //? 
+    }
+
+    @Override
     public void accept(FxTreeVisitor visitor) {
         visitor.visitRoot(this);
     }
