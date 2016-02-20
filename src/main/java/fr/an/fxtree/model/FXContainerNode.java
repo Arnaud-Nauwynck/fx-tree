@@ -20,14 +20,15 @@ public abstract class FXContainerNode extends FxNode {
 
     public abstract Collection<FxNode> children();
     
-    public abstract void remove(FxNode node);
-    // public void add(FxChildId childId, FxNode node);
+    public abstract void remove(FxNode chld);
 
-    public FxRootDocument getRootDocument() {
+    public abstract FxNode remove(FxChildId childId);
+
+    protected FxRootDocument getRootDocument() {
         return rootDocument;
     }
 
-    public FxNodeFactory getNodeFactory() {
+    protected FxNodeFactoryRegistry getNodeFactory() {
         return rootDocument.getNodeFactory();
     }
     
@@ -37,38 +38,6 @@ public abstract class FXContainerNode extends FxNode {
             throw new IllegalArgumentException();
         }
         super._setParent(parent, childId);
-    }
-
-    public FxArrayNode newArray() {
-        return getNodeFactory().newArray();
-    }
-
-    public FxObjNode newObj() {
-        return getNodeFactory().newObj();
-    }
-
-    public FxTextNode newText() {
-        return getNodeFactory().newText();
-    }
-
-    public FxDoubleNode newDouble() {
-        return getNodeFactory().newDouble();
-    }
-
-    public FxIntNode newInt() {
-        return getNodeFactory().newInt();
-    }
-
-    public FxBoolNode newBool() {
-        return getNodeFactory().newBool();
-    }
-
-    public FxPOJONode newPOJO() {
-        return getNodeFactory().newPOJO();
-    }
-
-    public FxNullNode newNull() {
-        return getNodeFactory().newNull();
     }
 
 }

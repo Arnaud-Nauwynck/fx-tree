@@ -2,8 +2,6 @@ package fr.an.fxtree.model.impl.mem;
 
 import fr.an.fxtree.model.FXContainerNode;
 import fr.an.fxtree.model.FxPOJONode;
-import fr.an.fxtree.model.FxTreeVisitor;
-import fr.an.fxtree.model.FxTreeVisitor2;
 
 public class FxMemPOJONode extends FxPOJONode {
 
@@ -17,16 +15,6 @@ public class FxMemPOJONode extends FxPOJONode {
     }
 
     // ------------------------------------------------------------------------
-    
-    @Override
-    public void accept(FxTreeVisitor visitor) {
-        visitor.visitPOJOValue(this);
-    }
-    
-    @Override
-    public <P, R> R accept(FxTreeVisitor2<P, R> visitor, P param) {
-        return visitor.visitPOJOValue(this, param);
-    }
     
     public Object getValue() {
         return value;
