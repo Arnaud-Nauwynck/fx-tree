@@ -1,15 +1,16 @@
-package fr.an.fxtree.model.impl.mem;
+package fr.an.fxtree.impl.model.mem;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-import fr.an.fxtree.model.FXContainerNode;
+import fr.an.fxtree.model.FxContainerNode;
+import fr.an.fxtree.impl.model.mem.FxMemChildId.FxMemArrayInsertChildId;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildId;
 import fr.an.fxtree.model.FxNode;
-import fr.an.fxtree.model.impl.mem.FxMemChildId.FxMemArrayInsertChildId;
 
 public class FxMemArrayNode extends FxArrayNode {
 
@@ -19,7 +20,7 @@ public class FxMemArrayNode extends FxArrayNode {
     
     // ------------------------------------------------------------------------
     
-    protected FxMemArrayNode(FXContainerNode parent, FxMemChildId childId) {
+    protected FxMemArrayNode(FxContainerNode parent, FxMemChildId childId) {
         super(parent, childId);
     }
 
@@ -29,7 +30,12 @@ public class FxMemArrayNode extends FxArrayNode {
     public int size() {
         return _children.size();
     }
-    
+
+    @Override
+    public boolean isEmpty() {
+        return _children.isEmpty();
+    }
+
     @Override
     public FxNode get(int index) {
         return _children.get(index);
@@ -41,16 +47,26 @@ public class FxMemArrayNode extends FxArrayNode {
     }
 
     @Override
-    public <T extends FxNode> T insert(int index, Class<T> clss) {
-        int newChildId = childIdGenerator++;
-        FxMemArrayInsertChildId childId = new FxMemArrayInsertChildId(newChildId, index);
-        T res = getNodeFactory().newNode(clss);
-        _children.add(index, res);
-        res._setParent(this, childId);
-        reindexRemainingChildIds(index + 1);
-        return res;
+    public Iterator<FxNode> childIterator() {
+        return _children.iterator();
     }
 
+    @Override
+    public <T extends FxNode> T insert(int index, Class<T> clss) {
+        T res = getNodeFactory().newNode(clss);
+        return onInsert(index, res);
+    }
+
+    protected <T extends FxNode> T onInsert(int index, T node) {
+        int newChildId = childIdGenerator++;
+        FxMemArrayInsertChildId childId = new FxMemArrayInsertChildId(newChildId, index);
+        _children.add(index, node);
+        node._setParent(this, childId);
+        reindexRemainingChildIds(index + 1);
+        return node;
+    }
+
+    
     @Override
     public void remove(FxNode child) {
         if (child.getParent() != this) throw new IllegalArgumentException();
@@ -68,6 +84,15 @@ public class FxMemArrayNode extends FxArrayNode {
     @Override
     public FxNode remove(int index) {
         return doRemove(index);
+    }
+
+    public void removeAll() {
+        int len = size();
+        for(int i = len-1; i >= 0; i--) {
+            FxNode res = _children.get(i);
+            res._setParent(null,  null);
+        }
+        _children.clear();
     }
 
     protected FxNode doRemove(int index) {

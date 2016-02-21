@@ -1,0 +1,19 @@
+{
+	"fieldBoolTrue": true,
+	"fieldBoolfalse": false,
+	"fieldInt": 1,
+	"fieldLong": 1234567890,
+	"fieldDouble": 1.2345678e-10,
+	"fieldStr": "Hello World",
+	
+	"fieldObj": {
+		"a": 1,
+		"b": 2,
+		"fieldObjObj": {
+		}
+	},
+	
+	"fieldArray": [ true, 1, "Hello" ]
+	
+}
+

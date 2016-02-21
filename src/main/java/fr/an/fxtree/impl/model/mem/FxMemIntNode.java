@@ -1,6 +1,6 @@
-package fr.an.fxtree.model.impl.mem;
+package fr.an.fxtree.impl.model.mem;
 
-import fr.an.fxtree.model.FXContainerNode;
+import fr.an.fxtree.model.FxContainerNode;
 import fr.an.fxtree.model.FxIntNode;
 
 public class FxMemIntNode extends FxIntNode {
@@ -9,7 +9,7 @@ public class FxMemIntNode extends FxIntNode {
     
     // ------------------------------------------------------------------------
     
-    protected FxMemIntNode(FXContainerNode parent, FxMemChildId childId, int value) {
+    protected FxMemIntNode(FxContainerNode parent, FxMemChildId childId, int value) {
         super(parent, childId);
         this.value = value;
     }
@@ -24,11 +24,4 @@ public class FxMemIntNode extends FxIntNode {
         this.value = value;
     }
 
-    // ------------------------------------------------------------------------
-    
-    @Override
-    public String toString() {
-        return Integer.toString(value);
-    }
-    
 }

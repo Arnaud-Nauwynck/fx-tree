@@ -1,26 +1,26 @@
-package fr.an.fxtree.model.impl.mem;
+package fr.an.fxtree.impl.model.mem;
 
-import fr.an.fxtree.model.FXContainerNode;
-import fr.an.fxtree.model.FxTextNode;
+import fr.an.fxtree.model.FxContainerNode;
+import fr.an.fxtree.model.FxPOJONode;
 
-public class FxMemTextNode extends FxTextNode {
+public class FxMemPOJONode extends FxPOJONode {
 
-    private String value;
+    private Object value;
     
     // ------------------------------------------------------------------------
     
-    protected FxMemTextNode(FXContainerNode parent, FxMemChildId childId, String value) {
+    protected FxMemPOJONode(FxContainerNode parent, FxMemChildId childId, Object value) {
         super(parent, childId);
         this.value = value;
     }
 
     // ------------------------------------------------------------------------
-        
-    public String getValue() {
+    
+    public Object getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(Object value) {
         this.value = value;
     }
 
@@ -28,7 +28,7 @@ public class FxMemTextNode extends FxTextNode {
     
     @Override
     public String toString() {
-        return value;
+        return (value != null)? value.toString() : "null";
     }
     
 }

@@ -49,6 +49,16 @@ public abstract class FxNodeFactoryRegistry {
         return res;
     }
 
+    public FxLongNode newLong() {
+        return newNode(FxLongNode.class);
+    }
+
+    public FxLongNode newLong(long value) {
+        FxLongNode res = newLong();
+        res.setValue(value);
+        return res;
+    }
+
     public FxBoolNode newBool() {
         return newNode(FxBoolNode.class); 
     }
@@ -58,7 +68,17 @@ public abstract class FxNodeFactoryRegistry {
         res.setValue(value);
         return res; 
     }
-    
+
+    public FxBinaryNode newBinary() {
+        return newNode(FxBinaryNode.class); 
+    }
+
+    public FxBinaryNode newBinary(byte[] value) {
+        FxBinaryNode res = newBinary();
+        res.setValue(value);
+        return res; 
+    }
+
     public FxPOJONode newPOJO() {
         return newNode(FxPOJONode.class);
     }

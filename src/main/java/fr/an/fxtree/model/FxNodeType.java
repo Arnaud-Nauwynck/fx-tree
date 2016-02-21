@@ -2,6 +2,8 @@ package fr.an.fxtree.model;
 
 public enum FxNodeType {
 
+    ROOT,
+    
     ARRAY,
     BINARY,
     BOOLEAN,

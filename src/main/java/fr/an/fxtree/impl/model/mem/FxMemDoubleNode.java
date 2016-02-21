@@ -1,6 +1,6 @@
-package fr.an.fxtree.model.impl.mem;
+package fr.an.fxtree.impl.model.mem;
 
-import fr.an.fxtree.model.FXContainerNode;
+import fr.an.fxtree.model.FxContainerNode;
 import fr.an.fxtree.model.FxDoubleNode;
 
 public class FxMemDoubleNode extends FxDoubleNode {
@@ -9,7 +9,7 @@ public class FxMemDoubleNode extends FxDoubleNode {
     
     // ------------------------------------------------------------------------
     
-    protected FxMemDoubleNode(FXContainerNode parent, FxMemChildId childId, double value) {
+    protected FxMemDoubleNode(FxContainerNode parent, FxMemChildId childId, double value) {
         super(parent, childId);
         this.value = value;
     }
@@ -24,10 +24,5 @@ public class FxMemDoubleNode extends FxDoubleNode {
         this.value = value;
     }
 
-    // ------------------------------------------------------------------------
-    
-    @Override
-    public String toString() {
-        return Double.toString(value);
-    }
+
 }

@@ -1,16 +1,17 @@
-package fr.an.fxtree.model.impl.mem;
+package fr.an.fxtree.impl.model.mem;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import fr.an.fxtree.model.FXContainerNode;
+import fr.an.fxtree.impl.model.mem.FxMemChildId.FxMemObjNameChildId;
 import fr.an.fxtree.model.FxChildId;
+import fr.an.fxtree.model.FxContainerNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
-import fr.an.fxtree.model.impl.mem.FxMemChildId.FxMemObjNameChildId;
 
 public class FxMemObjNode extends FxObjNode {
 
@@ -18,7 +19,7 @@ public class FxMemObjNode extends FxObjNode {
     
     // ------------------------------------------------------------------------
     
-    protected FxMemObjNode(FXContainerNode parent, FxMemChildId childId) {
+    protected FxMemObjNode(FxContainerNode parent, FxMemChildId childId) {
         super(parent, childId);
     }
 
@@ -30,8 +31,23 @@ public class FxMemObjNode extends FxObjNode {
     }
 
     @Override
+    public boolean isEmpty() {
+        return _children.isEmpty();
+    }
+
+    @Override
     public Collection<FxNode> children() {
         return _children.values();
+    }
+
+    @Override
+    public Iterator<FxNode> childIterator() {
+        return _children.values().iterator();
+    }
+
+    @Override
+    public Iterator<Map.Entry<String, FxNode>> fields() {
+        return _children.entrySet().iterator();
     }
 
     @SuppressWarnings("unchecked")
@@ -42,11 +58,17 @@ public class FxMemObjNode extends FxObjNode {
     @Override
     public <T extends FxNode> T put(String name, Class<T> clss) {
         T res = getNodeFactory().newNode(clss);
-        _children.put(name, res);
-        res._setParent(this, new FxMemObjNameChildId(name));
+        onPut(name, res);
         return res;
     }
 
+    @Override
+    protected <T extends FxNode> T onPut(String name, T node) {
+        _children.put(name, node);
+        node._setParent(this, new FxMemObjNameChildId(name));
+        return node;
+    }
+    
     @Override
     public void remove(FxNode child) {
         if (child.getParent() != this) throw new IllegalArgumentException();

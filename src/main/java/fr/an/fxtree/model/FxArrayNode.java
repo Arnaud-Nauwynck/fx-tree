@@ -1,17 +1,20 @@
 package fr.an.fxtree.model;
 
 import java.util.Collection;
+import java.util.Iterator;
 
-public abstract class FxArrayNode extends FXContainerNode {
+import com.fasterxml.jackson.databind.node.ArrayNode;
+
+public abstract class FxArrayNode extends FxContainerNode {
 
     // ------------------------------------------------------------------------
-    
-    protected FxArrayNode(FXContainerNode parent, FxChildId childId) {
+
+    protected FxArrayNode(FxContainerNode parent, FxChildId childId) {
         super(parent, childId);
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public final FxNodeType getNodeType() {
         return FxNodeType.ARRAY;
@@ -23,18 +26,22 @@ public abstract class FxArrayNode extends FXContainerNode {
     }
 
     @Override
-    public <P,R> R accept(FxTreeVisitor2<P,R> visitor, P param) {
+    public <P, R> R accept(FxTreeVisitor2<P, R> visitor, P param) {
         return visitor.visitArray(this, param);
     }
 
     @Override
     public abstract int size();
-    
+
     public abstract FxNode get(int index);
 
     public abstract Collection<FxNode> children();
 
+    public abstract Iterator<FxNode> childIterator();
+
     public abstract <T extends FxNode> T insert(int index, Class<T> clss);
+
+    protected abstract <T extends FxNode> T onInsert(int index, T node);
 
     public <T extends FxNode> T add(Class<T> clss) {
         int len = size();
@@ -46,14 +53,22 @@ public abstract class FxArrayNode extends FXContainerNode {
 
     @Override
     public abstract FxNode remove(FxChildId childId);
-    
+
     public abstract FxNode remove(int index);
+
+    public void removeAll() {
+        int len = size();
+        for(int i = len-1; i >= 0; i--) {
+            remove(i);
+        }
+    }
 
     // helper methods for insert(int index, Class<T> clss) or add(Class<T> clss)
     // ------------------------------------------------------------------------
 
     public FxArrayNode insertArray(int index) {
-        return insert(index, FxArrayNode.class);
+        FxArrayNode res = getNodeFactory().newArray();
+        return onInsert(index, res);
     }
 
     public FxArrayNode addArray() {
@@ -61,7 +76,8 @@ public abstract class FxArrayNode extends FXContainerNode {
     }
 
     public FxObjNode insertObj(int index) {
-        return insert(index, FxObjNode.class);
+        FxObjNode res = getNodeFactory().newObj();
+        return onInsert(index, res);
     }
 
     public FxObjNode addObj() {
@@ -69,9 +85,8 @@ public abstract class FxArrayNode extends FXContainerNode {
     }
 
     public FxTextNode insert(int index, String value) {
-        FxTextNode res = insert(index, FxTextNode.class);
-        res.setValue(value);
-        return res;
+        FxTextNode res = getNodeFactory().newText(value);
+        return onInsert(index, res);
     }
 
     public FxTextNode add(String value) {
@@ -79,39 +94,53 @@ public abstract class FxArrayNode extends FXContainerNode {
     }
 
     public FxDoubleNode insert(int index, double value) {
-        FxDoubleNode res = insert(index, FxDoubleNode.class);
-        res.setValue(value);
-        return res;
+        FxDoubleNode res = getNodeFactory().newDouble(value);
+        return onInsert(index, res);
     }
-    
+
     public FxDoubleNode add(double value) {
         return insert(size(), value);
     }
-    
+
     public FxIntNode insert(int index, int value) {
-        FxIntNode res = insert(index, FxIntNode.class);
-        res.setValue(value);
-        return res;
+        FxIntNode res = getNodeFactory().newInt(value);
+        return onInsert(index, res);
     }
 
     public FxIntNode add(int value) {
         return insert(size(), value);
     }
 
+    public FxLongNode insert(int index, long value) {
+        FxLongNode res = getNodeFactory().newLong(value);
+        return onInsert(index, res);
+    }
+
+    public FxLongNode add(long value) {
+        return insert(size(), value);
+    }
+
     public FxBoolNode insert(int index, boolean value) {
-        FxBoolNode res = insert(index, FxBoolNode.class);
-        res.setValue(value);
-        return res; 
+        FxBoolNode res = getNodeFactory().newBool(value);
+        return onInsert(index, res);
     }
 
     public FxBoolNode add(boolean value) {
-        return insert(size(), value); 
+        return insert(size(), value);
     }
-    
+
+    public FxBinaryNode insert(int index, byte[] value) {
+        FxBinaryNode res = getNodeFactory().newBinary(value);
+        return onInsert(index, res);
+    }
+
+    public FxBinaryNode add(byte[] value) {
+        return insert(size(), value);
+    }
+
     public FxPOJONode insertPOJO(int index, Object value) {
-        FxPOJONode res = insert(index, FxPOJONode.class);
-        res.setValue(value);
-        return res;
+        FxPOJONode res = getNodeFactory().newPOJO(value);
+        return onInsert(index, res);
     }
 
     public FxPOJONode addPOJO(Object value) {
@@ -119,11 +148,53 @@ public abstract class FxArrayNode extends FXContainerNode {
     }
 
     public FxNullNode insertNull(int index) {
-        return insert(index, FxNullNode.class);
+        FxNullNode res = getNodeFactory().newNull();
+        return onInsert(index, res);
     }
-    
+
     public FxNullNode addNull() {
         return insertNull(size());
     }
     
+    // ------------------------------------------------------------------------
+    
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (o == null) return false;
+        if (o instanceof FxArrayNode) {
+            return children().equals(((FxArrayNode) o).children());
+        }
+        return false;
+    }
+
+    /**
+     * @since 2.3
+     */
+    protected boolean _childrenEqual(FxArrayNode other) {
+        return children().equals(other.children());
+    }
+
+    @Override
+    public int hashCode() {
+        return children().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(16 + (size() << 4));
+        sb.append('[');
+        Iterator<FxNode> iter = childIterator();
+        if (iter.hasNext()) {
+            FxNode e = iter.next();
+            sb.append(e);
+        }
+        for (; iter.hasNext(); ) {
+            FxNode e = iter.next();
+            sb.append(',');
+            sb.append(e);
+        }
+        sb.append(']');
+        return sb.toString();
+    }
 }

@@ -1,28 +1,26 @@
-package fr.an.fxtree.model.impl.mem;
+package fr.an.fxtree.impl.model.mem;
 
-import fr.an.fxtree.model.FXContainerNode;
-import fr.an.fxtree.model.FxBoolNode;
+import fr.an.fxtree.model.FxContainerNode;
+import fr.an.fxtree.model.FxLongNode;
 
-public class FxMemBoolNode extends FxBoolNode {
+public class FxMemLongNode extends FxLongNode {
 
-    private boolean value;
+    private long value;
     
     // ------------------------------------------------------------------------
     
-    protected FxMemBoolNode(FXContainerNode parent, FxMemChildId childId, boolean value) {
+    protected FxMemLongNode(FxContainerNode parent, FxMemChildId childId, long value) {
         super(parent, childId);
         this.value = value;
     }
 
     // ------------------------------------------------------------------------
     
-    @Override
-    public boolean getValue() {
+    public long getValue() {
         return value;
     }
 
-    @Override
-    public void setValue(boolean value) {
+    public void setValue(long value) {
         this.value = value;
     }
 

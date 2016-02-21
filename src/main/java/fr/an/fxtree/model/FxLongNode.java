@@ -5,11 +5,11 @@ import java.math.BigInteger;
 
 import com.fasterxml.jackson.core.io.NumberOutput;
 
-public abstract class FxIntNode extends FxValueNode {
+public abstract class FxLongNode extends FxValueNode {
 
     // ------------------------------------------------------------------------
 
-    protected FxIntNode(FxContainerNode parent, FxChildId childId) {
+    protected FxLongNode(FxContainerNode parent, FxChildId childId) {
         super(parent, childId);
     }
 
@@ -22,21 +22,21 @@ public abstract class FxIntNode extends FxValueNode {
 
     @Override
     public void accept(FxTreeVisitor visitor) {
-        visitor.visitIntValue(this);
+        visitor.visitLongValue(this);
     }
 
     @Override
     public <P, R> R accept(FxTreeVisitor2<P, R> visitor, P param) {
-        return visitor.visitIntValue(this, param);
+        return visitor.visitLongValue(this, param);
     }
 
-    public abstract int getValue();
+    public abstract long getValue();
 
-    public abstract void setValue(int value);
+    public abstract void setValue(long value);
 
     @Override
     public FxNumberType numberType() {
-        return FxNumberType.INT;
+        return FxNumberType.LONG;
     }
 
     @Override
@@ -45,13 +45,14 @@ public abstract class FxIntNode extends FxValueNode {
     }
 
     @Override
-    public boolean isInt() {
+    public boolean isLong() {
         return true;
     }
 
     @Override
     public boolean canConvertToInt() {
-        return true;
+        long _value = getValue();
+        return (_value >= Integer.MIN_VALUE && _value <= Integer.MAX_VALUE);
     }
 
     @Override
@@ -61,7 +62,7 @@ public abstract class FxIntNode extends FxValueNode {
 
     @Override
     public Number numberValue() {
-        return Integer.valueOf(getValue());
+        return Long.valueOf(getValue());
     }
 
     @Override
@@ -71,22 +72,22 @@ public abstract class FxIntNode extends FxValueNode {
 
     @Override
     public int intValue() {
-        return getValue();
+        return (int) getValue();
     }
 
     @Override
     public long longValue() {
-        return (long) getValue();
+        return getValue();
     }
 
     @Override
     public float floatValue() {
-        return (float) getValue();
+        return getValue();
     }
 
     @Override
     public double doubleValue() {
-        return (double) getValue();
+        return getValue();
     }
 
     @Override
@@ -112,8 +113,25 @@ public abstract class FxIntNode extends FxValueNode {
     // ------------------------------------------------------------------------
 
     @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (o == null)
+            return false;
+        if (o instanceof FxLongNode) {
+            return ((FxLongNode) o).getValue() == getValue();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.hashCode(getValue());
+    }
+
+    @Override
     public String toString() {
-        return Integer.toString(getValue());
+        return Long.toString(getValue());
     }
 
 }

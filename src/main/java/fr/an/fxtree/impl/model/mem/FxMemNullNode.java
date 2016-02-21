@@ -1,13 +1,13 @@
-package fr.an.fxtree.model.impl.mem;
+package fr.an.fxtree.impl.model.mem;
 
-import fr.an.fxtree.model.FXContainerNode;
+import fr.an.fxtree.model.FxContainerNode;
 import fr.an.fxtree.model.FxNullNode;
 
 public class FxMemNullNode extends FxNullNode {
     
     // ------------------------------------------------------------------------
     
-    protected FxMemNullNode(FXContainerNode parent, FxMemChildId childId) {
+    protected FxMemNullNode(FxContainerNode parent, FxMemChildId childId) {
         super(parent, childId);
     }
 

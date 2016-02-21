@@ -3,9 +3,10 @@ package fr.an.fxtree.model;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
-public abstract class FxRootDocument extends FXContainerNode {
+public abstract class FxRootDocument extends FxContainerNode {
 
     private FxNodeFactoryRegistry nodeFactory;
     
@@ -18,6 +19,7 @@ public abstract class FxRootDocument extends FXContainerNode {
     protected FxRootDocument(FxNodeFactoryRegistry nodeFactory) {
         super(null, null);
         if (nodeFactory == null) throw new IllegalArgumentException();
+        this.rootDocument = this;
         this.nodeFactory = nodeFactory;
     }
 
@@ -25,7 +27,7 @@ public abstract class FxRootDocument extends FXContainerNode {
 
     @Override
     public FxNodeType getNodeType() {
-        return FxNodeType.OBJECT; //? 
+        return FxNodeType.ROOT; // cf also  (childContent==null)? FxNodeType.NULL : childContent.getNodeType()  
     }
 
     @Override
@@ -52,8 +54,18 @@ public abstract class FxRootDocument extends FXContainerNode {
     }
 
     @Override
+    public boolean isEmpty() {
+        return childContent == null;
+    }
+
+    @Override
     public Collection<FxNode> children() {
         return childContent != null? Collections.singleton(childContent) : Collections.emptyList();
+    }
+
+    @Override
+    public Iterator<FxNode> childIterator() {
+        return childContent != null? Collections.singleton(childContent).iterator() : Collections.<FxNode>emptyList().iterator();
     }
 
     @Override

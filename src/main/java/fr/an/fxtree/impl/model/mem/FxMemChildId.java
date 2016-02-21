@@ -1,4 +1,4 @@
-package fr.an.fxtree.model.impl.mem;
+package fr.an.fxtree.impl.model.mem;
 
 import fr.an.fxtree.model.FxChildId;
 

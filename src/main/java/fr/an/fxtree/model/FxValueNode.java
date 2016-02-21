@@ -4,7 +4,7 @@ public abstract class FxValueNode extends FxNode {
 
     // ------------------------------------------------------------------------
     
-    protected FxValueNode(FXContainerNode parent, FxChildId childId) {
+    protected FxValueNode(FxContainerNode parent, FxChildId childId) {
         super(parent, childId);
     }
 
