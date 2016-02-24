@@ -13,6 +13,14 @@ import fr.an.fxtree.model.FxNode;
 
 public class FxJsonUtilsTest {
 
+    public static FxMemRootDocument getJsonTstFile(String fileName) {
+        FxMemRootDocument doc = new FxMemRootDocument(); 
+        File inFile = new File("src/test/data/json/" + fileName);
+        // Perform
+        FxJsonUtils.readTree(doc, inFile);
+        return doc;
+    }
+    
     @Test
     public void testReadTree() throws Exception {
         // Prepare

@@ -1,9 +1,9 @@
 package fr.an.fxtree.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Iterator;
-
-import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public abstract class FxArrayNode extends FxContainerNode {
 
@@ -135,6 +135,24 @@ public abstract class FxArrayNode extends FxContainerNode {
     }
 
     public FxBinaryNode add(byte[] value) {
+        return insert(size(), value);
+    }
+
+    public FxPOJONode insert(int index, BigInteger value) {
+        FxPOJONode res = getNodeFactory().newPOJO(value); // use POJO?
+        return onInsert(index, res);
+    }
+
+    public FxPOJONode add(BigInteger value) {
+        return insert(size(), value);
+    }
+
+    public FxPOJONode insert(int index, BigDecimal value) {
+        FxPOJONode res = getNodeFactory().newPOJO(value); // use POJO?
+        return onInsert(index, res);
+    }
+
+    public FxPOJONode add(BigDecimal value) {
         return insert(size(), value);
     }
 

@@ -9,10 +9,6 @@ import fr.an.fxtree.model.FxPOJONode;
 
 public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNodeFunc {
 
-    public static final String PROP_FX_BINDED_EXPR = "@fx-binded-expr";
-
-    public static final String PROP_FX_PARAMS = "@fx-params";
-
     private FxObjectMapper fxObjectMapper = new FxObjectMapper();
 
     private Supplier<T> exprFactory;
@@ -45,12 +41,12 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
     
     @SuppressWarnings("unchecked")
     public T getBindOn(FxObjNode src) {
-        FxPOJONode bindExprNode = src.get(PROP_FX_BINDED_EXPR);
+        FxPOJONode bindExprNode = src.get(FxConsts.FX_BINDED_EXPR);
         return bindExprNode != null? (T) bindExprNode.getValue() : null;
     }
 
     public void putBindOn(FxObjNode src, T bind) {
-        src.putPOJO(PROP_FX_BINDED_EXPR, bind);
+        src.putPOJO(FxConsts.FX_BINDED_EXPR, bind);
     }
 
     public T compileBind(FxNode src) {
@@ -59,7 +55,7 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
         // also extract params...
         if (src instanceof FxObjNode) {
             FxObjNode srcObj = (FxObjNode) src;
-            FxObjNode paramsObj = srcObj.get(PROP_FX_PARAMS);
+            FxObjNode paramsObj = srcObj.get(FxConsts.FX_PARAMS);
             if (paramsObj != null) {
                 // inject deserialized params into <code>res</code> binded expr
                 fxObjectMapper.readUpdate(srcObj, res);

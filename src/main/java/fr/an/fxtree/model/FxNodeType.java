@@ -1,17 +1,18 @@
 package fr.an.fxtree.model;
 
 public enum FxNodeType {
-
-    ROOT,
     
-    ARRAY,
-    BINARY,
-    BOOLEAN,
-    MISSING,
-    NULL,
-    NUMBER,
     OBJECT,
+    ARRAY,
+    
+    STRING,
+    NUMBER,
+    BOOLEAN,
+    BINARY,
+    NULL,
     POJO,
-    STRING
+    MISSING,
+
+    ROOT
 
 }

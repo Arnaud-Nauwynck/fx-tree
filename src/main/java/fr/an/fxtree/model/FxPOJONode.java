@@ -1,7 +1,5 @@
 package fr.an.fxtree.model;
 
-import java.io.IOException;
-
 public abstract class FxPOJONode extends FxValueNode {
 
     // ------------------------------------------------------------------------
@@ -32,7 +30,7 @@ public abstract class FxPOJONode extends FxValueNode {
     public abstract void setValue(Object value);
 
     @Override
-    public byte[] binaryValue() throws IOException {
+    public byte[] binaryValue() {
         Object value = getValue();
         if (value instanceof byte[]) {
             return (byte[]) value;

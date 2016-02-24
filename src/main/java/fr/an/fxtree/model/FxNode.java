@@ -1,6 +1,5 @@
 package fr.an.fxtree.model;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -144,7 +143,7 @@ public abstract class FxNode {
         return null;
     }
 
-    public byte[] binaryValue() throws IOException {
+    public byte[] binaryValue() {
         return null;
     }
 

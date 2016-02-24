@@ -48,6 +48,14 @@ public abstract class FxRootDocument extends FxContainerNode {
         return childContent;
     }
 
+    public FxObjNode getContentObj() {
+        return (FxObjNode) childContent;
+    }
+
+    public FxArrayNode getContentArray() {
+        return (FxArrayNode) childContent;
+    }
+
     @Override
     public int size() {
         return childContent != null? 1 : 0;
@@ -84,6 +92,18 @@ public abstract class FxRootDocument extends FxContainerNode {
         return res;
     }
     
+    public FxObjNode setContentObj() {
+        FxObjNode res = nodeFactory.newObj();
+        setContent(res);
+        return res;
+    }
+
+    public FxArrayNode setContentArray() {
+        FxArrayNode res = nodeFactory.newArray();
+        setContent(res);
+        return res;
+    }
+
     public void setContent(FxNode node) {
         if (node == childContent) return;
         if (childContent != null) {

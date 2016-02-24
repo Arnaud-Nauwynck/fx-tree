@@ -1,5 +1,7 @@
 package fr.an.fxtree.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -94,6 +96,16 @@ public abstract class FxObjNode extends FxContainerNode {
 
     public FxBinaryNode put(String name, byte[] value) {
         FxBinaryNode res = getNodeFactory().newBinary(value);
+        return onPut(name, res);
+    }
+
+    public FxPOJONode put(String name, BigInteger value) {
+        FxPOJONode res = getNodeFactory().newPOJO(value); // TODO use POJO?
+        return onPut(name, res);
+    }
+
+    public FxPOJONode put(String name, BigDecimal value) {
+        FxPOJONode res = getNodeFactory().newPOJO(value); // TODO use POJO?
         return onPut(name, res);
     }
 

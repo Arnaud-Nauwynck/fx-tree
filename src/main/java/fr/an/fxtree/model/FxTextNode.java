@@ -39,6 +39,11 @@ public abstract class FxTextNode extends FxValueNode {
 
     public abstract void setValue(String value);
 
+    @Override
+    public String textValue() {
+        return getValue();
+    }
+
     /**
      * Method for accessing textual contents assuming they were base64 encoded;
      * if so, they are decoded and resulting binary data is returned.
@@ -138,8 +143,12 @@ public abstract class FxTextNode extends FxValueNode {
     }
 
     @Override
-    public byte[] binaryValue() throws IOException {
-        return getBinaryValue(Base64Variants.getDefaultVariant());
+    public byte[] binaryValue() {
+        try {
+            return getBinaryValue(Base64Variants.getDefaultVariant());
+        } catch (IOException ex) {
+            throw new RuntimeException("Failed", ex);
+        }
     }
 
     @Override

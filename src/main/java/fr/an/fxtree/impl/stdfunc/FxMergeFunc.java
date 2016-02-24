@@ -5,6 +5,8 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 
 public class FxMergeFunc extends FxNodeFunc {
 
+    public static final String NAME = "merge";
+    
     // ------------------------------------------------------------------------
 
     public static final FxMergeFunc INSTANCE = new FxMergeFunc();
