@@ -18,11 +18,11 @@ public class FxNodeCopyVisitorTest {
         FxMemRootDocument src = FxJsonUtilsTest.getJsonTstFile("file1.json");
         FxObjNode srcContent = src.getContentObj();
         FxMemRootDocument dest = new FxMemRootDocument();
-        FxObjNode destContent = dest.setContentObj();
-        FxChildAdder destOut = destContent.putBuilder("root"); //TODO
+        FxChildAdder destOut = dest.contentAdder();
         // Perform
         srcContent.accept(sut, destOut);
+        FxObjNode destContent = dest.getContentObj();
         // Post-check
-        Assert.assertEquals("{\"root\":" + srcContent.toString() + "}", destContent.toString());
+        Assert.assertEquals(srcContent.toString(), destContent.toString());
     }
 }

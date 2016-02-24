@@ -1,5 +1,7 @@
 package fr.an.fxtree.model;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -92,6 +94,10 @@ public abstract class FxRootDocument extends FxContainerNode {
         return res;
     }
     
+    public FxChildAdder contentAdder() {
+        return new RootChildAdder();
+    }
+    
     public FxObjNode setContentObj() {
         FxObjNode res = nodeFactory.newObj();
         setContent(res);
@@ -106,6 +112,10 @@ public abstract class FxRootDocument extends FxContainerNode {
 
     public void setContent(FxNode node) {
         if (node == childContent) return;
+        addContent(node);
+    }
+
+    protected <T extends FxNode> T addContent(T node) {
         if (childContent != null) {
             remove(childContent);
         }
@@ -113,14 +123,79 @@ public abstract class FxRootDocument extends FxContainerNode {
         if (childContent != null) {
             node._setParent(this, null);
         }
+        return node;
     }
-
+    
     public Object getExtraParam(String key) {
         return extraParams.get(key);
     }
 
     public Object putExtraParam(String key, Object value) {
         return extraParams.put(key, value);
+    }
+
+    // internal
+    // ------------------------------------------------------------------------
+
+    private final class RootChildAdder extends FxChildAdder {
+        
+        public RootChildAdder() {
+        }
+
+        @Override
+        public FxArrayNode addArray() {
+            return setContentArray();
+        }
+
+        @Override
+        public FxObjNode addObj() {
+            return setContentObj();
+        }
+
+        @Override
+        public FxTextNode add(String value) {
+            return addContent(nodeFactory.newText(value));
+        }
+
+        @Override
+        public FxDoubleNode add(double value) {
+            return addContent(nodeFactory.newDouble(value));
+        }
+
+        @Override
+        public FxIntNode add(int value) {
+            return addContent(nodeFactory.newInt(value));
+        }
+
+        @Override
+        public FxBoolNode add(boolean value) {
+            return addContent(nodeFactory.newBool(value));
+        }
+
+        @Override
+        public FxBinaryNode add(byte[] value) {
+            return addContent(nodeFactory.newBinary(value));
+        }
+
+        @Override
+        public FxPOJONode add(BigInteger value) {
+            return addContent(nodeFactory.newPOJO(value)); // TODO use POJO
+        }
+
+        @Override
+        public FxPOJONode add(BigDecimal value) {
+            return addContent(nodeFactory.newPOJO(value)); // TODO use POJO
+        }
+
+        @Override
+        public FxPOJONode addPOJO(Object value) {
+            return addContent(nodeFactory.newPOJO(value));
+        }
+
+        @Override
+        public FxNullNode addNull() {
+            return addContent(nodeFactory.newNull());
+        }
     }
 
 }
