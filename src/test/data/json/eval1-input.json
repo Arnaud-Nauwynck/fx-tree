@@ -1,0 +1,7 @@
+{
+"eval_1_plus_2": {
+	  "@fx-eval": "#phase0:num.add",
+	  "left": 1,
+	  "right": 2
+	}
+}

@@ -11,18 +11,18 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 import fr.an.fxtree.model.func.FxNodeFuncRegistry;
 
 /**
- * clone a tree and evaluate recursively all functions for a given namespace/phase
+ * clone a tree and evaluate recursively all functions for a given phase (~namespace)
  */
-public class FxNsRecursiveEvalFunc extends FxNodeFunc {
+public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
 
-    private String namespace;
+    private String phase;
 
     private FxNodeFuncRegistry funcRegistry;
     
     // ------------------------------------------------------------------------
     
-    public FxNsRecursiveEvalFunc(String namespace, FxNodeFuncRegistry funcRegistry) {
-        this.namespace = namespace;
+    public FxPhaseRecursiveEvalFunc(String phase, FxNodeFuncRegistry funcRegistry) {
+        this.phase = phase;
         this.funcRegistry = funcRegistry;
     }
     
@@ -41,7 +41,7 @@ public class FxNsRecursiveEvalFunc extends FxNodeFunc {
          * proposed syntax:
          * <PRE>
          *    {
-         *      "@fx-eval" : "<<namespace>>:<<function>> [(<<indexParam0>>,..<<indexParamN>>)]"
+         *      "@fx-eval" : "#<<phase>>:<<function>>[(<<indexParam0>>,..<<indexParamN>>)]"
          *      <<param0>> : ..,
          *      <<paramN>> : ..
          *    }
@@ -58,9 +58,9 @@ public class FxNsRecursiveEvalFunc extends FxNodeFunc {
             String fxEvalExprText = fxEvalFieldValue.textValue();
             // detect if expression text start with "<<namespace>>:" otherwise ignore it
             if (fxEvalExprText == null 
-                    || ! (fxEvalExprText.startsWith(namespace) 
-                            && fxEvalExprText.length() > namespace.length()+2 
-                            && fxEvalExprText.charAt(namespace.length()) == ':')) {
+                    || ! (fxEvalExprText.startsWith("#" + phase) 
+                            && fxEvalExprText.length() > phase.length()+2 
+                            && fxEvalExprText.charAt(phase.length() + 1) == ':')) {
                 return super.visitObj(src, destNode);
             }
             
@@ -75,8 +75,8 @@ public class FxNsRecursiveEvalFunc extends FxNodeFunc {
                 }
             }
             
-            int optIndexOpenParenthesis = fxEvalExprText.indexOf('(', namespace.length()+2);
-            String funcName = fxEvalExprText.substring(namespace.length() + 1, 
+            int optIndexOpenParenthesis = fxEvalExprText.indexOf('(', phase.length()+2);
+            String funcName = fxEvalExprText.substring(phase.length() + 2, 
                 ((optIndexOpenParenthesis == -1)? fxEvalExprText.length() : optIndexOpenParenthesis));
             if (funcName.endsWith(" ")) {
                 funcName = funcName.trim();
