@@ -1,8 +1,11 @@
 package fr.an.fxtree.impl.stdfunc;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
+import fr.an.fxtree.model.FxChildAdder;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
+import fr.an.fxtree.model.FxPOJONode;
+import fr.an.fxtree.model.func.FxBindedNodeFuncExpr;
 import fr.an.fxtree.model.func.FxConsts;
 import fr.an.fxtree.model.func.FxNodeFunc;
 import fr.an.fxtree.model.func.FxNodeFuncRegistry;
@@ -26,24 +29,62 @@ public class FxNsRecursiveEvalFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
 
     @Override
-    public void eval(FxNode dest, FxNode src) {
-        src.accept(new InnerVisitor(), dest); 
+    public FxNode eval(FxChildAdder dest, FxNode src) {
+        return src.accept(new InnerVisitor(), dest); 
     }
     
     private class InnerVisitor extends FxNodeCopyVisitor {
 
+        /**
+         * detect JSon object that are Meta object for fx evaluation
+         * 
+         * proposed syntax:
+         * <PRE>
+         *    {
+         *      "@fx-eval" : "<<namespace>>:<<function>> [(<<indexParam0>>,..<<indexParamN>>)]"
+         *      <<param0>> : ..,
+         *      <<paramN>> : ..
+         *    }
+         * </PRE>
+         * when evaluated => object container replaced by function evaluation
+         */
         @Override
-        public FxNode visitObj(FxObjNode src, FxNode destNode) {
-            FxNode fxEvalProp = src.get(FxConsts.FX_EVAL);
-            if (fxEvalProp == null) {
-                // clone
-                //TODO 
-            } else {
-                
+        public FxNode visitObj(FxObjNode src, FxChildAdder destNode) {
+            FxNode fxEvalFieldValue = src.get(FxConsts.FX_EVAL);
+            if (fxEvalFieldValue == null) {
+                return super.visitObj(src, destNode); 
             }
-            return null;
+            
+            String fxEvalExprText = fxEvalFieldValue.textValue();
+            // detect if expression text start with "<<namespace>>:" otherwise ignore it
+            if (fxEvalExprText == null 
+                    || ! (fxEvalExprText.startsWith(namespace) 
+                            && fxEvalExprText.length() > namespace.length()+2 
+                            && fxEvalExprText.charAt(namespace.length()) == ':')) {
+                return super.visitObj(src, destNode);
+            }
+            
+            FxNode fxCacheBindedExpr = src.get(FxConsts.FX_BINDED_EXPR);
+            if (fxCacheBindedExpr != null && fxCacheBindedExpr.isPojo()) {
+                // already analysed + resolved... simply call it!
+                Object pojo = ((FxPOJONode) fxCacheBindedExpr).getValue();
+                if (pojo != null && pojo instanceof FxBindedNodeFuncExpr) {
+                    FxBindedNodeFuncExpr expr = (FxBindedNodeFuncExpr) pojo;
+                    // *** eval ****
+                    return expr.eval(destNode);
+                }
+            }
+            
+            int optIndexOpenParenthesis = fxEvalExprText.indexOf('(', namespace.length()+2);
+            String funcName = fxEvalExprText.substring(namespace.length() + 1, 
+                ((optIndexOpenParenthesis == -1)? fxEvalExprText.length() : optIndexOpenParenthesis));
+            if (funcName.endsWith(" ")) {
+                funcName = funcName.trim();
+            }
+            // lookup method by name + eval   (may also cache FxBindedNodeFuncExpr..)
+            // *** eval ***
+            return funcRegistry.eval(funcName, destNode, src);
         }
-
         
     }
 }

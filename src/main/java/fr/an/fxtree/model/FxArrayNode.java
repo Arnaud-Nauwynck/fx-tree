@@ -66,6 +66,14 @@ public abstract class FxArrayNode extends FxContainerNode {
     // helper methods for insert(int index, Class<T> clss) or add(Class<T> clss)
     // ------------------------------------------------------------------------
 
+    public FxChildAdder insertBuilder(int index) {
+        return new InnerArrayChildAdder(index);
+    }
+
+    public FxChildAdder insertBuilder() {
+        return new InnerArrayChildAdder(0);
+    }
+    
     public FxArrayNode insertArray(int index) {
         FxArrayNode res = getNodeFactory().newArray();
         return onInsert(index, res);
@@ -215,4 +223,75 @@ public abstract class FxArrayNode extends FxContainerNode {
         sb.append(']');
         return sb.toString();
     }
+    
+    // internal
+    // ------------------------------------------------------------------------
+
+    private final class InnerArrayChildAdder extends FxChildAdder {
+        private int currIndex;
+        
+        public InnerArrayChildAdder(int index) {
+            this.currIndex = index;
+        }
+
+        protected int incrIndex() {
+            return currIndex++;
+        }
+        
+        @Override
+        public FxArrayNode addArray() {
+            return insertArray(incrIndex());
+        }
+
+        @Override
+        public FxObjNode addObj() {
+            return insertObj(incrIndex());
+        }
+
+        @Override
+        public FxTextNode add(String value) {
+            return insert(incrIndex(), value);
+        }
+
+        @Override
+        public FxDoubleNode add(double value) {
+            return insert(incrIndex(), value);
+        }
+
+        @Override
+        public FxIntNode add(int value) {
+            return insert(incrIndex(), value);
+        }
+
+        @Override
+        public FxBoolNode add(boolean value) {
+            return insert(incrIndex(), value);
+        }
+
+        @Override
+        public FxBinaryNode add(byte[] value) {
+            return insert(incrIndex(), value);
+        }
+
+        @Override
+        public FxPOJONode add(BigInteger value) {
+            return insert(incrIndex(), value);
+        }
+
+        @Override
+        public FxPOJONode add(BigDecimal value) {
+            return insert(incrIndex(), value);
+        }
+
+        @Override
+        public FxPOJONode addPOJO(Object value) {
+            return insertPOJO(incrIndex(), value);
+        }
+
+        @Override
+        public FxNullNode addNull() {
+            return insertNull(incrIndex());
+        }
+    }
+    
 }

@@ -64,6 +64,10 @@ public abstract class FxObjNode extends FxContainerNode {
     // helper methods for put(String name, Class<T> clss)
     // ------------------------------------------------------------------------
 
+    public FxChildAdder putBuilder(String name) {
+        return new ObjChildAdder(name);
+    }
+    
     public FxArrayNode putArray(String name) {
         FxArrayNode res = getNodeFactory().newArray();
         return onPut(name, res);
@@ -161,10 +165,85 @@ public abstract class FxObjNode extends FxContainerNode {
         return sb.toString();
     }
 
+    // internal
+    // ------------------------------------------------------------------------
+    
     protected static void appendQuoted(StringBuilder sb, String content) {
         sb.append('"');
         CharTypes.appendQuoted(sb, content);
         sb.append('"');
     }
 
+
+    private final class ObjChildAdder extends FxChildAdder {
+        
+        private String baseName;
+        private int currIndex;
+        
+        public ObjChildAdder(String name) {
+            this.baseName = name;
+        }
+
+        private String incrName() {
+            String res = (currIndex == 0)? baseName : baseName + currIndex;
+            currIndex++;
+            return res;
+        }
+        
+        @Override
+        public FxArrayNode addArray() {
+            return putArray(incrName());
+        }
+
+        @Override
+        public FxObjNode addObj() {
+            return putObj(incrName());
+        }
+
+        @Override
+        public FxTextNode add(String value) {
+            return put(incrName(), value);
+        }
+
+        @Override
+        public FxDoubleNode add(double value) {
+            return put(incrName(), value);
+        }
+
+        @Override
+        public FxIntNode add(int value) {
+            return put(incrName(), value);
+        }
+
+        @Override
+        public FxBoolNode add(boolean value) {
+            return put(incrName(), value);
+        }
+
+        @Override
+        public FxBinaryNode add(byte[] value) {
+            return put(incrName(), value);
+        }
+
+        @Override
+        public FxPOJONode add(BigInteger value) {
+            return put(incrName(), value);
+        }
+
+        @Override
+        public FxPOJONode add(BigDecimal value) {
+            return put(incrName(), value);
+        }
+
+        @Override
+        public FxPOJONode addPOJO(Object value) {
+            return putPOJO(incrName(), value);
+        }
+
+        @Override
+        public FxNullNode addNull() {
+            return putNull(incrName());
+        }
+    }
+    
 }

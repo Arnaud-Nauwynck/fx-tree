@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.json.FxJsonUtilsTest;
+import fr.an.fxtree.model.FxChildAdder;
 import fr.an.fxtree.model.FxObjNode;
 
 public class FxNodeCopyVisitorTest {
@@ -18,9 +19,10 @@ public class FxNodeCopyVisitorTest {
         FxObjNode srcContent = src.getContentObj();
         FxMemRootDocument dest = new FxMemRootDocument();
         FxObjNode destContent = dest.setContentObj();
+        FxChildAdder destOut = destContent.putBuilder("root"); //TODO
         // Perform
-        srcContent.accept(sut, destContent);
+        srcContent.accept(sut, destOut);
         // Post-check
-        Assert.assertEquals(srcContent.toString(), destContent.toString());
+        Assert.assertEquals("{\"root\":" + srcContent.toString() + "}", destContent.toString());
     }
 }

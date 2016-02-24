@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxBoolNode;
+import fr.an.fxtree.model.FxChildAdder;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
 import fr.an.fxtree.model.FxLongNode;
@@ -18,7 +19,7 @@ import fr.an.fxtree.model.FxRootDocument;
 import fr.an.fxtree.model.FxTextNode;
 import fr.an.fxtree.model.FxTreeVisitor2;
 
-public class FxNodeCopyVisitor extends FxTreeVisitor2<FxNode,FxNode> {
+public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildAdder,FxNode> {
 
     // ------------------------------------------------------------------------
 
@@ -28,191 +29,90 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxNode,FxNode> {
     // ------------------------------------------------------------------------
 
     @Override
-    public FxNode visitRoot(FxRootDocument src, FxNode destNode) {
+    public FxNode visitRoot(FxRootDocument src, FxChildAdder out) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public FxNode visitObj(FxObjNode src, FxNode destNode) {
-        FxObjNode dest = (FxObjNode) destNode;
+    public FxNode visitObj(FxObjNode src, FxChildAdder out) {
+        FxObjNode res = out.addObj(); 
         for(Iterator<Map.Entry<String, FxNode>> iter = src.fields(); iter.hasNext(); ) {
             Entry<String, FxNode> srcFieldEntry = iter.next();
             String name = srcFieldEntry.getKey();
             FxNode srcValue = srcFieldEntry.getValue();
-            visitObjField(name, srcValue, dest);
+            FxChildAdder outChildAdder = res.putBuilder(name);
+            // recurse copy object field value
+            visitObjField(name, srcValue, outChildAdder);
         }
-        return dest;
+        return res;
     }
 
-    protected void visitObjField(String name, FxNode srcValue, FxObjNode dest) {
-        switch(srcValue.getNodeType()) {
-        case OBJECT: visitObjFieldObj(name, srcValue, dest); break;
-        case ARRAY: {
-            FxArrayNode destArrayValue = dest.putArray(name);
-            srcValue.accept(this, destArrayValue);
-        } break;
-        case STRING: {
-            String srcValueText = srcValue.textValue();
-            visitObjFieldText(name, srcValueText, dest);
-        } break;
-        case NUMBER: {
-            switch(srcValue.numberType()) {
-            case INT: dest.put(name, srcValue.intValue()); break;  
-            case LONG: dest.put(name, srcValue.longValue()); break; 
-            case BIG_INTEGER: dest.put(name, srcValue.bigIntegerValue()); break; 
-            case FLOAT: dest.put(name, srcValue.floatValue()); break; 
-            case DOUBLE: dest.put(name, srcValue.doubleValue()); break; 
-            case BIG_DECIMAL : dest.put(name, srcValue.decimalValue()); break; 
-            default: throw new IllegalStateException();
-            }
-        } break;
-        case BOOLEAN:
-            dest.put(name, srcValue.booleanValue());
-            break;
-        case BINARY: {
-            byte[] cloneBinaryValue = srcValue.binaryValue();
-            if (cloneBinaryValue != null) {
-                cloneBinaryValue = cloneBinaryValue.clone();
-            }
-            dest.put(name, cloneBinaryValue);
-        } break;
-        case MISSING:
-            break;
-        case NULL:
-            dest.putNull(name);
-            break;
-        case POJO: {
-            Object pojo = ((FxPOJONode) srcValue).getValue();
-            // TODO clone pojo??
-            dest.putPOJO(name, pojo);
-        } break;
-        case ROOT: throw new IllegalStateException();
-        default: throw new IllegalStateException();
-        }
-    }
-
-    protected void visitObjFieldObj(String name, FxNode srcValue, FxObjNode dest) {
-        FxObjNode destValue = dest.putObj(name);
-        srcValue.accept(this, destValue);
-    }
-
-    protected void visitObjFieldText(String name, String textValue, FxObjNode dest) {
-        dest.put(name, textValue);
-    }
-    
     @Override
-    public FxNode visitArray(FxArrayNode src, FxNode destNode) {
-        FxArrayNode dest = (FxArrayNode) destNode;
+    public FxNode visitArray(FxArrayNode src, FxChildAdder out) {
+        FxArrayNode res = out.addArray();
+        FxChildAdder outChildAdder = res.insertBuilder();
         int index = 0;
         for(FxNode srcChild : src.children()) {
-            visitArrayElt(index, srcChild, dest);
+            // recurse copy array element
+            visitArrayElt(index, srcChild, outChildAdder);
             index++;
         }
-        return dest;
+        return res;
     }
     
-    protected void visitArrayElt(int index, FxNode srcValue, FxArrayNode dest) {
-        switch(srcValue.getNodeType()) {
-        case OBJECT: visitArrayEltObj(index, srcValue, dest); break;
-        case ARRAY: {
-            FxArrayNode destArrayValue = dest.addArray();
-            srcValue.accept(this, destArrayValue);
-        } break;
-        case STRING: {
-            String srcValueText = srcValue.textValue();
-            visitArrayEltText(index, srcValueText, dest);
-        } break;
-        case NUMBER: {
-            switch(srcValue.numberType()) {
-            case INT: dest.add(srcValue.intValue()); break;  
-            case LONG: dest.add(srcValue.longValue()); break; 
-            case BIG_INTEGER: dest.add(srcValue.bigIntegerValue()); break; 
-            case FLOAT: dest.add(srcValue.floatValue()); break; 
-            case DOUBLE: dest.add(srcValue.doubleValue()); break; 
-            case BIG_DECIMAL : dest.add(srcValue.decimalValue()); break; 
-            default: throw new IllegalStateException();
-            }
-        } break;
-        case BOOLEAN:
-            dest.add(srcValue.booleanValue());
-            break;
-        case BINARY: {
-            byte[] cloneBinaryValue = srcValue.binaryValue();
-            if (cloneBinaryValue != null) {
-                cloneBinaryValue = cloneBinaryValue.clone();
-            }
-            dest.add(cloneBinaryValue);
-        } break;
-        case MISSING:
-            break;
-        case NULL:
-            dest.addNull();
-            break;
-        case POJO: {
-            Object pojo = ((FxPOJONode) srcValue).getValue();
-            // TODO clone pojo??
-            dest.addPOJO(pojo);
-        } break;
-        case ROOT: throw new IllegalStateException();
-        default: throw new IllegalStateException();
+
+    protected void visitObjField(String name, FxNode srcValue, FxChildAdder out) {
+        srcValue.accept(this, out);
+    }
+    
+    protected void visitArrayElt(int index, FxNode srcValue, FxChildAdder out) {
+        srcValue.accept(this, out);
+    }
+    
+    @Override
+    public FxNode visitTextValue(FxTextNode src, FxChildAdder out) {
+        return out.add(src.getValue());
+    }
+
+    @Override
+    public FxNode visitDoubleValue(FxDoubleNode src, FxChildAdder out) {
+        return out.add(src.getValue());
+    }
+
+    @Override
+    public FxNode visitIntValue(FxIntNode src, FxChildAdder out) {
+        return out.add(src.getValue());
+    }
+
+    @Override
+    public FxNode visitLongValue(FxLongNode src, FxChildAdder out) {
+        return out.add(src.getValue());
+    }
+
+    @Override
+    public FxNode visitBoolValue(FxBoolNode src, FxChildAdder out) {
+        return out.add(src.getValue());
+    }
+
+    @Override
+    public FxNode visitBinaryValue(FxBinaryNode src, FxChildAdder out) {
+        byte[] tmp = src.getValue();
+        if (tmp != null) {
+            tmp = tmp.clone();
         }
-    }
-
-    protected void visitArrayEltObj(int index, FxNode srcValue, FxArrayNode dest) {
-        FxObjNode destValue = dest.addObj();
-        srcValue.accept(this, destValue);
-    }
-
-    protected void visitArrayEltText(int index, String textValue, FxArrayNode dest) {
-        dest.add(textValue);
-    }
-    
-    @Override
-    public FxNode visitTextValue(FxTextNode src, FxNode destNode) {
-        // not called
-        return destNode;
+        return out.add(tmp);
     }
 
     @Override
-    public FxNode visitDoubleValue(FxDoubleNode src, FxNode destNode) {
-        // not called
-        return destNode;
+    public FxNode visitPOJOValue(FxPOJONode src, FxChildAdder out) {
+        Object pojo = src.getValue();
+        // TODO clone pojo??
+        return out.addPOJO(pojo);
     }
 
     @Override
-    public FxNode visitIntValue(FxIntNode src, FxNode destNode) {
-        // not called
-        return destNode;
-    }
-
-    @Override
-    public FxNode visitLongValue(FxLongNode src, FxNode destNode) {
-        // not called
-        return destNode;
-    }
-
-    @Override
-    public FxNode visitBoolValue(FxBoolNode src, FxNode destNode) {
-        // not called
-        return destNode;
-    }
-
-    @Override
-    public FxNode visitBinaryValue(FxBinaryNode src, FxNode destNode) {
-        // not called
-        return destNode;
-    }
-
-    @Override
-    public FxNode visitPOJOValue(FxPOJONode src, FxNode destNode) {
-        // not called
-        return destNode;
-    }
-
-    @Override
-    public FxNode visitNullValue(FxNullNode src, FxNode destNode) {
-        // not called
-        return destNode;
+    public FxNode visitNullValue(FxNullNode src, FxChildAdder out) {
+        return out.addNull();
     }
     
 }

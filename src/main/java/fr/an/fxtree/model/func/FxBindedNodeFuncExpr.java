@@ -1,5 +1,6 @@
 package fr.an.fxtree.model.func;
 
+import fr.an.fxtree.model.FxChildAdder;
 import fr.an.fxtree.model.FxNode;
 
 public abstract class FxBindedNodeFuncExpr {
@@ -13,7 +14,7 @@ public abstract class FxBindedNodeFuncExpr {
 
     // ------------------------------------------------------------------------
 
-    public abstract void eval(FxNode dest);
+    public abstract FxNode eval(FxChildAdder dest);
 
     
     
