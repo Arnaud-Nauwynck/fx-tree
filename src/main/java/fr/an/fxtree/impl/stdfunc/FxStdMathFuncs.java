@@ -30,15 +30,20 @@ public final class FxStdMathFuncs {
     protected static void registerBuiltinFuncs(Map<String, FxNodeFunc> dest, AbstractBinaryNumberOpFunc... funcs) {
         for(AbstractBinaryNumberOpFunc func : funcs) {
             dest.put(func.name, func);
+            if (func.alias != null) {
+                dest.put(func.alias, func);
+            }
         }
     }
     
     public static abstract class AbstractBinaryNumberOpFunc extends FxNodeFunc {
         private final String name;
+        private final String alias;
         private final String displayOp;
         
-        public AbstractBinaryNumberOpFunc(String name, String displayOp) {
+        public AbstractBinaryNumberOpFunc(String name, String alias, String displayOp) {
             this.name = name;
+            this.alias = alias;
             this.displayOp = displayOp;
         }
         
@@ -119,7 +124,7 @@ public final class FxStdMathFuncs {
         public static final String NAME = "num.add";
         public static final FxNodePlusBinaryNumberFunc INSTANCE = new FxNodePlusBinaryNumberFunc();
         private FxNodePlusBinaryNumberFunc() {
-            super(NAME, "+");
+            super(NAME, "plus", "+");
         }
         
         protected int evalBinaryOp(int lhs, int rhs) {
@@ -148,7 +153,7 @@ public final class FxStdMathFuncs {
         public static final String NAME = "num.substract";
         public static final FxNodeMinusBinaryNumberFunc INSTANCE = new FxNodeMinusBinaryNumberFunc();
         private FxNodeMinusBinaryNumberFunc() {
-            super(NAME, "-");
+            super(NAME, "minus", "-");
         }
         
         protected int evalBinaryOp(int lhs, int rhs) {
@@ -177,7 +182,7 @@ public final class FxStdMathFuncs {
         public static final String NAME = "num.multiply";
         public static final FxNodeMultBinaryNumberFunc INSTANCE = new FxNodeMultBinaryNumberFunc();
         private FxNodeMultBinaryNumberFunc() {
-            super(NAME, "*");
+            super(NAME, "mult", "*");
         }
         
         protected int evalBinaryOp(int lhs, int rhs) {
@@ -205,7 +210,7 @@ public final class FxStdMathFuncs {
         public static final String NAME = "num.divide";
         public static final FxNodeDivideBinaryNumberFunc INSTANCE = new FxNodeDivideBinaryNumberFunc();
         private FxNodeDivideBinaryNumberFunc() {
-            super(NAME, "/");
+            super(NAME, "div", "/");
         }
         
         protected int evalBinaryOp(int lhs, int rhs) {

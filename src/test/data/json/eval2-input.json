@@ -1,0 +1,52 @@
+{
+"eval_1_plus_2": {
+	  "@fx-eval": "#phase0:num.add",
+	  "left": 1,
+	  "right": 2
+	},
+"eval_1_plus_2000000000": {
+	  "@fx-eval": "#phase0:num.add",
+	  "left": 1,
+	  "right": 2000000000
+	},
+"eval_1_plus_2.0": {
+	  "@fx-eval": "#phase0:num.add",
+	  "left": 1,
+	  "right": 2.0
+	},
+"eval_1_minus_2": {
+	  "@fx-eval": "#phase0:num.substract",
+	  "left": 1,
+	  "right": 2
+	},
+"eval_2_multiply_3": {
+	  "@fx-eval": "#phase0:num.multiply",
+	  "left": 2,
+	  "right": 3
+	},
+"eval_10_divide_5": {
+	  "@fx-eval": "#phase0:num.divide",
+	  "left": 10,
+	  "right": 5
+	},
+	
+"eval_2*(3+4)": {
+	  "@fx-eval": "#phase1:num.multiply",
+	  "left": 2,
+	  "right": {
+		  "@fx-eval": "#phase0:num.add",
+		  "left": 3,
+	  	  "right": 4
+	  }	
+	},
+"eval_(2*3)+4)": {
+	  "@fx-eval": "#phase1:num.add",
+	  "left": {
+		  "@fx-eval": "#phase0:num.multiply",
+		  "left": 2,
+	  	  "right": 3
+	  },
+	  "right": 4
+	}
+	
+}

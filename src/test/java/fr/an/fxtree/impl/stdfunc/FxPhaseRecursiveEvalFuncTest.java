@@ -16,17 +16,21 @@ import fr.an.fxtree.model.func.FxNodeFuncRegistry;
 
 public class FxPhaseRecursiveEvalFuncTest {
 
-    protected FxPhaseRecursiveEvalFunc sut;
+    protected FxPhaseRecursiveEvalFunc sutPhase0;
+    protected FxPhaseRecursiveEvalFunc sutPhase1;
     
-    protected FxMemRootDocument dest = new FxMemRootDocument();
-    protected FxChildAdder destOut = dest.contentAdder();
-    
+    protected FxMemRootDocument destPhase0 = new FxMemRootDocument();
+    protected FxChildAdder outPhase0 = destPhase0.contentAdder();
+
+    protected FxMemRootDocument destPhase1 = new FxMemRootDocument();
+    protected FxChildAdder outPhase1 = destPhase1.contentAdder();
+
     @Before
     public void setup() {
-        String phase = "phase0";
         Map<String, FxNodeFunc> funcs = new HashMap<String,FxNodeFunc>();
         FxStdMathFuncs.registerBuiltinFuncs(funcs);
-        sut = new FxPhaseRecursiveEvalFunc(phase, new FxNodeFuncRegistry(funcs));
+        sutPhase0 = new FxPhaseRecursiveEvalFunc("phase0", new FxNodeFuncRegistry(funcs));
+        sutPhase1 = new FxPhaseRecursiveEvalFunc("phase1", new FxNodeFuncRegistry(funcs));
     }
     
     @Test
@@ -34,16 +38,26 @@ public class FxPhaseRecursiveEvalFuncTest {
         doTestEvalFile("eval1");
     }
 
+    @Test
+    public void testEval2() {
+        doTestEvalFile("eval2");
+    }
+    
     private void doTestEvalFile(String evalBaseFilename) {
         // Prepare
         String inputFilename = evalBaseFilename + "-input.json";
         String outputFilename = evalBaseFilename + "-expected.json";
         FxNode src = FxJsonUtilsTest.getJsonTstFile(inputFilename).getContentObj();
         // Perform
-        sut.eval(destOut, src);
+        sutPhase0.eval(outPhase0, src);
+        FxNode resPhase0 = destPhase0.getContent();
+
+        sutPhase1.eval(outPhase1, resPhase0);
+        FxNode resPhase1 = destPhase1.getContent();
+
         // Post-check
-        FxNode res = dest.getContent();
         FxNode expected = FxJsonUtilsTest.getJsonTstFile(outputFilename).getContentObj();
-        Assert.assertEquals(expected.toString(), res.toString());
+        Assert.assertEquals(expected.toString(), resPhase1.toString());
     }
+    
 }

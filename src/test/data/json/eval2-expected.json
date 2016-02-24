@@ -1,0 +1,11 @@
+{
+"eval_1_plus_2": 3,
+"eval_1_plus_2000000000": 2000000001,
+"eval_1_plus_2.0": 3.0,
+"eval_1_minus_2": -1,
+"eval_2_multiply_3": 6,
+"eval_10_divide_5": 2,
+
+"eval_2*(3+4)": 14,
+"eval_(2*3)+4)": 10
+}
