@@ -11,6 +11,7 @@ import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.json.FxJsonUtilsTest;
 import fr.an.fxtree.model.FxChildAdder;
 import fr.an.fxtree.model.FxNode;
+import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFunc;
 import fr.an.fxtree.model.func.FxNodeFuncRegistry;
 
@@ -48,11 +49,12 @@ public class FxPhaseRecursiveEvalFuncTest {
         String inputFilename = evalBaseFilename + "-input.json";
         String outputFilename = evalBaseFilename + "-expected.json";
         FxNode src = FxJsonUtilsTest.getJsonTstFile(inputFilename).getContentObj();
+        FxEvalContext ctx = new FxEvalContext(null, null);
         // Perform
-        sutPhase0.eval(outPhase0, src);
+        sutPhase0.eval(outPhase0, ctx, src);
         FxNode resPhase0 = destPhase0.getContent();
 
-        sutPhase1.eval(outPhase1, resPhase0);
+        sutPhase1.eval(outPhase1, ctx, resPhase0);
         FxNode resPhase1 = destPhase1.getContent();
 
         // Post-check

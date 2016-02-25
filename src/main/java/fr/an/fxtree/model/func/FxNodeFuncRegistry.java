@@ -21,13 +21,13 @@ public class FxNodeFuncRegistry {
         return funcs.get(name);
     }
 
-    public FxNode eval(String funcName, FxChildAdder dest, FxNode src) {
+    public FxNode eval(String funcName, FxChildAdder dest, FxEvalContext ctx, FxNode src) {
         FxNodeFunc func = funcs.get(funcName);
         if (func == null) {
             dest.add("@ERROR Failed to eval: func '" + funcName + "' not found");
             return null;
         }
-        return func.eval(dest, src);
+        return func.eval(dest, ctx, src);
     }
     
 }

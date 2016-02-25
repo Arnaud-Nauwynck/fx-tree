@@ -23,7 +23,7 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
     // ------------------------------------------------------------------------
 
     @Override
-    public FxNode eval(FxChildAdder dest, FxNode src) {
+    public FxNode eval(FxChildAdder dest, FxEvalContext ctx, FxNode src) {
         T bind;
         if (src instanceof FxObjNode) {
             FxObjNode srcObj = (FxObjNode) src;

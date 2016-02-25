@@ -9,6 +9,7 @@ import fr.an.fxtree.model.FxChildAdder;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNumberType;
 import fr.an.fxtree.model.FxObjNode;
+import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFunc;
 
 public final class FxStdMathFuncs {
@@ -55,7 +56,7 @@ public final class FxStdMathFuncs {
         protected abstract BigDecimal evalBinaryOp(BigDecimal lhs, BigDecimal rhs);
         
         @Override
-        public FxNode eval(FxChildAdder out, FxNode src) {
+        public FxNode eval(FxChildAdder out, FxEvalContext ctx, FxNode src) {
             FxNode res = null;
             FxObjNode srcObj = (FxObjNode) src; 
             FxNode left = srcObj.get("left");

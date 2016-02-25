@@ -5,6 +5,6 @@ import fr.an.fxtree.model.FxNode;
 
 public abstract class FxNodeFunc {
 
-    public abstract FxNode eval(FxChildAdder dest, FxNode src);
+    public abstract FxNode eval(FxChildAdder dest, FxEvalContext ctx, FxNode src);
     
 }

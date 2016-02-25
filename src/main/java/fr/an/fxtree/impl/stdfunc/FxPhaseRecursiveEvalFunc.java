@@ -7,6 +7,7 @@ import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.FxPOJONode;
 import fr.an.fxtree.model.func.FxBindedNodeFuncExpr;
 import fr.an.fxtree.model.func.FxConsts;
+import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFunc;
 import fr.an.fxtree.model.func.FxNodeFuncRegistry;
 
@@ -29,11 +30,17 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
 
     @Override
-    public FxNode eval(FxChildAdder dest, FxNode src) {
-        return src.accept(new InnerVisitor(), dest); 
+    public FxNode eval(FxChildAdder dest, FxEvalContext ctx, FxNode src) {
+        return src.accept(new InnerVisitor(ctx), dest); 
     }
     
     private class InnerVisitor extends FxNodeCopyVisitor {
+        FxEvalContext ctx;
+        
+        public InnerVisitor(FxEvalContext ctx) {
+            this.ctx = ctx;
+        }
+
 
         /**
          * detect JSon object that are Meta object for fx evaluation
@@ -83,7 +90,7 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
             }
             // lookup method by name + eval   (may also cache FxBindedNodeFuncExpr..)
             // *** eval ***
-            return funcRegistry.eval(funcName, destNode, src);
+            return funcRegistry.eval(funcName, destNode, ctx, src);
         }
         
     }

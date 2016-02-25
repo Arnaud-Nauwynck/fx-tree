@@ -5,6 +5,7 @@ import java.util.List;
 
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxNode;
+import fr.an.fxtree.model.FxObjNode;
 
 public class FxNodeValueUtils {
 
@@ -43,6 +44,29 @@ public class FxNodeValueUtils {
             throw new IllegalArgumentException("expected " + (allowRecurseFlatten? STRING_FLATTEN_ARRAY_FORMAT : STRING_ARRAY_FORMAT));
         }
         return res;
+    }
+    
+    public static String getOrDefault(FxObjNode parent, String fieldName, String defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        String res = fieldNode.textValue();
+        if (res == null) {
+            return defaultValue;
+        }
+        return res;
+    }
+
+    public static FxArrayNode getArrayOrNull(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return null;
+        }
+        if (!fieldNode.isArray()) {
+            return null;
+        }
+        return (FxArrayNode) fieldNode;
     }
     
 }

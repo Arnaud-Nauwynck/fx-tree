@@ -1,0 +1,22 @@
+{
+"eval_foreach_1_3_5": {
+	  "@fx-eval": "#phase0:foreach",
+	  "values": [ 1, 3, 5],
+	  "template": {
+	    "index": "#phase0:index",
+	  	"obj": "#phase0:value"
+	  }
+	},
+"eval_foreach_obj1_obj2_obj3": {
+	  "@fx-eval": "#phase0:foreach",
+	  "values": [ 
+	  	{"id": 1}, 
+	  	{"id": 2}, 
+	  	{"id": 3} 
+	  ],
+	  "template": {
+	    "index": "#phase0:index",
+	  	"obj": "#phase0:value"
+	  }
+	}
+}
