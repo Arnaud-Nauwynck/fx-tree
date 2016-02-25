@@ -1,0 +1,26 @@
+{
+  "@fx-eval": "#phase0:process-phases",
+  "phases": "phase0A,phase0B",
+  "src": {	
+	
+	"eval_2*(3+4)": {
+		  "@fx-eval": "#phase0B:num.multiply",
+		  "left": 2,
+		  "right": {
+			  "@fx-eval": "#phase0A:num.add",
+			  "left": 3,
+		  	  "right": 4
+		  }	
+		},
+	"eval_(2*3)+4)": {
+		  "@fx-eval": "#phase0B:num.add",
+		  "left": {
+			  "@fx-eval": "#phase0A:num.multiply",
+			  "left": 2,
+		  	  "right": 3
+		  },
+		  "right": 4
+		}
+
+  }
+}

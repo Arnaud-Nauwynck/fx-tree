@@ -1,9 +1,6 @@
 package fr.an.fxtree.model.func;
 
-import java.util.Collections;
 import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
 
 import fr.an.fxtree.model.FxChildAdder;
 import fr.an.fxtree.model.FxNode;
@@ -15,7 +12,7 @@ public class FxNodeFuncRegistry {
     // ------------------------------------------------------------------------
 
     public FxNodeFuncRegistry(Map<String,FxNodeFunc> funcs) {
-        this.funcs = (funcs != null)? ImmutableMap.copyOf(funcs) : Collections.emptyMap(); 
+        this.funcs = funcs; 
     }
 
     // ------------------------------------------------------------------------
