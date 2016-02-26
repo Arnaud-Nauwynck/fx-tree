@@ -2,6 +2,8 @@ package fr.an.fxtree.impl.stdfunc;
 
 import org.junit.Assert;
 
+import com.fasterxml.jackson.core.JsonGenerator;
+
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.json.FxJsonUtilsTest;
 import fr.an.fxtree.model.FxChildAdder;
@@ -11,13 +13,14 @@ import fr.an.fxtree.model.func.FxNodeFuncRegistry;
 
 public class FxEvalFuncTstHelper {
 
+    FxNodeFuncRegistry funcRegistry;
     protected FxPhaseRecursiveEvalFunc phase0Func;
     
     protected FxMemRootDocument destPhase0;
     protected FxChildAdder outPhase0;
 
     public FxEvalFuncTstHelper() {
-        FxNodeFuncRegistry funcRegistry = FxStdFuncs.stdFuncRegistry();
+        funcRegistry = FxStdFuncs.stdFuncRegistry();
         
         phase0Func = new FxPhaseRecursiveEvalFunc("phase0", funcRegistry);
         destPhase0 = new FxMemRootDocument();
@@ -33,14 +36,24 @@ public class FxEvalFuncTstHelper {
         
         // Post-check
         FxNode expected = FxJsonUtilsTest.getJsonTstFile(outputFilename).getContentObj();
-        Assert.assertEquals(expected.toString(), res.toString());
+        
+        String expectedText = expected.toString();
+        String resString = res.toString();
+        if (! expectedText.equals(resString)) {
+            System.out.println("expecting:" + expectedText);
+            System.out.println("actual   :" + resString);
+            // TODO ... pretty print as json
+            
+            
+            Assert.assertEquals(expectedText, resString);
+        }
     }
 
     public FxNode doEval0TstFile(String inputFilename) {
         // Prepare
         FxNode src = FxJsonUtilsTest.getJsonTstFile(inputFilename).getContentObj();
 
-        FxEvalContext ctx = new FxEvalContext(null, null);
+        FxEvalContext ctx = new FxEvalContext(null, funcRegistry, null);
         phase0Func.eval(outPhase0, ctx, src);
         FxNode resPhase0 = destPhase0.getContent();
 

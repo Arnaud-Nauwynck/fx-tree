@@ -6,21 +6,25 @@ import java.util.Map;
 public class FxEvalContext {
 
     private FxEvalContext parentContext;
+
     private Map<Object,Object> variables = new HashMap<Object,Object>();
 
+    private FxNodeFuncRegistry funcRegistry;
+    
     private FxNodeFunc recursiveEvalFunc;
     
     // ------------------------------------------------------------------------
 
-    public FxEvalContext(FxEvalContext parentContext, FxNodeFunc recursiveEvalFunc) {
+    public FxEvalContext(FxEvalContext parentContext, FxNodeFuncRegistry funcRegistry, FxNodeFunc recursiveEvalFunc) {
         this.parentContext = parentContext;
         this.recursiveEvalFunc = recursiveEvalFunc;
+        this.funcRegistry = funcRegistry;
     }
 
     // ------------------------------------------------------------------------
     
     public FxEvalContext createChildContext() {
-        return new FxEvalContext(this, recursiveEvalFunc);
+        return new FxEvalContext(this, funcRegistry, recursiveEvalFunc);
     }
 
     public Object lookupVariable(Object key) {
@@ -41,6 +45,14 @@ public class FxEvalContext {
     
     public void putVariable(Object key, Object value) {
         variables.put(key, value);
+    }
+    
+    public FxNodeFuncRegistry getFuncRegistry() {
+        return funcRegistry;
+    }
+
+    public void setFuncRegistry(FxNodeFuncRegistry funcRegistry) {
+        this.funcRegistry = funcRegistry;
     }
 
     public FxNodeFunc getRecursiveEvalFunc() {

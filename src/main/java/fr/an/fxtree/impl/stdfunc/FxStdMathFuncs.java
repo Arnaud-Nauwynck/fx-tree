@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
 
+import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.impl.util.FxUtils;
 import fr.an.fxtree.model.FxChildAdder;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNumberType;
 import fr.an.fxtree.model.FxObjNode;
+import fr.an.fxtree.model.FxRootDocument;
 import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFunc;
 
@@ -61,6 +63,23 @@ public final class FxStdMathFuncs {
             FxObjNode srcObj = (FxObjNode) src; 
             FxNode left = srcObj.get("left");
             FxNode right = srcObj.get("right");
+            if (left == null || right == null) {
+                return null;
+            }
+            
+            // recursive eval left, right
+            FxNodeFunc recursiveEvalFunc = ctx.getRecursiveEvalFunc();
+            if (recursiveEvalFunc != null) {
+                FxRootDocument tmpDoc = new FxMemRootDocument();
+                FxObjNode tmpObj = tmpDoc.setContentObj();
+                FxChildAdder tmpLeftBuilder = tmpObj.putBuilder("left");
+                left = recursiveEvalFunc.eval(tmpLeftBuilder, ctx, left);
+                FxChildAdder tmpRightBuilder = tmpObj.putBuilder("right");
+                right = recursiveEvalFunc.eval(tmpRightBuilder, ctx, left);
+                if (left == null || right == null) {
+                    return null;
+                }
+            }
             
             FxNumberType leftNumberType = left.numberType();
             FxNumberType rightNumberType = right.numberType();
