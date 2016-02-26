@@ -1,0 +1,12 @@
+{
+  "eval_switch_a": {
+    "obj-a": 1 
+  },
+  "eval_switch_b": {
+	"obj-b": 1 
+  },
+  "eval_switch_default": {
+	"obj-default": 1
+  }
+  /* "eval_switch_nodefault": EMPTY */
+}

@@ -58,6 +58,14 @@ public class FxNodeValueUtils {
         return res;
     }
 
+    public static String getStringOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        if (!fieldNode.isTextual()) {
+            throw new IllegalArgumentException("expecting String argument '" + fieldName + "', got " + fieldNode.getNodeType());
+        }
+        return fieldNode.textValue();
+    }
+    
     public static int getOrDefault(FxObjNode parent, String fieldName, int defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
@@ -73,10 +81,27 @@ public class FxNodeValueUtils {
         return res;
     }
 
-    public static int getIntOrThrow(FxObjNode parent, String fieldName) {
+    public static FxNode getOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = parent.get(fieldName);
-        if (fieldNode == null || !fieldNode.isNumber()) {
-            throw new IllegalArgumentException("expecting int argument '" + fieldName + "', got " + ((fieldNode != null)? fieldNode.getNodeType() : "null"));
+        if (fieldNode == null) {
+            throw new IllegalArgumentException("expecting argument '" + fieldName + "'");
+        }
+        return fieldNode;
+    }
+    
+    public static FxObjNode getObjOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        if (!fieldNode.isObject()) {
+            throw new IllegalArgumentException("expecting Object argument '" + fieldName + "', got " + fieldNode.getNodeType());
+        }
+        return (FxObjNode) fieldNode;
+    }
+    
+    
+    public static int getIntOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting int argument '" + fieldName + "', got " + fieldNode.getNodeType());
         }
         int res = fieldNode.intValue();
         return res;
@@ -94,10 +119,7 @@ public class FxNodeValueUtils {
     }
 
     public static boolean getBooleanOrThrow(FxObjNode parent, String fieldName) {
-        FxNode fieldNode = parent.get(fieldName);
-        if (fieldNode == null) {
-            throw new IllegalArgumentException("expecting boolean argument '" + fieldName + "'");
-        }
+        FxNode fieldNode = getOrThrow(parent, fieldName);
         boolean res;
         if (fieldNode.isBoolean()) {
             res = fieldNode.booleanValue();
@@ -122,5 +144,6 @@ public class FxNodeValueUtils {
         }
         return res;
     }
+
     
 }

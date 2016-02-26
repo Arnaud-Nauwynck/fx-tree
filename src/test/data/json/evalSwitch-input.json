@@ -1,0 +1,37 @@
+{
+"eval_switch_a": {
+	  "@fx-eval": "#phase0:switch",
+	  "expr": "a",
+	  "when": {
+	    "a": { "obj-a": 1 },
+	    "b": { "obj-b": 1 }
+	  },
+	  "default": { "obj-default": 1 }
+	},
+"eval_switch_b": {
+	  "@fx-eval": "#phase0:switch",
+	  "expr": "b",
+	  "when": {
+	    "a": { "obj-a": 1 },
+	    "b": { "obj-b": 1 }
+	  },
+	  "default": { "obj-default": 1 }
+	},
+"eval_switch_default": {
+	  "@fx-eval": "#phase0:switch",
+	  "expr": "c",
+	  "when": {
+	    "a": { "obj-a": 1 },
+	    "b": { "obj-b": 1 }
+	  },
+	  "default": { "obj-default": 1 }
+	},
+"eval_switch_nodefault": {
+	  "@fx-eval": "#phase0:switch",
+	  "expr": "c",
+	  "when": {
+	    "a": { "obj-a": 1 },
+	    "b": { "obj-b": 1 }
+	  }
+	}
+}
