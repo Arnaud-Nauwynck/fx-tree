@@ -58,6 +58,30 @@ public class FxNodeValueUtils {
         return res;
     }
 
+    public static int getOrDefault(FxObjNode parent, String fieldName, int defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        int res;
+        if (fieldNode.isNumber()) { 
+            res = fieldNode.intValue();
+        } else {
+            // throw error?
+            throw new IllegalArgumentException("expecting int argument '" + fieldName + "', got " + fieldNode.getNodeType());
+        }
+        return res;
+    }
+
+    public static int getIntOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null || !fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting int argument '" + fieldName + "', got " + ((fieldNode != null)? fieldNode.getNodeType() : "null"));
+        }
+        int res = fieldNode.intValue();
+        return res;
+    }
+    
     public static FxArrayNode getArrayOrNull(FxObjNode parent, String fieldName) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {

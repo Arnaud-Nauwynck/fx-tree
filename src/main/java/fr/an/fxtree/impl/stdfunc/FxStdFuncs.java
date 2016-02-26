@@ -14,6 +14,7 @@ public class FxStdFuncs {
         
         FxStdMathFuncs.registerBuiltinFuncs(funcs);
         funcs.put(FxForeachFunc.NAME, FxForeachFunc.INSTANCE);
+        funcs.put(FxForFunc.NAME, FxForFunc.INSTANCE);
         funcs.put(FxUserPhasesProcessFunc.NAME, new FxUserPhasesProcessFunc(funcRegistry)); // chicken and egg dilemna..
         
         return funcRegistry;

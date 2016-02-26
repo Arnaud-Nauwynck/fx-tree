@@ -1,0 +1,18 @@
+{
+"eval_for_0_3": {
+	  "@fx-eval": "#phase0:for",
+	  "end": 3,
+	  "template": {
+	    "index": "#{index}"
+	  }
+	},
+"eval_for_7_downto_4_by2": {
+	  "@fx-eval": "#phase0:for",
+	  "start": 7,
+	  "end": 4,
+	  "incr": -2,
+	  "template": {
+	    "index": "#{index}"
+	  }
+	}
+}

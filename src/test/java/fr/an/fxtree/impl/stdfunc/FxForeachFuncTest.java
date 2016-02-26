@@ -6,7 +6,7 @@ public class FxForeachFuncTest {
 
     protected static FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper(); 
 
-    @Test // TODO does not work yet... cf NOT IMPLEMENTED YET : should use copyReplaceIterVisitor
+    @Test
     public void testEvalForeach() {
         tstHelper.doTestFile("evalForeach");
     }

@@ -17,12 +17,10 @@ public abstract class FxContainerNode extends FxNode {
 
     @Override
     /* protected */ public void _setParent(FxContainerNode parent, FxChildId childId) {
-        if (rootDocument != null) {
-            if (rootDocument != parent.rootDocument) {
-                throw new IllegalArgumentException();
-            }
+        if (parent != null) {
+            this.rootDocument = parent.rootDocument;
         } else {
-            this.rootDocument = (parent != null) ? parent.rootDocument : null;
+            this.rootDocument = null;
         }
         super._setParent(parent, childId);
     }
