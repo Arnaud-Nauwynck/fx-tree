@@ -1,0 +1,15 @@
+{
+  "eval_if_true": {
+    "obj-then": 1
+  },
+  "eval_if_false_else": {
+    "obj-else": 1
+  },
+  /* "eval_if_false_empty": null, */
+  "eval_if_yes": {
+    "obj-then": 1
+  },
+  "eval_if_1": {
+    "obj-then": 1
+  }
+}

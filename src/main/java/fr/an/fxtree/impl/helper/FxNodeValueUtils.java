@@ -92,5 +92,35 @@ public class FxNodeValueUtils {
         }
         return (FxArrayNode) fieldNode;
     }
+
+    public static boolean getBooleanOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            throw new IllegalArgumentException("expecting boolean argument '" + fieldName + "'");
+        }
+        boolean res;
+        if (fieldNode.isBoolean()) {
+            res = fieldNode.booleanValue();
+        } else if (fieldNode.isTextual()) {
+            // also accept "true"/"false", "y"/"n", "yes"/"no" ...
+            String text = fieldNode.textValue();
+            switch(text) {
+            case "true": case "True": case "TRUE": case "y": case "Y": case "yes": case "Yes": case "YES": 
+                res = true; 
+                break;
+            case "false": case "False": case "FALSE": case "n": case "N": case "no": case "No": case "NO":   
+                res = false; 
+                break;
+            default:
+                throw new IllegalArgumentException("expecting boolean argument '" + fieldName + "', or true/false, y/n, yes/no .. got text '" + text + "'");
+            }
+        } else if (fieldNode.isNumber()) {
+            int val = fieldNode.intValue();
+            res = (val != 0);
+        } else {
+            throw new IllegalArgumentException("expecting boolean argument '" + fieldName + "'");
+        }
+        return res;
+    }
     
 }

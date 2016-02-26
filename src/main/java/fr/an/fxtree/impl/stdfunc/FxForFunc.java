@@ -60,6 +60,8 @@ public class FxForFunc extends FxNodeFunc {
             childEvalContext.putVariable(iterIndexName, index);
             
             copyReplaceIterVisitor.eval(resChildAdder, ctx, templateNode);
+            
+            // TODO replace templateNode->tmpTemplate.. + recursive eval tmpTemplate->res
         }
         
         return res;

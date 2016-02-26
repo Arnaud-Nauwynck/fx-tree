@@ -1,0 +1,40 @@
+{
+"eval_if_true": {
+	  "@fx-eval": "#phase0:if",
+	  "expr": true,
+	  "then": {
+	    "obj-then": 1
+	  }
+	},
+"eval_if_false_else": {
+	  "@fx-eval": "#phase0:if",
+	  "expr": false,
+	  "then": {
+	    "obj-then": 1
+	  },
+	  "else": {
+	    "obj-else": 1
+	  }
+	},
+"eval_if_false_empty": {
+	  "@fx-eval": "#phase0:if",
+	  "expr": false,
+	  "then": {
+	    "obj-then": 1
+	  }
+	},
+"eval_if_yes": {
+	  "@fx-eval": "#phase0:if",
+	  "expr": "yes",
+	  "then": {
+	    "obj-then": 1
+	  }
+	},
+"eval_if_1": {
+	  "@fx-eval": "#phase0:if",
+	  "expr": 1,
+	  "then": {
+	    "obj-then": 1
+	  }
+	}
+}

@@ -145,6 +145,7 @@ public class FxVarsReplaceFunc extends FxNodeFunc {
             return false;
         }
         
+        /*
         private boolean findNextVarRepl_noPattern(TmpVarReplMatch res, String text, int fromIndex) {
             int index = fromIndex;
             for(;;) {
@@ -172,7 +173,7 @@ public class FxVarsReplaceFunc extends FxNodeFunc {
             }
             return false;
         }
-        
+        */
     }
     
     

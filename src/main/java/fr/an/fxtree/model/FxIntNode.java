@@ -109,6 +109,16 @@ public abstract class FxIntNode extends FxValueNode {
         return getValue() != 0;
     }
 
+    public final int asInt() {
+        return intValue();
+    }
+    
+    @Override
+    public final int asInt(int defaultValue) {
+        return intValue();
+    }
+
+    
     // ------------------------------------------------------------------------
 
     @Override

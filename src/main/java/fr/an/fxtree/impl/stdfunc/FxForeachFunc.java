@@ -66,6 +66,9 @@ public class FxForeachFunc extends FxNodeFunc {
             
             // templateNode.accept(copyReplaceIterVisitor, resChildAdder);
             copyReplaceIterVisitor.eval(resChildAdder, ctx, templateNode);
+            
+            // TODO replace templateNode->tmpTemplate.. + recursive eval tmpTemplate->res
+
         }
         
         return res;
