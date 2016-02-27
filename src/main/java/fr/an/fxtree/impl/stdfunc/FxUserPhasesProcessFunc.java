@@ -2,7 +2,7 @@ package fr.an.fxtree.impl.stdfunc;
 
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
-import fr.an.fxtree.model.FxChildAdder;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.func.FxEvalContext;
@@ -22,18 +22,23 @@ public class FxUserPhasesProcessFunc extends FxNodeFunc {
 
     public static final String NAME = "process-phases";
     
-    private FxNodeFuncRegistry funcRegistry;
+    /** optional extra funcRegistry ... cf FxEvalContext.funcRegistry */
+    private FxNodeFuncRegistry extraFuncRegistry;
     
     // ------------------------------------------------------------------------
     
-    public FxUserPhasesProcessFunc(FxNodeFuncRegistry funcRegistry) {
-        this.funcRegistry = funcRegistry;
+    public FxUserPhasesProcessFunc() {
+        this(null);
+    }
+    
+    public FxUserPhasesProcessFunc(FxNodeFuncRegistry extraFuncRegistry) {
+        this.extraFuncRegistry = extraFuncRegistry;
     }
     
     // ------------------------------------------------------------------------
 
     @Override
-    public FxNode eval(FxChildAdder dest, FxEvalContext ctx, FxNode src) {
+    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
 
         // resolve arguments: "phases", as string comma separated values, or array of string
@@ -52,14 +57,14 @@ public class FxUserPhasesProcessFunc extends FxNodeFunc {
         for(int i = 0; i < intermediatePhaseLen; i++) {
             String phase = phases[i];
             FxMemRootDocument tmpResDoc = new FxMemRootDocument();
-            FxChildAdder tmpResAdder = tmpResDoc.contentAdder();
+            FxChildWriter tmpResAdder = tmpResDoc.contentWriter();
             
-            FxPhaseRecursiveEvalFunc phaseFunc = new FxPhaseRecursiveEvalFunc(phase, funcRegistry);
+            FxPhaseRecursiveEvalFunc phaseFunc = new FxPhaseRecursiveEvalFunc(phase, extraFuncRegistry);
             currPhaseRes = phaseFunc.eval(tmpResAdder, ctx, currPhaseRes);
         }
 
         String lastPhase = phases[phases.length - 1];
-        FxPhaseRecursiveEvalFunc lastPhaseFunc = new FxPhaseRecursiveEvalFunc(lastPhase, funcRegistry);
+        FxPhaseRecursiveEvalFunc lastPhaseFunc = new FxPhaseRecursiveEvalFunc(lastPhase, extraFuncRegistry);
         currPhaseRes = lastPhaseFunc.eval(dest, ctx, currPhaseRes);
         
         return currPhaseRes; 

@@ -1,7 +1,8 @@
 package fr.an.fxtree.impl.stdfunc;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
-import fr.an.fxtree.model.FxChildAdder;
+import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.FxPOJONode;
@@ -18,19 +19,19 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
 
     private String phase;
 
-    private FxNodeFuncRegistry funcRegistry;
+    private FxNodeFuncRegistry overrideFuncRegistry;
     
     // ------------------------------------------------------------------------
     
-    public FxPhaseRecursiveEvalFunc(String phase, FxNodeFuncRegistry funcRegistry) {
+    public FxPhaseRecursiveEvalFunc(String phase, FxNodeFuncRegistry overrideFuncRegistry) {
         this.phase = phase;
-        this.funcRegistry = funcRegistry;
+        this.overrideFuncRegistry = overrideFuncRegistry;
     }
     
     // ------------------------------------------------------------------------
 
     @Override
-    public FxNode eval(FxChildAdder dest, FxEvalContext ctx, FxNode src) {
+    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         return src.accept(new InnerVisitor(ctx), dest); 
     }
     
@@ -56,7 +57,7 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
          * when evaluated => object container replaced by function evaluation
          */
         @Override
-        public FxNode visitObj(FxObjNode src, FxChildAdder destNode) {
+        public FxNode visitObj(FxObjNode src, FxChildWriter destNode) {
             FxNode fxEvalFieldValue = src.get(FxConsts.FX_EVAL);
             if (fxEvalFieldValue == null) {
                 return super.visitObj(src, destNode); 
@@ -89,8 +90,27 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
                 funcName = funcName.trim();
             }
             // lookup method by name + eval   (may also cache FxBindedNodeFuncExpr..)
-            // *** eval ***
-            return funcRegistry.eval(funcName, destNode, ctx, src);
+            FxNodeFunc func = ctx.lookupFunction(funcName, overrideFuncRegistry);
+            if (func == null) {
+                throw new IllegalArgumentException("function '" + funcName+ "' not found");
+            }
+            
+            
+            // step 0... TOADD use eager support for function
+            
+            // *** step 1: eval current node function ***
+            FxMemRootDocument tmpNonRecurseDoc = new FxMemRootDocument();
+            FxChildWriter tmpNonRecurseWriter = tmpNonRecurseDoc.contentWriter();
+            
+            FxNode tmpres = func.eval(tmpNonRecurseWriter, ctx, src);
+            if (tmpres == null) {
+                return null;
+            }
+            
+            // step 2: recurse eval same phase (other functions) on sub-nodes
+            FxNode res = tmpres.accept(this, destNode);
+            
+            return res;
         }
         
     }

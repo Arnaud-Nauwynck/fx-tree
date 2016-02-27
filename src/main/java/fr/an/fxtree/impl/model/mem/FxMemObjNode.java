@@ -2,10 +2,12 @@ package fr.an.fxtree.impl.model.mem;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import fr.an.fxtree.impl.model.mem.FxMemChildId.FxMemObjNameChildId;
 import fr.an.fxtree.model.FxChildId;
@@ -50,6 +52,10 @@ public class FxMemObjNode extends FxObjNode {
         return _children.entrySet().iterator();
     }
 
+    public Map<String, FxNode> fieldsHashMapCopy() {
+        return new HashMap<>(_children);
+    }
+    
     @SuppressWarnings("unchecked")
     public <T extends FxNode> T get(String name) {
         return (T) _children.get(name);

@@ -16,7 +16,7 @@ public class FxForFuncTest {
         tstHelper.doTestFile_Phase01("evalForNested", true);
     }
 
-    @Test // TODO recursive eval not implemented yet ...
+    @Test
     public void testEvalForNestedRecursive() {
         tstHelper.doTestFile("evalForNestedRecursive");
     }

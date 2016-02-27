@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.json.FxJsonUtilsTest;
-import fr.an.fxtree.model.FxChildAdder;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxObjNode;
 
 public class FxNodeCopyVisitorTest {
@@ -18,7 +18,7 @@ public class FxNodeCopyVisitorTest {
         FxMemRootDocument src = FxJsonUtilsTest.getJsonTstFile("file1.json");
         FxObjNode srcContent = src.getContentObj();
         FxMemRootDocument dest = new FxMemRootDocument();
-        FxChildAdder destOut = dest.contentAdder();
+        FxChildWriter destOut = dest.contentWriter();
         // Perform
         srcContent.accept(sut, destOut);
         FxObjNode destContent = dest.getContentObj();

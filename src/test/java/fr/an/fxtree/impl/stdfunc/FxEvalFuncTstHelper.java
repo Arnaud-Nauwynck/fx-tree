@@ -4,7 +4,7 @@ import org.junit.Assert;
 
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.json.FxJsonUtilsTest;
-import fr.an.fxtree.model.FxChildAdder;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFuncRegistry;
@@ -15,22 +15,22 @@ public class FxEvalFuncTstHelper {
 
     protected FxPhaseRecursiveEvalFunc phase0Func;
     protected FxMemRootDocument destPhase0;
-    protected FxChildAdder outPhase0;
+    protected FxChildWriter outPhase0;
 
     protected FxPhaseRecursiveEvalFunc phase1Func;
     protected FxMemRootDocument destPhase1;
-    protected FxChildAdder outPhase1;
+    protected FxChildWriter outPhase1;
 
     public FxEvalFuncTstHelper() {
         funcRegistry = FxStdFuncs.stdFuncRegistry();
         
         phase0Func = new FxPhaseRecursiveEvalFunc("phase0", funcRegistry);
         destPhase0 = new FxMemRootDocument();
-        outPhase0 = destPhase0.contentAdder();
+        outPhase0 = destPhase0.contentWriter();
         
         phase1Func = new FxPhaseRecursiveEvalFunc("phase1", funcRegistry);
         destPhase1 = new FxMemRootDocument();
-        outPhase1 = destPhase1.contentAdder();
+        outPhase1 = destPhase1.contentWriter();
     }
 
     public void doTestFile(String evalBaseFilename) {
@@ -69,13 +69,13 @@ public class FxEvalFuncTstHelper {
         FxNode res = src;
         
         {
-            FxEvalContext ctx0 = new FxEvalContext(null, funcRegistry, null);
+            FxEvalContext ctx0 = new FxEvalContext(null, funcRegistry);
             phase0Func.eval(outPhase0, ctx0, res);
             res = destPhase0.getContent();
         }
         
         if (phase1) {
-            FxEvalContext ctx1 = new FxEvalContext(null, funcRegistry, null);
+            FxEvalContext ctx1 = new FxEvalContext(null, funcRegistry);
             phase1Func.eval(outPhase1, ctx1, res);
             res = destPhase1.getContent();
         }

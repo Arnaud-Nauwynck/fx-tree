@@ -10,4 +10,9 @@ public class FxIfFuncTest {
     public void testEvalIf() {
         tstHelper.doTestFile("evalIf");
     }
+    
+    @Test
+    public void testEvalIfRecursivePhase() {
+        tstHelper.doTestFile("evalIf-Recursive");
+    }
 }

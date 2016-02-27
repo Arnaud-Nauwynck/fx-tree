@@ -3,7 +3,7 @@ package fr.an.fxtree.model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public abstract class FxChildAdder {
+public abstract class FxChildWriter {
 
     // public FxChildId getChildId(); ??
     

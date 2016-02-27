@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.json.FxJsonUtilsTest;
-import fr.an.fxtree.model.FxChildAdder;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFuncRegistry;
@@ -17,10 +17,10 @@ public class FxPhaseRecursiveEvalFuncTest {
     protected FxPhaseRecursiveEvalFunc sutPhase1 = new FxPhaseRecursiveEvalFunc("phase1", funcRegistry);
     
     protected FxMemRootDocument destPhase0 = new FxMemRootDocument();
-    protected FxChildAdder outPhase0 = destPhase0.contentAdder();
+    protected FxChildWriter outPhase0 = destPhase0.contentWriter();
 
     protected FxMemRootDocument destPhase1 = new FxMemRootDocument();
-    protected FxChildAdder outPhase1 = destPhase1.contentAdder();
+    protected FxChildWriter outPhase1 = destPhase1.contentWriter();
     
     @Test
     public void testEval1() {
@@ -37,7 +37,7 @@ public class FxPhaseRecursiveEvalFuncTest {
         String inputFilename = evalBaseFilename + "-input.json";
         String outputFilename = evalBaseFilename + "-expected.json";
         FxNode src = FxJsonUtilsTest.getJsonTstFile(inputFilename).getContentObj();
-        FxEvalContext ctx = new FxEvalContext(null, funcRegistry, null);
+        FxEvalContext ctx = new FxEvalContext(null, funcRegistry);
         // Perform
         sutPhase0.eval(outPhase0, ctx, src);
         FxNode resPhase0 = destPhase0.getContent();

@@ -3,7 +3,7 @@ package fr.an.fxtree.model.func;
 import java.util.function.Supplier;
 
 import fr.an.fxtree.impl.helper.FxObjectMapper;
-import fr.an.fxtree.model.FxChildAdder;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.FxPOJONode;
@@ -23,7 +23,7 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
     // ------------------------------------------------------------------------
 
     @Override
-    public FxNode eval(FxChildAdder dest, FxEvalContext ctx, FxNode src) {
+    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         T bind;
         if (src instanceof FxObjNode) {
             FxObjNode srcObj = (FxObjNode) src;

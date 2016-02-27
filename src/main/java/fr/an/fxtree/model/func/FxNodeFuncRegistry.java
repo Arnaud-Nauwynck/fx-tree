@@ -2,32 +2,41 @@ package fr.an.fxtree.model.func;
 
 import java.util.Map;
 
-import fr.an.fxtree.model.FxChildAdder;
-import fr.an.fxtree.model.FxNode;
-
 public class FxNodeFuncRegistry {
 
+    private FxNodeFuncRegistry parent;
     private Map<String,FxNodeFunc> funcs;
     
     // ------------------------------------------------------------------------
 
     public FxNodeFuncRegistry(Map<String,FxNodeFunc> funcs) {
+        this(null, funcs);
+    }
+    
+    public FxNodeFuncRegistry(FxNodeFuncRegistry parent, Map<String,FxNodeFunc> funcs) {
+        this.parent = parent;
         this.funcs = funcs; 
     }
 
     // ------------------------------------------------------------------------
 
-    public FxNodeFunc get(String name) {
-        return funcs.get(name);
-    }
-
-    public FxNode eval(String funcName, FxChildAdder dest, FxEvalContext ctx, FxNode src) {
-        FxNodeFunc func = funcs.get(funcName);
-        if (func == null) {
-            dest.add("@ERROR Failed to eval: func '" + funcName + "' not found");
-            return null;
+    public FxNodeFunc lookupFunction(String name) {
+        FxNodeFunc res = funcs.get(name);
+        if (res == null && parent != null) {
+            res = parent.lookupFunction(name);
         }
-        return func.eval(dest, ctx, src);
+        return res;
+    }
+    
+    public static FxNodeFunc lookupFunction(String name, FxNodeFuncRegistry reg, FxNodeFuncRegistry parent) {
+        FxNodeFunc res = null;
+        if (reg != null) {
+            res = reg.lookupFunction(name);
+        }
+        if (res == null && parent != null) {
+            res = parent.lookupFunction(name);
+        }
+        return res;
     }
     
 }

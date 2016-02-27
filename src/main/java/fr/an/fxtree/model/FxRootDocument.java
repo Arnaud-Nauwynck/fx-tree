@@ -94,8 +94,8 @@ public abstract class FxRootDocument extends FxContainerNode {
         return res;
     }
     
-    public FxChildAdder contentAdder() {
-        return new RootChildAdder();
+    public FxChildWriter contentWriter() {
+        return new RootChildWriter();
     }
     
     public FxObjNode setContentObj() {
@@ -137,9 +137,9 @@ public abstract class FxRootDocument extends FxContainerNode {
     // internal
     // ------------------------------------------------------------------------
 
-    private final class RootChildAdder extends FxChildAdder {
+    private final class RootChildWriter extends FxChildWriter {
         
-        public RootChildAdder() {
+        public RootChildWriter() {
         }
 
         @Override

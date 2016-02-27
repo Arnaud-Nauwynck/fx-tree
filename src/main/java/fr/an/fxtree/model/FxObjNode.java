@@ -3,6 +3,7 @@ package fr.an.fxtree.model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,7 +21,7 @@ public abstract class FxObjNode extends FxContainerNode {
     // ------------------------------------------------------------------------
 
     @Override
-    public final FxNodeType getNodeType() {
+    public FxNodeType getNodeType() {
         return FxNodeType.OBJECT;
     }
 
@@ -41,6 +42,29 @@ public abstract class FxObjNode extends FxContainerNode {
     public abstract Collection<FxNode> children();
 
     public abstract Iterator<Map.Entry<String, FxNode>> fields();
+
+    public Map<String, FxNode> fieldsHashMapCopy() {
+        Map<String, FxNode> res = new HashMap<>();
+        for(Iterator<Map.Entry<String, FxNode>> iter = fields(); iter.hasNext(); ) {
+            Entry<String, FxNode> e = iter.next();
+            res.put(e.getKey(), e.getValue());
+        }
+        return res;
+    }
+
+    @FunctionalInterface
+    public static interface FieldFunc {
+        public void onField(String fieldName, FxNode fieldValue);
+    }
+    
+    public void forEachFields(FieldFunc callback) {
+        if (!isEmpty()) {
+            for(Iterator<Map.Entry<String, FxNode>> iter = fields(); iter.hasNext(); ) {
+                Entry<String, FxNode> e = iter.next();
+                callback.onField(e.getKey(), e.getValue());
+            }
+        }
+    }
 
     public abstract <T extends FxNode> T put(String name, Class<T> clss);
 
@@ -64,8 +88,8 @@ public abstract class FxObjNode extends FxContainerNode {
     // helper methods for put(String name, Class<T> clss)
     // ------------------------------------------------------------------------
 
-    public FxChildAdder putBuilder(String name) {
-        return new ObjChildAdder(name);
+    public FxChildWriter putBuilder(String name) {
+        return new ObjChildWriter(name);
     }
     
     public FxArrayNode putArray(String name) {
@@ -175,12 +199,12 @@ public abstract class FxObjNode extends FxContainerNode {
     }
 
 
-    private final class ObjChildAdder extends FxChildAdder {
+    private final class ObjChildWriter extends FxChildWriter {
         
         private String baseName;
         private int currIndex;
         
-        public ObjChildAdder(String name) {
+        public ObjChildWriter(String name) {
             this.baseName = name;
         }
 

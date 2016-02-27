@@ -2,7 +2,7 @@ package fr.an.fxtree.impl.stdfunc;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
-import fr.an.fxtree.model.FxChildAdder;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.func.FxEvalContext;
@@ -22,9 +22,10 @@ public class FxIfFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildAdder dest, FxEvalContext ctx, FxNode src) {
+    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         boolean expr = FxNodeValueUtils.getBooleanOrThrow(srcObj, "expr");
+        // TOADD ... may expose Eager dependency graph "expr" -> "then",  of "expr" -> "else" 
         FxNode templateNode;
         if (expr) {
             templateNode = srcObj.get("then");
@@ -34,13 +35,8 @@ public class FxIfFunc extends FxNodeFunc {
 
         FxNode res = null;
         if (templateNode != null) {
-            // TODO recursive eval templateNode->tmpTemplate + copy tmpTemplate->res
-            
-            FxNodeCopyVisitor copyVisitor = new FxNodeCopyVisitor();
-            res = templateNode.accept(copyVisitor, dest);
-            
+            res = FxNodeCopyVisitor.copyTo(dest, templateNode);
         }
-        
         return res;
     }
     

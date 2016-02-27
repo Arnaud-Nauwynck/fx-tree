@@ -66,12 +66,12 @@ public abstract class FxArrayNode extends FxContainerNode {
     // helper methods for insert(int index, Class<T> clss) or add(Class<T> clss)
     // ------------------------------------------------------------------------
 
-    public FxChildAdder insertBuilder(int index) {
-        return new InnerArrayChildAdder(index);
+    public FxChildWriter insertBuilder(int index) {
+        return new InnerArrayChildWriter(index);
     }
 
-    public FxChildAdder insertBuilder() {
-        return new InnerArrayChildAdder(0);
+    public FxChildWriter insertBuilder() {
+        return new InnerArrayChildWriter(0);
     }
     
     public FxArrayNode insertArray(int index) {
@@ -227,10 +227,10 @@ public abstract class FxArrayNode extends FxContainerNode {
     // internal
     // ------------------------------------------------------------------------
 
-    private final class InnerArrayChildAdder extends FxChildAdder {
+    private final class InnerArrayChildWriter extends FxChildWriter {
         private int currIndex;
         
-        public InnerArrayChildAdder(int index) {
+        public InnerArrayChildWriter(int index) {
             this.currIndex = index;
         }
 

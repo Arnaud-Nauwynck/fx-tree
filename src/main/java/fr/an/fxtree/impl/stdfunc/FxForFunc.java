@@ -6,7 +6,7 @@ import java.util.Map;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxArrayNode;
-import fr.an.fxtree.model.FxChildAdder;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxIntNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
@@ -27,7 +27,7 @@ public class FxForFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildAdder dest, FxEvalContext ctx, FxNode src) {
+    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         int startIndex = FxNodeValueUtils.getOrDefault(srcObj, "start", 0);
         int incr = FxNodeValueUtils.getOrDefault(srcObj, "incr", 1);
@@ -43,25 +43,24 @@ public class FxForFunc extends FxNodeFunc {
         }
         
         FxArrayNode res = dest.addArray();
-        FxChildAdder resChildAdder = res.insertBuilder();
+        FxChildWriter resChildAdder = res.insertBuilder();
                 
         FxMemRootDocument tmpDoc = new FxMemRootDocument(); 
         FxObjNode tmpObj = tmpDoc.setContentObj();
         FxIntNode tmpIndexNode = tmpObj.put(iterIndexName, 0);
         
-        FxEvalContext childEvalContext = ctx.createChildContext();
+        FxEvalContext childCtx = ctx.createChildContext();
         Map<String,FxNode> replVars = new HashMap<String,FxNode>();
         replVars.put(iterIndexName, tmpIndexNode);
-        FxVarsReplaceFunc copyReplaceIterVisitor = new FxVarsReplaceFunc(replVars);
-        
+
+        FxVarsReplaceFunc replaceVarsFunc = new FxVarsReplaceFunc(replVars);
+
         for(int index = startIndex; ((incr > 0)? (index < endIndex) : (index > endIndex)); index+=incr) {
             tmpIndexNode.setValue(index);
             // set iter value,index in child context
-            childEvalContext.putVariable(iterIndexName, index);
+            childCtx.putVariable(iterIndexName, index);
             
-            copyReplaceIterVisitor.eval(resChildAdder, ctx, templateNode);
-            
-            // TODO replace templateNode->tmpTemplate.. + recursive eval tmpTemplate->res
+            replaceVarsFunc.eval(resChildAdder, childCtx, templateNode);
         }
         
         return res;

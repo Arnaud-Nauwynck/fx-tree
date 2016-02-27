@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.util.FxUtils;
-import fr.an.fxtree.model.FxChildAdder;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxTextNode;
 import fr.an.fxtree.model.func.FxEvalContext;
@@ -51,7 +51,7 @@ public class FxVarsReplaceFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildAdder dest, FxEvalContext ctx, FxNode src) {
+    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         return src.accept(new InnerVisitor(ctx), dest); 
     }
     
@@ -79,7 +79,7 @@ public class FxVarsReplaceFunc extends FxNodeFunc {
         }
 
         @Override
-        public FxNode visitTextValue(FxTextNode src, FxChildAdder out) {
+        public FxNode visitTextValue(FxTextNode src, FxChildWriter out) {
             String text = src.textValue();
             // detect patterns "#{{....}}"  for variables 
             int replStart = text.indexOf("#{");
