@@ -14,70 +14,70 @@ import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import fr.an.fxtree.model.FxArrayNode;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
-import fr.an.fxtree.model.FxNodeFactoryRegistry;
 import fr.an.fxtree.model.FxObjNode;
-import fr.an.fxtree.model.FxRootDocument;
 
 public class Jackson2FxTreeBuilder {
 
-    public static void buildTree(FxRootDocument dest, JsonNode src) {
-        FxNodeFactoryRegistry factory = dest.getNodeFactory();
+    public static FxNode buildTree(FxChildWriter dest, JsonNode src) {
+        FxNode res;
         switch (src.getNodeType()) {
         case ARRAY:
-            FxArrayNode destArray = factory.newArray();
-            dest.setContent(destArray);
+            FxArrayNode destArray = dest.addArray();
             buildTree(destArray, (ArrayNode) src);
+            res = destArray;
             break;
         case OBJECT:
-            FxObjNode destObj = factory.newObj();
-            dest.setContent(destObj);
+            FxObjNode destObj = dest.addObj();
             buildTree(destObj, (ObjectNode) src);
+            res = destObj;
             break;
         default:
-            dest.setContent(buildValue(factory, src));
+            res = buildValue(dest, src);
             break;
         }
+        return res;
     }
 
-    public static FxNode buildValue(FxNodeFactoryRegistry factory, JsonNode src) {
+    public static FxNode buildValue(FxChildWriter dest, JsonNode src) {
         switch (src.getNodeType()) {
         case ARRAY:
             throw new IllegalStateException("not a value");
         case BINARY:
-            return factory.newBinary(((BinaryNode) src).binaryValue());
+            return dest.add(((BinaryNode) src).binaryValue());
         case BOOLEAN:
-            return factory.newBool(((BooleanNode) src).booleanValue());
+            return dest.add(((BooleanNode) src).booleanValue());
         case MISSING:
             //?? use null
             return null;
         case NULL:
-            return factory.newNull();
+            return dest.addNull();
         case NUMBER:
             NumericNode srcNumber = (NumericNode) src;
             JsonParser.NumberType numberType = src.numberType();
             switch(numberType) {
             case INT:
-                return factory.newInt(srcNumber.intValue());
+                return dest.add(srcNumber.intValue());
             case LONG:
-                return factory.newLong(srcNumber.longValue());
+                return dest.add(srcNumber.longValue());
             case BIG_INTEGER:
-                return factory.newPOJO(srcNumber.bigIntegerValue()); // use POJO for jackson BigInteger
+                return dest.addPOJO(srcNumber.bigIntegerValue()); // use POJO for jackson BigInteger
             case FLOAT:
-                return factory.newDouble(srcNumber.floatValue()); // use Double for Jackson Float
+                return dest.add(srcNumber.floatValue()); // use Double for Jackson Float
             case DOUBLE:
-                return factory.newDouble(srcNumber.doubleValue());
+                return dest.add(srcNumber.doubleValue());
             case BIG_DECIMAL:
-                return factory.newPOJO(srcNumber.decimalValue()); // use POJO for jackson BigDecimal
+                return dest.addPOJO(srcNumber.decimalValue()); // use POJO for jackson BigDecimal
             default:
                 throw new RuntimeException();
             }
         case OBJECT:
             throw new IllegalStateException("not a value");
         case POJO:
-            return factory.newPOJO(((POJONode) src).getPojo());
+            return dest.addPOJO(((POJONode) src).getPojo());
         case STRING:
-            return factory.newText(((TextNode) src).textValue());
+            return dest.add(((TextNode) src).textValue());
         default:
             throw new RuntimeException();
         }

@@ -145,5 +145,20 @@ public class FxNodeValueUtils {
         return res;
     }
 
+    public static boolean getOrDefault(FxObjNode parent, String fieldName, boolean defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        boolean res;
+        if (fieldNode.isBoolean()) { 
+            res = fieldNode.booleanValue();
+        } else {
+            // throw error?
+            throw new IllegalArgumentException("expecting boolean argument '" + fieldName + "', got " + fieldNode.getNodeType());
+        }
+        return res;
+    }
+
     
 }

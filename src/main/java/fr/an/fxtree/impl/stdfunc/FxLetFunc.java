@@ -37,7 +37,6 @@ public class FxLetFunc extends FxNodeFunc {
         FxEvalContext childCtx = ctx.createChildContext();
         childCtx.putVariableAll(replVars);
         
-        // recursive replace+eval+copy to res
         FxNode res = replaceFunc.eval(dest, childCtx, templateNode);
         
         return res;

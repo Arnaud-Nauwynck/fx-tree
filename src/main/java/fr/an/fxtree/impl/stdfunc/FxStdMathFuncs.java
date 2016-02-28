@@ -14,6 +14,9 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 
 public final class FxStdMathFuncs {
 
+    /** private to force all static */
+    private FxStdMathFuncs() {}
+    
     public static void registerBuiltinFuncs(Map<String, FxNodeFunc> dest) {
         registerBuiltinFuncs(dest, 
             plusFunc(), minusFunc(), multFunc(), divideFunc()

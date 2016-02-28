@@ -7,10 +7,10 @@ import java.io.InputStream;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import fr.an.fxtree.json.jackson.Jackson2FxTreeBuilder;
-import fr.an.fxtree.model.FxRootDocument;
+import fr.an.fxtree.model.FxChildWriter;
+import fr.an.fxtree.model.FxNode;
 
 public class FxJsonUtils {
 
@@ -22,24 +22,24 @@ public class FxJsonUtils {
         // jacksonObjectMapper.enable(DeserializationFeature.);
     }
     
-    public static void readTree(FxRootDocument dest, InputStream in) {
+    public static FxNode readTree(FxChildWriter dest, InputStream in) {
         JsonNode jacksonNode;
         try {
             jacksonNode = jacksonObjectMapper.readTree(in);
         } catch (IOException ex) {
             throw new RuntimeException("Failed to parse as json", ex);
         }
-        Jackson2FxTreeBuilder.buildTree(dest, jacksonNode);
+        return Jackson2FxTreeBuilder.buildTree(dest, jacksonNode);
     }
 
-    public static void readTree(FxRootDocument dest, File in) {
+    public static FxNode readTree(FxChildWriter dest, File in) {
         JsonNode jacksonNode;
         try {
             jacksonNode = jacksonObjectMapper.readTree(in);
         } catch (IOException ex) {
             throw new RuntimeException("Failed to parse as json", ex);
         }
-        Jackson2FxTreeBuilder.buildTree(dest, jacksonNode);
+        return Jackson2FxTreeBuilder.buildTree(dest, jacksonNode);
     }
 
 }

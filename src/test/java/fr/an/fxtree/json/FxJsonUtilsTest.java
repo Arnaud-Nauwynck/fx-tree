@@ -17,7 +17,7 @@ public class FxJsonUtilsTest {
         FxMemRootDocument doc = new FxMemRootDocument(); 
         File inFile = new File("src/test/data/json/" + fileName);
         // Perform
-        FxJsonUtils.readTree(doc, inFile);
+        FxJsonUtils.readTree(doc.contentWriter(), inFile);
         return doc;
     }
     
@@ -27,7 +27,7 @@ public class FxJsonUtilsTest {
         FxMemRootDocument doc = new FxMemRootDocument(); 
         File inFile = new File("src/test/data/json/file1.json");
         // Perform
-        FxJsonUtils.readTree(doc, inFile);
+        FxJsonUtils.readTree(doc.contentWriter(), inFile);
         FxNode content = doc.getContent();
         // Post-check
         Assert.assertNotNull(content);

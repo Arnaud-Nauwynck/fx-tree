@@ -1,0 +1,4 @@
+{
+  "@fx-eval": "#phase0:importJsonFile",
+  "filename": "src/test/data/json/file1.json"
+}
