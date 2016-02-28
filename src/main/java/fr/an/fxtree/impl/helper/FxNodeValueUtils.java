@@ -3,48 +3,18 @@ package fr.an.fxtree.impl.helper;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.an.fxtree.impl.util.FxUtils;
 import fr.an.fxtree.model.FxArrayNode;
+import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
+import fr.an.fxtree.model.FxPOJONode;
+import fr.an.fxtree.model.func.FxEvalContext;
 
 public class FxNodeValueUtils {
 
     private static final String STRING_ARRAY_FORMAT = "CSV 'str1,str2...' or array ['str1, 'str2'..]";
     private static final String STRING_FLATTEN_ARRAY_FORMAT = "CSV 'str1,str2...' or array ['str1, 'str2'..] or flattenize [ 'str1', [ 'str2', 'str3' ]]";
-    
-    public static String[] extractStringArray(FxNode value, boolean allowRecurseFlatten) {
-        if (value == null) return null;
-        String[] res;
-        if (value.isTextual()) {
-            res = value.textValue().split(",");
-        } else if (value.isArray()) {
-            FxArrayNode array = (FxArrayNode) value;
-            int len = array.size();
-            List<String> tmpRes = new ArrayList<String>(len);
-            for(int i = 0; i < len; i++) {
-                FxNode child = array.get(i);
-                if (child.isTextual()) {
-                    tmpRes.add(child.textValue());
-                } else if (value.isArray()) {
-                    if (allowRecurseFlatten) {
-                        // recurse
-                        String[] tmpresElts = extractStringArray(child, allowRecurseFlatten);
-                        for(String e : tmpresElts) {
-                            tmpRes.add(e);
-                        }
-                    } else {
-                        throw new IllegalArgumentException("expected " + STRING_ARRAY_FORMAT);
-                    }
-                } else {
-                    throw new IllegalArgumentException("expected " + STRING_FLATTEN_ARRAY_FORMAT);
-                }
-            }
-            res = tmpRes.toArray(new String[tmpRes.size()]);
-        } else {
-            throw new IllegalArgumentException("expected " + (allowRecurseFlatten? STRING_FLATTEN_ARRAY_FORMAT : STRING_ARRAY_FORMAT));
-        }
-        return res;
-    }
     
     public static String getOrDefault(FxObjNode parent, String fieldName, String defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
@@ -97,15 +67,184 @@ public class FxNodeValueUtils {
         return (FxObjNode) fieldNode;
     }
     
+    /* Boolean : getBooleanOrThrow, getOrDefault, nodeToBoolean */
+    
+    public static boolean getBooleanOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        return nodeToBoolean(fieldNode);
+    }
+    
+    public static boolean getBooleanOrDefault(FxObjNode parent, String fieldName, boolean defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        return nodeToBoolean(fieldNode);
+    }
+    
+    public static boolean nodeToBoolean(FxNode src) {
+        boolean res;
+        if (src.isBoolean()) {
+            res = src.booleanValue();
+        } else if (src.isTextual()) {
+            // also accept "true"/"false", "y"/"n", "yes"/"no" ...
+            String text = src.textValue();
+            switch(text) {
+            case "true": case "True": case "TRUE": case "y": case "Y": case "yes": case "Yes": case "YES": 
+                res = true; 
+                break;
+            case "false": case "False": case "FALSE": case "n": case "N": case "no": case "No": case "NO":   
+                res = false; 
+                break;
+            default:
+                throw new IllegalArgumentException("expecting boolean argument '" + src + "', or true/false, y/n, yes/no .. got text '" + text + "'");
+            }
+        } else if (src.isNumber()) {
+            int val = src.intValue();
+            res = (val != 0);
+        } else {
+            throw new IllegalArgumentException("expecting boolean argument '" + src + "'");
+        }
+        return res;
+    }
+
+
+    /* Char: getCharOrDefault, getCharOrThrow, nodeToChar */
+    
+    public static char getCharOrDefault(FxObjNode parent, String fieldName, char defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        return nodeToChar(fieldNode);
+    }
+    
+    public static char getCharOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting Char argument '" + fieldName + "', got " + fieldNode.getNodeType());
+        }
+        return nodeToChar(fieldNode);
+    }
+
+    private static char nodeToChar(FxNode fieldNode) {
+        char res;
+        if (fieldNode.isTextual()) {
+            String text = fieldNode.textValue();
+            if (text.length() == 0 || text.length() > 1) {
+                throw new IllegalArgumentException("expecting 'char', got string length != 1: '" + text + "'");
+            }
+            res = text.charAt(0);
+        } else if (fieldNode.isInt()) {
+            res = (char) fieldNode.intValue();
+        } else {
+            throw new IllegalArgumentException("expecting 'char', got " + fieldNode.getNodeType());
+        }
+        return res;
+    }
+
+    /* Int: getIntOrDefault, getIntOrThrow, nodeToInt */
+    
+    public static int getIntOrDefault(FxObjNode parent, String fieldName, int defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        return nodeToInt(fieldNode);
+    }
     
     public static int getIntOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         if (!fieldNode.isNumber()) {
             throw new IllegalArgumentException("expecting int argument '" + fieldName + "', got " + fieldNode.getNodeType());
         }
+        return nodeToInt(fieldNode);
+    }
+
+    private static int nodeToInt(FxNode fieldNode) {
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting 'int', got " + fieldNode.getNodeType());
+        }
         int res = fieldNode.intValue();
         return res;
     }
+
+    /* Long: getLongOrDefault, getLongOrThrow, nodeToLong */
+    
+    public static long getLongOrDefault(FxObjNode parent, String fieldName, Long defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        return nodeToLong(fieldNode);
+    }
+    
+    public static long getLongOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting Long argument '" + fieldName + "', got " + fieldNode.getNodeType());
+        }
+        return nodeToLong(fieldNode);
+    }
+
+    private static long nodeToLong(FxNode fieldNode) {
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting 'Long', got " + fieldNode.getNodeType());
+        }
+        return fieldNode.longValue();
+    }
+    
+    /* Double: getDoubleOrDefault, getDoubleOrThrow, nodeToDouble */
+    
+    public static double getDoubleOrDefault(FxObjNode parent, String fieldName, double defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        return nodeToDouble(fieldNode);
+    }
+    
+    public static double getDoubleOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting 'double' argument '" + fieldName + "', got " + fieldNode.getNodeType());
+        }
+        return nodeToDouble(fieldNode);
+    }
+
+    private static double nodeToDouble(FxNode fieldNode) {
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting 'double', got " + fieldNode.getNodeType());
+        }
+        return fieldNode.doubleValue();
+    }
+
+    /* Float: getFloatOrDefault, getFloatOrThrow, nodeToFloat */
+
+    public static float getFloatOrDefault(FxObjNode parent, String fieldName, float defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        return nodeToFloat(fieldNode);
+    }
+    
+    public static float getFloatOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting 'Float' argument '" + fieldName + "', got " + fieldNode.getNodeType());
+        }
+        return nodeToFloat(fieldNode);
+    }
+
+    private static float nodeToFloat(FxNode fieldNode) {
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting 'float', got " + fieldNode.getNodeType());
+        }
+        return fieldNode.floatValue();
+    }
+
+    /* Array */
     
     public static FxArrayNode getArrayOrNull(FxObjNode parent, String fieldName) {
         FxNode fieldNode = parent.get(fieldName);
@@ -118,47 +257,93 @@ public class FxNodeValueUtils {
         return (FxArrayNode) fieldNode;
     }
 
-    public static boolean getBooleanOrThrow(FxObjNode parent, String fieldName) {
-        FxNode fieldNode = getOrThrow(parent, fieldName);
-        boolean res;
-        if (fieldNode.isBoolean()) {
-            res = fieldNode.booleanValue();
-        } else if (fieldNode.isTextual()) {
-            // also accept "true"/"false", "y"/"n", "yes"/"no" ...
-            String text = fieldNode.textValue();
-            switch(text) {
-            case "true": case "True": case "TRUE": case "y": case "Y": case "yes": case "Yes": case "YES": 
-                res = true; 
-                break;
-            case "false": case "False": case "FALSE": case "n": case "N": case "no": case "No": case "NO":   
-                res = false; 
-                break;
-            default:
-                throw new IllegalArgumentException("expecting boolean argument '" + fieldName + "', or true/false, y/n, yes/no .. got text '" + text + "'");
+    public static String[] nodeToStringArray(FxNode value, boolean allowRecurseFlatten) {
+        if (value == null) return null;
+        String[] res;
+        if (value.isTextual()) {
+            res = value.textValue().split(",");
+        } else if (value.isArray()) {
+            FxArrayNode array = (FxArrayNode) value;
+            int len = array.size();
+            List<String> tmpRes = new ArrayList<String>(len);
+            for(int i = 0; i < len; i++) {
+                FxNode child = array.get(i);
+                if (child.isTextual()) {
+                    tmpRes.add(child.textValue());
+                } else if (value.isArray()) {
+                    if (allowRecurseFlatten) {
+                        // recurse
+                        String[] tmpresElts = nodeToStringArray(child, allowRecurseFlatten);
+                        for(String e : tmpresElts) {
+                            tmpRes.add(e);
+                        }
+                    } else {
+                        throw new IllegalArgumentException("expected " + STRING_ARRAY_FORMAT);
+                    }
+                } else {
+                    throw new IllegalArgumentException("expected " + STRING_FLATTEN_ARRAY_FORMAT);
+                }
             }
-        } else if (fieldNode.isNumber()) {
-            int val = fieldNode.intValue();
-            res = (val != 0);
+            res = tmpRes.toArray(new String[tmpRes.size()]);
         } else {
-            throw new IllegalArgumentException("expecting boolean argument '" + fieldName + "'");
+            throw new IllegalArgumentException("expected " + (allowRecurseFlatten? STRING_FLATTEN_ARRAY_FORMAT : STRING_ARRAY_FORMAT));
         }
         return res;
     }
-
-    public static boolean getOrDefault(FxObjNode parent, String fieldName, boolean defaultValue) {
-        FxNode fieldNode = parent.get(fieldName);
-        if (fieldNode == null) {
-            return defaultValue;
-        }
-        boolean res;
-        if (fieldNode.isBoolean()) { 
-            res = fieldNode.booleanValue();
-        } else {
-            // throw error?
-            throw new IllegalArgumentException("expecting boolean argument '" + fieldName + "', got " + fieldNode.getNodeType());
-        }
-        return res;
-    }
-
     
+
+    public static byte[] nodeToByteArray(FxNode src) {
+        if (src instanceof FxBinaryNode) {
+            byte[] tmpres = ((FxBinaryNode) src).getValue();
+            if (tmpres != null) {
+                tmpres = tmpres.clone();
+            }
+            return tmpres;  
+        } else {
+            throw new IllegalArgumentException("expected byte[], got " + src.getNodeType());
+        }
+    }
+    
+    // ------------------------------------------------------------------------
+
+    public static Object nodeToValueForType(FxNode src, Class<?> destType, FxEvalContext evalCtx) {
+        if (FxEvalContext.class.isAssignableFrom(destType)) {
+            return evalCtx;
+        } else {
+            return nodeToValueForType(src, destType);
+        }
+    }
+    
+    public static Object nodeToValueForType(FxNode src, Class<?> destType) {
+        if (destType.isPrimitive()) {
+            switch(destType.getName()) {
+            case "boolean": return nodeToBoolean(src);
+            case "char": return nodeToChar(src);
+            case "byte": return (byte) nodeToInt(src); // cf int
+            case "short": return (byte) nodeToInt(src); // cf int
+            case "int": return nodeToInt(src);
+            case "long": return nodeToLong(src);
+            case "float": return nodeToFloat(src);
+            case "double": return nodeToDouble(src);
+            case "void": return null;
+            default: throw FxUtils.switchDefault();
+            }
+        } else if (destType.equals(String.class)) {
+            return src.textValue();
+        } else if (destType.equals(byte[].class)) {
+            return nodeToByteArray(src);
+        } else if ((src instanceof FxPOJONode) && destType.isInstance(((FxPOJONode)src).getValue())) {
+            return ((FxPOJONode)src).getValue();
+        } else if (FxNode.class.isAssignableFrom(destType)) {
+            if (destType.isInstance(src)) {
+                return src;
+            } else {
+                throw new IllegalArgumentException("expected " + destType + ", got " + src.getNodeType());
+            }
+        } else {
+            // TODO... use Jackson serialisation?
+            throw FxUtils.notImplYet();
+        }
+    }
+
 }

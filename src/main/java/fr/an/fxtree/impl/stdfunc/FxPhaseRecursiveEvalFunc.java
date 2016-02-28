@@ -102,11 +102,19 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
             FxMemRootDocument tmpNonRecurseDoc = new FxMemRootDocument();
             FxChildWriter tmpNonRecurseWriter = tmpNonRecurseDoc.contentWriter();
             
-            FxNode tmpres = func.eval(tmpNonRecurseWriter, ctx, src);
+            FxNode funcRes = func.eval(tmpNonRecurseWriter, ctx, src);
+            
+            FxNode tmpres = tmpNonRecurseDoc.getContent();
+            
+            if (funcRes != null && funcRes != tmpres) {
+                // TODO ambiguous return ... ignore / throw / change method signature?
+                funcRes.accept(this, destNode);
+            }
+            
             if (tmpres == null) {
                 return null;
             }
-            
+
             // step 2: recurse eval same phase (other functions) on sub-nodes
             FxNode res = tmpres.accept(this, destNode);
             

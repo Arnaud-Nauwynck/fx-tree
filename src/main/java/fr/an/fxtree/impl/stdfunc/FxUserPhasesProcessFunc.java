@@ -44,7 +44,7 @@ public class FxUserPhasesProcessFunc extends FxNodeFunc {
         // resolve arguments: "phases", as string comma separated values, or array of string
         FxNode phasesArg = srcObj.get("phases");
         if (phasesArg == null) return null;
-        String[] phases = FxNodeValueUtils.extractStringArray(phasesArg, true);
+        String[] phases = FxNodeValueUtils.nodeToStringArray(phasesArg, true);
         if (phases == null || phases.length == 0) return null;
         
         FxNode contentSrc = srcObj.get("src");

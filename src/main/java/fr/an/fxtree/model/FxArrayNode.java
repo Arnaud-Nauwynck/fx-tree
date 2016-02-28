@@ -264,6 +264,11 @@ public abstract class FxArrayNode extends FxContainerNode {
         }
 
         @Override
+        public FxLongNode add(long value) {
+            return insert(incrIndex(), value);
+        }
+
+        @Override
         public FxBoolNode add(boolean value) {
             return insert(incrIndex(), value);
         }

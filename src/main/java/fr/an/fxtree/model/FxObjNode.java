@@ -117,6 +117,11 @@ public abstract class FxObjNode extends FxContainerNode {
         return onPut(name, res);
     }
 
+    public FxLongNode put(String name, long value) {
+        FxLongNode res = getNodeFactory().newLong(value);
+        return onPut(name, res);
+    }
+
     public FxBoolNode put(String name, boolean value) {
         FxBoolNode res = getNodeFactory().newBool(value);
         return onPut(name, res);
@@ -236,6 +241,11 @@ public abstract class FxObjNode extends FxContainerNode {
 
         @Override
         public FxIntNode add(int value) {
+            return put(incrName(), value);
+        }
+
+        @Override
+        public FxLongNode add(long value) {
             return put(incrName(), value);
         }
 

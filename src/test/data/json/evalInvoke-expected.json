@@ -1,0 +1,12 @@
+{
+  "eval_invoke_test1": {
+    "boolValue": false, 
+    "charValue": 97, /* "a" */ 
+    "intValue": 123, 
+    "longValue": 123456789, 
+    "floatValue": 1.2299999980314169E-5, 
+    "doubleValue": 1.23456789e-11,
+    "ctx-IsSet?": true,
+    "src-IsSet?": true
+  }
+}

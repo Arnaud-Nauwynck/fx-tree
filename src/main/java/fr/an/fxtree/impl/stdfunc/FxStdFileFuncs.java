@@ -46,7 +46,7 @@ public final class FxStdFileFuncs {
         public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
             String fileName = FxNodeValueUtils.getStringOrThrow(srcObj, "filename");
-            boolean ignoreFileNotFound = FxNodeValueUtils.getOrDefault(srcObj, "ignoreFileNotFound", false);
+            boolean ignoreFileNotFound = FxNodeValueUtils.getBooleanOrDefault(srcObj, "ignoreFileNotFound", false);
             
             File file = new File(fileName);
             if (! file.exists()) {
@@ -87,7 +87,7 @@ public final class FxStdFileFuncs {
             File file = new File(fileName);
             File dir = file.getParentFile();
             if (! dir.exists()) {
-                boolean createDirIfNotExist = FxNodeValueUtils.getOrDefault(srcObj, "createDirIfNotExist", false);
+                boolean createDirIfNotExist = FxNodeValueUtils.getBooleanOrDefault(srcObj, "createDirIfNotExist", false);
                 if (createDirIfNotExist) {
                     dir.mkdirs();
                 } else {

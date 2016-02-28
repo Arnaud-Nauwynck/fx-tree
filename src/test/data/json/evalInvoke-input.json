@@ -1,0 +1,7 @@
+{
+  "eval_invoke_test1": {
+    "@fx-eval": "#phase0:invoke",
+    "method": "fr.an.fxtree.impl.stdfunc.FxJavaMethodInvokeFuncTest.testMethod_bool_char_int_long_float_double_dest_node_ctx",
+    "params": [ false, "a", 123, 123456789, 0.123e-4, 0.123456789e-10 ]
+  } 
+}

@@ -20,6 +20,8 @@ public abstract class FxChildWriter {
     // public abstract FxIntNode addInt();
     public abstract FxIntNode add(int value);
 
+    public abstract FxLongNode add(long value);
+
     public abstract FxBoolNode add(boolean value);
 
     public abstract FxBinaryNode add(byte[] value);

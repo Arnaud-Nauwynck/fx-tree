@@ -168,6 +168,11 @@ public abstract class FxRootDocument extends FxContainerNode {
         }
 
         @Override
+        public FxLongNode add(long value) {
+            return addContent(nodeFactory.newLong(value));
+        }
+
+        @Override
         public FxBoolNode add(boolean value) {
             return addContent(nodeFactory.newBool(value));
         }
