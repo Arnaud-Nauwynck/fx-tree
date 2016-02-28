@@ -1,6 +1,6 @@
 {
   "exportVoid": {
-    "@fx-eval": "#phase0:exportJsonFile",
+    "@fx-eval": "#phase0:file.exportJsonFile",
     "filename": "target/test/data/result-testExportJsonFile.json",
     "createDirIfNotExist": true,
     "content": {

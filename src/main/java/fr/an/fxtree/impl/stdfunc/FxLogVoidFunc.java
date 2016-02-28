@@ -12,17 +12,22 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 
 public class FxLogVoidFunc extends FxNodeFunc {
     
-    private static final Logger LOG = LoggerFactory.getLogger(FxLogVoidFunc.class);
-    
     public static final String NAME = "log";
+    
+    private Logger logger;
     
     // ------------------------------------------------------------------------
 
     public static final FxLogVoidFunc INSTANCE = new FxLogVoidFunc();
     
     private FxLogVoidFunc() {
+        this(LoggerFactory.getLogger(FxLogVoidFunc.class));
     }
 
+    private FxLogVoidFunc(Logger logger) {
+        this.logger = logger;
+    }
+    
     // ------------------------------------------------------------------------
     
     @Override
@@ -34,23 +39,23 @@ public class FxLogVoidFunc extends FxNodeFunc {
         
         switch (level) {
         case "trace":
-            LOG.trace(message);
+            logger.trace(message);
             break;
         case "debug":
-            LOG.debug(message);
+            logger.debug(message);
             break;
         case "info":
-            LOG.info(message);
+            logger.info(message);
             break;
         case "warn":
         case "warning":
-            LOG.warn(message);
+            logger.warn(message);
             break;
         case "error":
-            LOG.error(message);
+            logger.error(message);
             break;
         default:
-            LOG.info(message);
+            logger.info(message);
             break;
         }
         
