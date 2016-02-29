@@ -31,7 +31,7 @@ public class FxLogVoidFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         String message = FxNodeValueUtils.getStringOrThrow(srcObj, "message");
         String level =  FxNodeValueUtils.getOrDefault(srcObj, "level", "info");
@@ -58,8 +58,6 @@ public class FxLogVoidFunc extends FxNodeFunc {
             logger.info(message);
             break;
         }
-        
-        return null;
     }
 
 }

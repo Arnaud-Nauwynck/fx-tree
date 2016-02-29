@@ -19,9 +19,8 @@ public class FxMergeFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         // TODO Auto-generated method stub
-        return null;
     }
 
 

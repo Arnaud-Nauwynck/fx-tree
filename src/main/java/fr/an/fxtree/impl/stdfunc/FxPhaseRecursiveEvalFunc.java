@@ -17,6 +17,8 @@ import fr.an.fxtree.model.func.FxNodeFuncRegistry;
  */
 public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
 
+    protected static final String PROP_CURR_PHASE_EVAL_FUNC = "currPhaseEvalFunc";
+    
     private String phase;
 
     private FxNodeFuncRegistry overrideFuncRegistry;
@@ -31,8 +33,21 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
 
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        return src.accept(new InnerVisitor(ctx), dest); 
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        FxEvalContext childCtx = ctx.createChildContext();
+        childCtx.putVariable(PROP_CURR_PHASE_EVAL_FUNC, this);
+        
+        src.accept(new InnerVisitor(childCtx), dest); 
+    }
+    
+    public static void recursiveEvalCurrPhaseFunc(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        FxPhaseRecursiveEvalFunc currFunc = (FxPhaseRecursiveEvalFunc) ctx.lookupVariable(PROP_CURR_PHASE_EVAL_FUNC);
+        if (currFunc != null) {
+            currFunc.eval(dest, ctx, src);
+        } else {
+            // should not occur: not evauating any phase (not using this function class)??
+            FxNodeCopyVisitor.copyTo(dest, src);
+        }
     }
     
     private class InnerVisitor extends FxNodeCopyVisitor {
@@ -102,15 +117,9 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
             FxMemRootDocument tmpNonRecurseDoc = new FxMemRootDocument();
             FxChildWriter tmpNonRecurseWriter = tmpNonRecurseDoc.contentWriter();
             
-            FxNode funcRes = func.eval(tmpNonRecurseWriter, ctx, src);
+            func.eval(tmpNonRecurseWriter, ctx, src);
             
             FxNode tmpres = tmpNonRecurseDoc.getContent();
-            
-            if (funcRes != null && funcRes != tmpres) {
-                // TODO ambiguous return ... ignore / throw / change method signature?
-                funcRes.accept(this, destNode);
-            }
-            
             if (tmpres == null) {
                 return null;
             }

@@ -48,7 +48,7 @@ public final class FxStdFileFuncs {
         public static final FxImportJsonFileFunc INSTANCE = new FxImportJsonFileFunc();
         
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
             String fileName = FxNodeValueUtils.getStringOrThrow(srcObj, "filename");
             boolean ignoreFileNotFound = FxNodeValueUtils.getBooleanOrDefault(srcObj, "ignoreFileNotFound", false);
@@ -56,13 +56,13 @@ public final class FxStdFileFuncs {
             File file = new File(fileName);
             if (! file.exists()) {
                 if (ignoreFileNotFound) {
-                    return null;
+                    return;
                 } else {
                     throw new RuntimeException(new FileNotFoundException(fileName));
                 }
             }
             
-            return FxJsonUtils.readTree(dest, file);
+            FxJsonUtils.readTree(dest, file);
         }
     }
     
@@ -86,7 +86,7 @@ public final class FxStdFileFuncs {
         private static final Logger LOG = LoggerFactory.getLogger(FxStdFileFuncs.FxScanDirImportJsonFilesFunc.class);
         
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
             String scanDir = FxNodeValueUtils.getStringOrThrow(srcObj, "scanDir");
             boolean recursive = FxNodeValueUtils.getBooleanOrDefault(srcObj, "recursive", true);
@@ -117,7 +117,6 @@ public final class FxStdFileFuncs {
             }
 
             FxJsonUtils.readTree(dest, file);
-            return destArray;
         }
         
         protected void recursiveScanDir(File currDir, FxChildWriter childWriter, Pattern pattern, boolean continueOnError) {
@@ -165,7 +164,7 @@ public final class FxStdFileFuncs {
         public static final FxExportJsonFileVoidFunc INSTANCE = new FxExportJsonFileVoidFunc();
         
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
             FxNode content = srcObj.get("content");
             String fileName = FxNodeValueUtils.getStringOrThrow(srcObj, "filename");
@@ -187,8 +186,6 @@ public final class FxStdFileFuncs {
             } catch (IOException ex) {
                 throw new RuntimeException("Failed to write file " + file, ex);
             }
-            
-            return null;
         }
     }
 

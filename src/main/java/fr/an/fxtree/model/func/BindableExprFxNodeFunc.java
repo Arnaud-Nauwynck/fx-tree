@@ -23,7 +23,7 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
     // ------------------------------------------------------------------------
 
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         T bind;
         if (src instanceof FxObjNode) {
             FxObjNode srcObj = (FxObjNode) src;
@@ -37,7 +37,7 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
             bind = compileBind(src);
         }
         
-        return bind.eval(dest);
+        bind.eval(dest);
     }
     
     @SuppressWarnings("unchecked")

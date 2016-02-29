@@ -22,7 +22,7 @@ public class FxSwitchFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         String expr = FxNodeValueUtils.getStringOrThrow(srcObj, "expr");
         FxObjNode whenNodes = FxNodeValueUtils.getObjOrThrow(srcObj, "when");
@@ -38,8 +38,6 @@ public class FxSwitchFunc extends FxNodeFunc {
         if (templateNode != null) {
             res = FxNodeCopyVisitor.copyTo(dest, templateNode);
         }
-        
-        return res;
     }
     
 }

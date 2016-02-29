@@ -26,18 +26,18 @@ public class FxFixedCompoundFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxMemRootDocument tmpDoc = new FxMemRootDocument();
         FxChildWriter tmpAdder = tmpDoc.contentWriter();
         
-        FxNode tmpres = first.eval(tmpAdder, ctx, src);
+        first.eval(tmpAdder, ctx, src);
+        
+        FxNode tmpres = tmpDoc.getContent();
         if (tmpres == null) {
-            return null; // useless? "then" function should accept "null"
+            return; // useless? "then" function should accept "null"
         }
         
-        FxNode res = then.eval(dest, ctx, tmpres);
-
-        return res;
+        then.eval(dest, ctx, tmpres);
     }
     
     

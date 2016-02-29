@@ -21,6 +21,7 @@ public class FxStdFuncs {
         funcs.put(FxSwitchFunc.NAME, FxSwitchFunc.INSTANCE);
         funcs.put(FxLetFunc.NAME, FxLetFunc.INSTANCE);
         funcs.put(FxThrowFunc.NAME, FxThrowFunc.INSTANCE);
+        funcs.put(FxTryCatchFunc.NAME, FxTryCatchFunc.INSTANCE);
         
         funcs.put(FxJavaMethodInvokeFunc.NAME, FxJavaMethodInvokeFunc.INSTANCE);
         funcs.put(FxLogVoidFunc.NAME, FxLogVoidFunc.INSTANCE);

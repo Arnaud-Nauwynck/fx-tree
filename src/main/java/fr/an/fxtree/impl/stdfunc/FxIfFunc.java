@@ -22,7 +22,7 @@ public class FxIfFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         boolean expr = FxNodeValueUtils.getBooleanOrThrow(srcObj, "expr");
         // TOADD ... may expose Eager dependency graph "expr" -> "then",  of "expr" -> "else" 
@@ -33,11 +33,9 @@ public class FxIfFunc extends FxNodeFunc {
             templateNode = srcObj.get("else");
         }
 
-        FxNode res = null;
         if (templateNode != null) {
-            res = FxNodeCopyVisitor.copyTo(dest, templateNode);
+            FxNodeCopyVisitor.copyTo(dest, templateNode);
         }
-        return res;
     }
     
     

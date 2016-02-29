@@ -51,8 +51,8 @@ public class FxVarsReplaceFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        return src.accept(new InnerVisitor(ctx), dest); 
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        src.accept(new InnerVisitor(ctx), dest); 
     }
     
     private static class TmpVarReplMatch {

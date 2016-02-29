@@ -142,6 +142,17 @@ public abstract class FxRootDocument extends FxContainerNode {
         public RootChildWriter() {
         }
 
+        public boolean canAddMoveFrom(FxRootDocument otherParentSrc) {
+            return nodeFactory == otherParentSrc.nodeFactory;
+        }
+        
+        public FxNode addMoveFrom(FxRootDocument otherParentSrc) {
+            FxNode contentSrc = otherParentSrc.getContent();
+            otherParentSrc.remove(contentSrc);
+            addContent(contentSrc);
+            return contentSrc;
+        }
+        
         @Override
         public FxArrayNode addArray() {
             return setContentArray();

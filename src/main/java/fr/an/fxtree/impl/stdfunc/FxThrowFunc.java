@@ -21,7 +21,7 @@ public class FxThrowFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         String message = FxNodeValueUtils.getStringOrThrow(srcObj, "message");
 

@@ -32,7 +32,7 @@ public class FxJavaMethodInvokeFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         String fqn =  FxNodeValueUtils.getStringOrThrow(srcObj, "method");
 
@@ -112,11 +112,9 @@ public class FxJavaMethodInvokeFunc extends FxNodeFunc {
             throw new RuntimeException("Failed to invoke method " + fqn, ex);
         }
         
-        FxNode res = null;
-        if (FxNode.class.isAssignableFrom(method.getReturnType())) {
-            res = (FxNode) tmpres;
+        if (tmpres != null) {
+            // TOADD .. may write output?
         }
-        return res;
     }
 
     // ------------------------------------------------------------------------

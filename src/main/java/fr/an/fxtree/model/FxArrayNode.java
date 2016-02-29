@@ -238,6 +238,20 @@ public abstract class FxArrayNode extends FxContainerNode {
             return currIndex++;
         }
         
+
+        @Override
+        public boolean canAddMoveFrom(FxRootDocument otherParentSrc) {
+            return getNodeFactory() == otherParentSrc.getNodeFactory();
+        }
+        
+        @Override
+        public FxNode addMoveFrom(FxRootDocument otherParentSrc) {
+            FxNode contentSrc = otherParentSrc.getContent();
+            otherParentSrc.remove(contentSrc);
+            onInsert(incrIndex(), contentSrc);
+            return contentSrc;
+        }
+
         @Override
         public FxArrayNode addArray() {
             return insertArray(incrIndex());

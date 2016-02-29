@@ -89,7 +89,7 @@ public abstract class FxObjNode extends FxContainerNode {
     // ------------------------------------------------------------------------
 
     public FxChildWriter putBuilder(String name) {
-        return new ObjChildWriter(name);
+        return new ObjChildWriter(this, name);
     }
     
     public FxArrayNode putArray(String name) {
@@ -204,12 +204,14 @@ public abstract class FxObjNode extends FxContainerNode {
     }
 
 
-    private final class ObjChildWriter extends FxChildWriter {
+    public static final class ObjChildWriter extends FxChildWriter {
         
+        private FxObjNode dest;
         private String baseName;
         private int currIndex;
         
-        public ObjChildWriter(String name) {
+        public ObjChildWriter(FxObjNode dest, String name) {
+            this.dest = dest;
             this.baseName = name;
         }
 
@@ -220,63 +222,76 @@ public abstract class FxObjNode extends FxContainerNode {
         }
         
         @Override
+        public boolean canAddMoveFrom(FxRootDocument otherParentSrc) {
+            return dest.getNodeFactory() == otherParentSrc.getNodeFactory();
+        }
+        
+        @Override
+        public FxNode addMoveFrom(FxRootDocument otherParentSrc) {
+            FxNode contentSrc = otherParentSrc.getContent();
+            otherParentSrc.remove(contentSrc);
+            dest.onPut(incrName(), contentSrc);
+            return contentSrc;
+        }
+        
+        @Override
         public FxArrayNode addArray() {
-            return putArray(incrName());
+            return dest.putArray(incrName());
         }
 
         @Override
         public FxObjNode addObj() {
-            return putObj(incrName());
+            return dest.putObj(incrName());
         }
 
         @Override
         public FxTextNode add(String value) {
-            return put(incrName(), value);
+            return dest.put(incrName(), value);
         }
 
         @Override
         public FxDoubleNode add(double value) {
-            return put(incrName(), value);
+            return dest.put(incrName(), value);
         }
 
         @Override
         public FxIntNode add(int value) {
-            return put(incrName(), value);
+            return dest.put(incrName(), value);
         }
 
         @Override
         public FxLongNode add(long value) {
-            return put(incrName(), value);
+            return dest.put(incrName(), value);
         }
 
         @Override
         public FxBoolNode add(boolean value) {
-            return put(incrName(), value);
+            return dest.put(incrName(), value);
         }
 
         @Override
         public FxBinaryNode add(byte[] value) {
-            return put(incrName(), value);
+            return dest.put(incrName(), value);
         }
 
         @Override
         public FxPOJONode add(BigInteger value) {
-            return put(incrName(), value);
+            return dest.put(incrName(), value);
         }
 
         @Override
         public FxPOJONode add(BigDecimal value) {
-            return put(incrName(), value);
+            return dest.put(incrName(), value);
         }
 
         @Override
         public FxPOJONode addPOJO(Object value) {
-            return putPOJO(incrName(), value);
+            return dest.putPOJO(incrName(), value);
         }
 
         @Override
         public FxNullNode addNull() {
-            return putNull(incrName());
+            return dest.putNull(incrName());
         }
     }
     

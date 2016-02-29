@@ -27,7 +27,7 @@ public class FxForFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         int startIndex = FxNodeValueUtils.getOrDefault(srcObj, "start", 0);
         int incr = FxNodeValueUtils.getOrDefault(srcObj, "incr", 1);
@@ -39,7 +39,7 @@ public class FxForFunc extends FxNodeFunc {
             throw new IllegalArgumentException(); 
         }
         if (templateNode == null) {
-            return null;
+            return;
         }
         
         FxArrayNode res = dest.addArray();
@@ -62,8 +62,6 @@ public class FxForFunc extends FxNodeFunc {
             
             replaceVarsFunc.eval(resChildAdder, childCtx, templateNode);
         }
-        
-        return res;
     }
     
 }

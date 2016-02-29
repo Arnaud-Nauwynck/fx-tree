@@ -23,12 +23,12 @@ public class FxLetFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         FxObjNode vars = FxNodeValueUtils.getObjOrThrow(srcObj, "vars");
         FxNode templateNode = srcObj.get("template");
         if (templateNode == null) {
-            return null;
+            return;
         }
         
         Map<String,FxNode> replVars = vars.fieldsHashMapCopy();
@@ -37,9 +37,7 @@ public class FxLetFunc extends FxNodeFunc {
         FxEvalContext childCtx = ctx.createChildContext();
         childCtx.putVariableAll(replVars);
         
-        FxNode res = replaceFunc.eval(dest, childCtx, templateNode);
-        
-        return res;
+        replaceFunc.eval(dest, childCtx, templateNode);
     }
     
     

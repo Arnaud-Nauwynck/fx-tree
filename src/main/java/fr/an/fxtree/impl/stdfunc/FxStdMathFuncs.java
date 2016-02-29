@@ -59,13 +59,12 @@ public final class FxStdMathFuncs {
         protected abstract BigDecimal evalBinaryOp(BigDecimal lhs, BigDecimal rhs);
         
         @Override
-        public FxNode eval(FxChildWriter out, FxEvalContext ctx, FxNode src) {
-            FxNode res = null;
+        public void eval(FxChildWriter out, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src; 
             FxNode left = srcObj.get("left");
             FxNode right = srcObj.get("right");
             if (left == null || right == null) {
-                return null;
+                return;
             }
             
             FxNumberType leftNumberType = left.numberType();
@@ -79,44 +78,43 @@ public final class FxStdMathFuncs {
                     int lhs = left.intValue();
                     int rhs = right.intValue();
                     int result = evalBinaryOp(lhs, rhs);
-                    res = out.add(result);
+                    out.add(result);
                 } break;
                 case LONG: {
                     long lhs = left.longValue();
                     long rhs = right.longValue();
                     long result = evalBinaryOp(lhs, rhs);
-                    res = out.add(result);
+                    out.add(result);
                 } break;
                 case BIG_INTEGER: {
                     BigInteger lhs = left.bigIntegerValue();
                     BigInteger rhs = right.bigIntegerValue();
                     BigInteger result = evalBinaryOp(lhs, rhs);
-                    res = out.add(result);
+                    out.add(result);
                 } break;
                 case FLOAT: {
                     float lhs = left.floatValue();
                     float rhs = right.floatValue();
                     float result = evalBinaryOp(lhs, rhs);
-                    res = out.add(result);
+                    out.add(result);
                 } break;
                 case DOUBLE: {
                     double lhs = left.doubleValue();
                     double rhs = right.doubleValue();
                     double result = evalBinaryOp(lhs, rhs);
-                    res = out.add(result);
+                    out.add(result);
                 } break;
                 case BIG_DECIMAL: {
                     BigDecimal lhs = left.decimalValue();
                     BigDecimal rhs = right.decimalValue();
                     BigDecimal result = evalBinaryOp(lhs, rhs);
-                    res = out.add(result);
+                    out.add(result);
                 } break;
                 default: throw FxUtils.switchDefault(); 
                 }
             } catch(ArithmeticException ex) {
-                res = out.add("@ERROR ArithmeticException");
+                out.add("@ERROR ArithmeticException");
             }
-            return res;
         }
 
         @Override

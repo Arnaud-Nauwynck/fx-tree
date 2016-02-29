@@ -38,17 +38,17 @@ public class FxUserPhasesProcessFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
 
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
 
         // resolve arguments: "phases", as string comma separated values, or array of string
         FxNode phasesArg = srcObj.get("phases");
-        if (phasesArg == null) return null;
+        if (phasesArg == null) return;
         String[] phases = FxNodeValueUtils.nodeToStringArray(phasesArg, true);
-        if (phases == null || phases.length == 0) return null;
+        if (phases == null || phases.length == 0) return;
         
         FxNode contentSrc = srcObj.get("src");
-        if (contentSrc == null) return null;
+        if (contentSrc == null) return;
         
         // TODO use childCtx + recursive eval ??
         
@@ -60,14 +60,14 @@ public class FxUserPhasesProcessFunc extends FxNodeFunc {
             FxChildWriter tmpResAdder = tmpResDoc.contentWriter();
             
             FxPhaseRecursiveEvalFunc phaseFunc = new FxPhaseRecursiveEvalFunc(phase, extraFuncRegistry);
-            currPhaseRes = phaseFunc.eval(tmpResAdder, ctx, currPhaseRes);
+            phaseFunc.eval(tmpResAdder, ctx, currPhaseRes);
+            
+            currPhaseRes = tmpResDoc.getContent();
         }
 
         String lastPhase = phases[phases.length - 1];
         FxPhaseRecursiveEvalFunc lastPhaseFunc = new FxPhaseRecursiveEvalFunc(lastPhase, extraFuncRegistry);
-        currPhaseRes = lastPhaseFunc.eval(dest, ctx, currPhaseRes);
-        
-        return currPhaseRes; 
+        lastPhaseFunc.eval(dest, ctx, currPhaseRes);
     }
     
 }

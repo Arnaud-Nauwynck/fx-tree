@@ -45,11 +45,10 @@ public class FxStdCtxFuncs {
         protected FxCtxSetVarFunc() {            
         }
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             String varName = FxNodeValueUtils.getStringOrThrow((FxObjNode) src, "name");
             FxNode value = FxNodeValueUtils.getOrThrow((FxObjNode) src, "value");
             ctx.putVariable(varName, value);
-            return null;
         }
     }
 
@@ -65,16 +64,15 @@ public class FxStdCtxFuncs {
      */
     public static class FxCtxSetVarCopyFunc extends FxNodeFunc {
         public static final String DEFAULT_NAME = "ctx.setVarCopy";
-        public static final FxCtxSetVarFunc DEFAULT_INSTANCE = new FxCtxSetVarFunc(); 
+        public static final FxCtxSetVarCopyFunc DEFAULT_INSTANCE = new FxCtxSetVarCopyFunc(); 
         protected FxCtxSetVarCopyFunc() {            
         }
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             String varName = FxNodeValueUtils.getStringOrThrow((FxObjNode) src, "name");
             FxNode value = FxNodeValueUtils.getOrThrow((FxObjNode) src, "value");
             FxNode valueCopy = FxNodeCopyVisitor.cloneMemNode(value);
             ctx.putVariable(varName, valueCopy);
-            return null;
         }
     }
     
@@ -93,7 +91,7 @@ public class FxStdCtxFuncs {
         protected FxCtxGetVarFunc() {            
         }
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             String varName = FxNodeValueUtils.getStringOrThrow((FxObjNode) src, "name");
             Object value = ctx.lookupVariable(varName);
             if (value == null) {
@@ -103,7 +101,6 @@ public class FxStdCtxFuncs {
             } else {
                 throw FxUtils.notImplYet();
             }
-            return null;
         }
     }
 
@@ -123,7 +120,7 @@ public class FxStdCtxFuncs {
         protected FxCtxDefineFonctionAliasFunc() {            
         }
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
             String alias = FxNodeValueUtils.getStringOrThrow(srcObj, "name");
             String funcName = FxNodeValueUtils.getStringOrThrow(srcObj, "function");
@@ -132,7 +129,6 @@ public class FxStdCtxFuncs {
                 throw new IllegalArgumentException("Function '" + funcName + "' not found");
             }
             ctx.getFuncRegistry().registerFunc(alias, func);
-            return null;
         }
     }
 
@@ -151,11 +147,10 @@ public class FxStdCtxFuncs {
         protected FxCtxUndefineFonctionFunc() {            
         }
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
             String name = FxNodeValueUtils.getStringOrThrow(srcObj, "name");
             ctx.getFuncRegistry().unregisterFunc(name);
-            return null;
         }
     }
 
@@ -175,14 +170,13 @@ public class FxStdCtxFuncs {
         protected FxCtxDefineMacroFunc() {            
         }
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
             String name = FxNodeValueUtils.getStringOrThrow(srcObj, "name");
             FxNode template = FxNodeValueUtils.getOrThrow(srcObj, "template");
             FxNode templateCopy = FxNodeCopyVisitor.cloneMemNode(template);
             FxReplaceTemplateCopyFunc macroFunc = new FxReplaceTemplateCopyFunc(templateCopy);
             ctx.getFuncRegistry().registerFunc(name, macroFunc);
-            return null;
         }
     }
 
@@ -201,11 +195,10 @@ public class FxStdCtxFuncs {
         protected FxCtxUndefineMacroFunc() {            
         }
         @Override
-        public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
             String name = FxNodeValueUtils.getStringOrThrow(srcObj, "name");
             ctx.getFuncRegistry().unregisterFunc(name);
-            return null;
         }
     }
 

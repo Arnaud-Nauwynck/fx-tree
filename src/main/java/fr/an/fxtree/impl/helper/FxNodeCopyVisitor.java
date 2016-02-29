@@ -44,6 +44,19 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         return tmpDoc.getContent();
     }
     
+    
+    public static void removeAndCopyContentTo(FxChildWriter out, FxRootDocument parentSrc) {
+        if (out.canAddMoveFrom(parentSrc)) {
+            // OPTIMISATION ... equivalent to "remove() + copyTo()"
+            // when compatible nodeFactory (example both in-memory ..)
+            out.addMoveFrom(parentSrc);
+        } else {
+            FxNode contentSrc = parentSrc.getContent();
+            FxNodeCopyVisitor.copyTo(out, contentSrc);
+            parentSrc.remove(contentSrc);
+        }
+    }
+    
     // ------------------------------------------------------------------------
 
     

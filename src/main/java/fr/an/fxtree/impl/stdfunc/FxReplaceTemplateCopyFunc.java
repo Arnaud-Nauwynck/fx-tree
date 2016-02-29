@@ -17,7 +17,7 @@ public class FxReplaceTemplateCopyFunc extends FxNodeFunc {
     }
     
     @Override
-    public FxNode eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+    public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         FxObjNode params = (FxObjNode) srcObj.get("params");
         if (params != null) {
@@ -27,6 +27,5 @@ public class FxReplaceTemplateCopyFunc extends FxNodeFunc {
         } else {
             FxNodeCopyVisitor.copyTo(dest, template);
         }
-        return null;
     }
 }
