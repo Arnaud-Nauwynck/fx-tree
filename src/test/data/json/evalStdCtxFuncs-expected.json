@@ -1,0 +1,8 @@
+{
+  "eval_ctxGetVar_x": 123,
+   "eval_ctxGetVar_yCopy": { "y": 123 },
+
+  /* Void "eval_ctxDefineFuncAlias_aliasNumberAdd" */
+  "eval_aliasNumberAdd_1_1": 2
+
+}

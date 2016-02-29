@@ -29,6 +29,7 @@ public class FxStdFuncs {
 
         FxStdMathFuncs.registerBuiltinFuncs(funcs);
         FxStdFileFuncs.registerBuiltinFuncs(funcs);
+        FxStdCtxFuncs.registerBuiltinFuncs(funcs);
         
         
         return funcRegistry;

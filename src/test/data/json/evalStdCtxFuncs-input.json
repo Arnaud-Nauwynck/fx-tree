@@ -1,0 +1,33 @@
+{
+  "eval_ctxSetVar_x": {
+	  "@fx-eval": "#phase0:ctx.setVar",
+	  "name": "x",
+	  "value" : 123
+  },
+  "eval_ctxGetVar_x": {
+	  "@fx-eval": "#phase0:ctx.getVar",
+	  "name" : "x"
+  },
+	
+  "eval_ctxSetVarCopy_yCopy": {
+	  "@fx-eval": "#phase0:ctx.setVarCopy",
+	  "name": "yCopy",
+	  "value" : {
+	  	"y": 123
+	  }
+  },	
+  "eval_ctxGetVar_yCopy": {
+	"@fx-eval": "#phase0:ctx.getVar",
+	"name": "yCopy"
+  },
+  
+  "eval_ctxDefineFuncAlias_aliasNumberAdd": {
+	"@fx-eval": "#phase0:ctx.defineFuncAlias",
+	"name": "aliasNumberAdd",
+	"function": "num.add"
+  },
+  "eval_aliasNumberAdd_1_1": {
+	"@fx-eval": "#phase0:aliasNumberAdd", "left": 1, "right": 1
+  }
+
+}

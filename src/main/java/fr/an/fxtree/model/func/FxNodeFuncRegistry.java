@@ -20,6 +20,14 @@ public class FxNodeFuncRegistry {
 
     // ------------------------------------------------------------------------
 
+    public void registerFunc(String name, FxNodeFunc func) {
+        funcs.put(name, func);
+    }
+
+    public void unregisterFunc(String name) {
+        funcs.remove(name);
+    }
+
     public FxNodeFunc lookupFunction(String name) {
         FxNodeFunc res = funcs.get(name);
         if (res == null && parent != null) {

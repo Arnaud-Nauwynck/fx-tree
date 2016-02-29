@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxBoolNode;
@@ -36,6 +37,15 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         }
         return src.accept(INSTANCE, out);
     }
+    
+    public static FxNode cloneMemNode(FxNode src) {
+        FxMemRootDocument tmpDoc = new FxMemRootDocument();
+        copyTo(tmpDoc.contentWriter(), src);
+        return tmpDoc.getContent();
+    }
+    
+    // ------------------------------------------------------------------------
+
     
     @Override
     public FxNode visitRoot(FxRootDocument src, FxChildWriter out) {
