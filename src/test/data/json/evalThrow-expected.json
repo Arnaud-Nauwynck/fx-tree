@@ -1,0 +1,5 @@
+{
+  "eval_throw_skip_body": {
+    "catch-exMessage": "test-throw"
+  }
+}

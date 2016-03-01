@@ -24,8 +24,8 @@ public class FxIfFunc extends FxNodeFunc {
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
-        boolean expr = FxNodeValueUtils.getBooleanOrThrow(srcObj, "expr");
-        // TOADD ... may expose Eager dependency graph "expr" -> "then",  of "expr" -> "else" 
+        boolean expr = FxCurrEvalCtxUtil.recurseEvalToBoolean(ctx, srcObj.get("expr"));
+
         FxNode templateNode;
         if (expr) {
             templateNode = srcObj.get("then");

@@ -1,0 +1,15 @@
+{
+  "eval_let_aint_bobj": {
+	"@fx-eval": "#phase0:let",
+	vars: {
+	  a: 1,
+	  b: { b: 2 }
+	},
+	body: {
+	  a: "#{a}",
+	  b: "#{b}",
+	  a2: "#{a}",
+	  b2: "#{b}"
+	}
+  }
+}

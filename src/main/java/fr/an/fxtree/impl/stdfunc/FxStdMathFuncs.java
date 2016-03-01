@@ -61,11 +61,16 @@ public final class FxStdMathFuncs {
         @Override
         public void eval(FxChildWriter out, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src; 
-            FxNode left = srcObj.get("left");
-            FxNode right = srcObj.get("right");
-            if (left == null || right == null) {
-                return;
+            FxNode left = FxCurrEvalCtxUtil.recurseEval(ctx, srcObj.get("left"));
+            FxNode right = FxCurrEvalCtxUtil.recurseEval(ctx, srcObj.get("right"));
+            
+            if (left == null || !left.isNumber()) {
+                throw new IllegalArgumentException("expected 'left' number, got " + left.getNodeType());
             }
+            if (right == null || !right.isNumber()) {
+                throw new IllegalArgumentException("expected 'right' number, got " + right.getNodeType());
+            }
+            
             
             FxNumberType leftNumberType = left.numberType();
             FxNumberType rightNumberType = right.numberType();

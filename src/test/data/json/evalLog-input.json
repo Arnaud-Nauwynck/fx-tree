@@ -1,0 +1,31 @@
+{
+"eval_log_implicit_info": {
+	  "@fx-eval": "#phase0:log",
+	  "message": "message-implicit-info"
+	},
+"eval_log_trace": {
+	  "@fx-eval": "#phase0:log",
+	  level: "trace",
+	  "message": "message-trace"
+	},
+"eval_log_debug": {
+	  "@fx-eval": "#phase0:log",
+	  level: "debug",
+	  "message": "message-debug"
+	},
+"eval_log_info": {
+	  "@fx-eval": "#phase0:log",
+	  level: "info",
+	  "message": "message-info"
+	},
+"eval_log_warn": {
+	  "@fx-eval": "#phase0:log",
+	  level: "warn",
+	  "message": "message-warn"
+	},
+"eval_log_error": {
+	  "@fx-eval": "#phase0:log",
+	  level: "error",
+	  "message": "message-error"
+	}
+}

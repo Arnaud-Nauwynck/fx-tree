@@ -1,0 +1,16 @@
+{
+  "eval_throw_skip_body": {
+    "@fx-eval": "#phase0:try-catch",
+    body: {
+	  "some-value-before": 123,
+	  "eval_throw": {
+	    "@fx-eval": "#phase0:throw",
+	    message: "test-throw"
+	  },    
+	  "some-value-before": 123
+    },
+    "catch": {
+  	  "catch-exMessage": "#{exMessage}"
+    }
+  }
+}

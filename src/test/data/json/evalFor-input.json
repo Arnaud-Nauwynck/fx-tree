@@ -14,5 +14,12 @@
 	  "template": {
 	    "index": "#{index}"
 	  }
-	}
+	},
+"eval_for_0_20": {
+	  "@fx-eval": "#phase0:for",
+	  "end": 20,
+	  "template": {
+	    "index": "#{index}"
+	  }
+	}	
 }

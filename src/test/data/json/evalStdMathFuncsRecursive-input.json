@@ -1,0 +1,21 @@
+{
+"eval_2*(3+4)": {
+	  "@fx-eval": "#phase0:num.multiply",
+	  "left": 2,
+	  "right": {
+		  "@fx-eval": "#phase0:num.add",
+		  "left": 3,
+	  	  "right": 4
+	  }	
+	},
+"eval_(2*3)+4)": {
+	  "@fx-eval": "#phase0:num.add",
+	  "left": {
+		  "@fx-eval": "#phase0:num.multiply",
+		  "left": 2,
+	  	  "right": 3
+	  },
+	  "right": 4
+	}
+	
+}

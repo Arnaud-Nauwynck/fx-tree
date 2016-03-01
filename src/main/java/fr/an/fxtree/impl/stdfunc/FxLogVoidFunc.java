@@ -3,7 +3,6 @@ package fr.an.fxtree.impl.stdfunc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
@@ -33,8 +32,8 @@ public class FxLogVoidFunc extends FxNodeFunc {
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
-        String message = FxNodeValueUtils.getStringOrThrow(srcObj, "message");
-        String level =  FxNodeValueUtils.getOrDefault(srcObj, "level", "info");
+        String message = FxCurrEvalCtxUtil.recurseEvalToString(ctx, srcObj.get("message"));
+        String level =  FxCurrEvalCtxUtil.recurseEvalToStringOrDefault(ctx, srcObj.get("level"), "info");
         level = level.toLowerCase();
         
         switch (level) {
