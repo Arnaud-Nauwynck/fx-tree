@@ -1,8 +1,16 @@
 package fr.an.fxtree.model.path;
 
 import java.util.Arrays;
+import java.util.List;
 
+import fr.an.fxtree.impl.util.FxUtils;
+import fr.an.fxtree.model.FxArrayNode;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
+import fr.an.fxtree.model.FxObjNode;
+import fr.an.fxtree.model.path.FxChildPathElement.FxArrayIndexPathElt;
+import fr.an.fxtree.model.path.FxChildPathElement.FxObjFieldPathElt;
+import fr.an.fxtree.model.path.impl.FxNodePathParserUtils;
 
 /**
  * immutable path into a json tree, using strict descending operator only... no "parent", or "root" allowed
@@ -21,7 +29,12 @@ public class FxNodePath {
         FxChildPathElement[] copy = elements.clone();
         return new FxNodePath(copy);
     }
-    
+
+    public static FxNodePath of(List<FxChildPathElement> elements) {
+        FxChildPathElement[] copy = elements.toArray(new FxChildPathElement[elements.size()]);
+        return new FxNodePath(copy);
+    }
+
     public static FxNodePath of(Object... fieldOrIndexElements) {
         FxChildPathElement[] tmp = new FxChildPathElement[fieldOrIndexElements.length];
         int i = 0;
@@ -30,6 +43,10 @@ public class FxNodePath {
             i++;
         }
         return new FxNodePath(tmp);
+    }
+    
+    public static FxNodePath parse(String text) {
+        return FxNodePathParserUtils.parse(text);
     }
     
     // ------------------------------------------------------------------------
@@ -59,6 +76,43 @@ public class FxNodePath {
         }
         return tmp;
     }
+    
+    
+    public FxChildWriter selectInsertBuilder(FxNode src) {
+        return selectInsertBuilder(src, src);
+    }
+    
+    public FxChildWriter selectInsertBuilder(FxNode baseSrc, FxNode src) {
+        FxNodePath parentPath = parent();
+        FxNode destParent = parentPath.select(baseSrc, src);
+        
+        FxChildPathElement insertPathElt = get(size()-1);
+        FxChildWriter destWriter;
+        if (destParent == null) {
+            throw FxUtils.notImplYet(); // create missing path?...
+        }
+        
+        if (insertPathElt instanceof FxArrayIndexPathElt) {
+            int arrayIndex = ((FxArrayIndexPathElt) insertPathElt).getIndex();
+            if (!destParent.isArray()) {
+                throw new IllegalArgumentException("invalid copy toPath:'" + this + "' expecting array position, got " + destParent.getNodeType());
+            }
+            FxArrayNode destParentArray = (FxArrayNode) destParent;
+            int insertPos = (arrayIndex >= 0)? arrayIndex : (destParentArray.size() - arrayIndex);
+            destWriter = destParentArray.insertBuilder(insertPos);
+        } else if (insertPathElt instanceof FxObjFieldPathElt) {
+            String fieldname = ((FxObjFieldPathElt) insertPathElt).getFieldname();
+            if (!destParent.isObject()) {
+                throw new IllegalArgumentException("invalid copy toPath:'" + this + "' expecting array position, got " + destParent.getNodeType());
+            }
+            destWriter = ((FxObjNode) destParent).putBuilder(fieldname);
+        } else {
+            throw new IllegalArgumentException("invalid copy toPath:'" + this + "' expecting writable array/obj node content, got " + insertPathElt);
+        }
+        
+        return destWriter;
+    }
+    
     
     // ------------------------------------------------------------------------
     

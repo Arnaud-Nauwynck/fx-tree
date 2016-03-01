@@ -1,0 +1,13 @@
+{
+  "eval_tree_copy": {
+    xx: 123,
+    shared: {
+      srca: {
+        srcb: { bContent: 123},
+        other: 456
+      },
+      destb: { bContent: 123}        
+    },
+    yy: 456
+  }
+}

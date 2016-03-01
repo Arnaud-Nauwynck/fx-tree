@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.an.fxtree.impl.util.FxUtils;
+import fr.an.fxtree.json.jackson.FxNodeAsToken;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.FxPOJONode;
 import fr.an.fxtree.model.func.FxEvalContext;
+import fr.an.fxtree.model.path.FxChildPathElement;
+import fr.an.fxtree.model.path.FxNodePath;
 
 public class FxNodeValueUtils {
 
@@ -344,6 +347,31 @@ public class FxNodeValueUtils {
         } else {
             // TODO... use Jackson serialisation?
             throw FxUtils.notImplYet();
+        }
+    }
+
+    public static FxNodePath nodeToPath(FxNode src) {
+        if (src.isArray()) {
+            FxArrayNode array = (FxArrayNode) src;
+            final int len = array.size();
+            FxChildPathElement[] elts = new FxChildPathElement[len]; 
+            for(int i = 0; i < len; i++) {
+                FxNode e = array.get(i);
+                if (e.isNumber()) {
+                    int arrayIndex = e.intValue();
+                    elts[i] = FxChildPathElement.of(arrayIndex);
+                } else if (e.isTextual()) {
+                    elts[i] = FxChildPathElement.of(e.textValue());
+                } else {
+                    throw new IllegalArgumentException("expected jsonpath array containing 'int'(index) or 'string' fieldname, got " + e.getNodeType());    
+                }
+            }
+            return FxNodePath.of(elts);
+        } else if (src.isTextual()) {
+            String pathText = src.textValue();
+            return FxNodePath.parse(pathText);
+        } else {
+            throw new IllegalArgumentException("expected tree path as string or array, got " + src.getNodeType());
         }
     }
 

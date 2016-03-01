@@ -31,7 +31,7 @@ public class FxStdFuncs {
         FxStdMathFuncs.registerBuiltinFuncs(funcs);
         FxStdFileFuncs.registerBuiltinFuncs(funcs);
         FxStdCtxFuncs.registerBuiltinFuncs(funcs);
-        
+        FxStdTreeFuncs.registerBuiltinFuncs(funcs);
         
         return funcRegistry;
     }

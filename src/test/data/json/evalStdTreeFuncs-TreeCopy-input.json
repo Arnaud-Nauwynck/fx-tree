@@ -1,0 +1,17 @@
+{
+  "eval_tree_copy": {
+    "@fx-eval": "#phase0:tree.copy",
+    fromPath: ".shared.srca.srcb",
+    toPath: ".shared.destb",
+    body: {
+      xx: 123,
+      shared: {
+        srca: {
+          srcb: { bContent: 123},
+          other: 456
+        }
+      },
+      yy: 456
+    }
+  }
+}

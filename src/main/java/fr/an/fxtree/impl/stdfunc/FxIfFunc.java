@@ -1,7 +1,6 @@
 package fr.an.fxtree.impl.stdfunc;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
-import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
