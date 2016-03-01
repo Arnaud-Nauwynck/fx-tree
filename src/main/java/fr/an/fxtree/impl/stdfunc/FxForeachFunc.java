@@ -29,11 +29,16 @@ public class FxForeachFunc extends FxNodeFunc {
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
-        FxArrayNode srcValues = FxNodeValueUtils.getArrayOrNull(srcObj, "values");
+        FxNode srcValuesNode = FxNodeValueUtils.getOrThrow(srcObj, "values");
         String iterValueName = FxNodeValueUtils.getOrDefault(srcObj, "value", "value");
         String iterIndexName = FxNodeValueUtils.getOrDefault(srcObj, "indexName", "index");
         FxNode templateNode = srcObj.get("template");
-        if (srcValues == null || srcValues.isEmpty() || templateNode == null) {
+        if (srcValuesNode == null || templateNode == null) {
+            return;
+        }
+        
+        FxArrayNode srcValues = FxCurrEvalCtxUtil.recurseEvalToArray(ctx, srcValuesNode);
+        if (srcValues.isEmpty()) {
             return;
         }
         

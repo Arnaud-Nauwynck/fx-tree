@@ -31,12 +31,12 @@ public class FxTryCatchFunc extends FxNodeFunc {
         try {
             FxMemRootDocument tmpDoc = new FxMemRootDocument();
             
-            FxPhaseRecursiveEvalFunc.recursiveEvalCurrPhaseFunc(tmpDoc.contentWriter(), ctx, templateNode);
+            FxCurrEvalCtxUtil.recurseEvalTo(tmpDoc.contentWriter(), ctx, templateNode);
             
             // ok, no exception .. copy temp result
             FxNodeCopyVisitor.removeAndCopyContentTo(dest, tmpDoc);
         } catch(Exception ex) {
-            FxPhaseRecursiveEvalFunc.recursiveEvalCurrPhaseFunc(dest, ctx, catchNode);
+            FxCurrEvalCtxUtil.recurseEvalTo(dest, ctx, catchNode);
         }
     }
     

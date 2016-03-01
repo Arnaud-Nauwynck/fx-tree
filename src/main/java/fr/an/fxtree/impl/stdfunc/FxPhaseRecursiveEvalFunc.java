@@ -16,8 +16,6 @@ import fr.an.fxtree.model.func.FxNodeFuncRegistry;
  * clone a tree and evaluate recursively all functions for a given phase (~namespace)
  */
 public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
-
-    protected static final String PROP_CURR_PHASE_EVAL_FUNC = "currPhaseEvalFunc";
     
     private String phase;
 
@@ -34,21 +32,11 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
 
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        FxEvalContext childCtx = ctx.createChildContext();
-        childCtx.putVariable(PROP_CURR_PHASE_EVAL_FUNC, this);
+        FxEvalContext childCtx = FxCurrEvalCtxUtil.childEvalCtx(ctx, this);
         
         src.accept(new InnerVisitor(childCtx), dest); 
     }
-    
-    public static void recursiveEvalCurrPhaseFunc(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        FxPhaseRecursiveEvalFunc currFunc = (FxPhaseRecursiveEvalFunc) ctx.lookupVariable(PROP_CURR_PHASE_EVAL_FUNC);
-        if (currFunc != null) {
-            currFunc.eval(dest, ctx, src);
-        } else {
-            // should not occur: not evauating any phase (not using this function class)??
-            FxNodeCopyVisitor.copyTo(dest, src);
-        }
-    }
+
     
     private class InnerVisitor extends FxNodeCopyVisitor {
         FxEvalContext ctx;
@@ -56,7 +44,6 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
         public InnerVisitor(FxEvalContext ctx) {
             this.ctx = ctx;
         }
-
 
         /**
          * detect JSon object that are Meta object for fx evaluation
@@ -111,7 +98,8 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
             }
             
             
-            // step 0... TOADD use eager support for function
+            // step 0... recursive eval function parameters !!!
+            // TOADD use eager support for function
             
             // *** step 1: eval current node function ***
             FxMemRootDocument tmpNonRecurseDoc = new FxMemRootDocument();
@@ -124,7 +112,7 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
                 return null;
             }
 
-            // step 2: recurse eval same phase (other functions) on sub-nodes
+            // step 2: recurse eval same phase (other functions) on return result
             FxNode res = tmpres.accept(this, destNode);
             
             return res;

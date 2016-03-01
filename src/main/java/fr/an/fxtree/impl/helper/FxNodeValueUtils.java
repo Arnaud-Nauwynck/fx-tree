@@ -21,17 +21,17 @@ public class FxNodeValueUtils {
         if (fieldNode == null) {
             return defaultValue;
         }
-        String res = fieldNode.textValue();
-        if (res == null) {
-            return defaultValue;
-        }
-        return res;
+        return nodeToString(fieldNode);
     }
 
     public static String getStringOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
+        return nodeToString(fieldNode);
+    }
+
+    public static String nodeToString(FxNode fieldNode) {
         if (!fieldNode.isTextual()) {
-            throw new IllegalArgumentException("expecting String argument '" + fieldName + "', got " + fieldNode.getNodeType());
+            throw new IllegalArgumentException("expecting String, got " + fieldNode.getNodeType());
         }
         return fieldNode.textValue();
     }
@@ -41,14 +41,7 @@ public class FxNodeValueUtils {
         if (fieldNode == null) {
             return defaultValue;
         }
-        int res;
-        if (fieldNode.isNumber()) { 
-            res = fieldNode.intValue();
-        } else {
-            // throw error?
-            throw new IllegalArgumentException("expecting int argument '" + fieldName + "', got " + fieldNode.getNodeType());
-        }
-        return res;
+        return nodeToInt(fieldNode);
     }
 
     public static FxNode getOrThrow(FxObjNode parent, String fieldName) {
@@ -61,8 +54,12 @@ public class FxNodeValueUtils {
     
     public static FxObjNode getObjOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
+        return nodeToObj(fieldNode);
+    }
+
+    public static FxObjNode nodeToObj(FxNode fieldNode) {
         if (!fieldNode.isObject()) {
-            throw new IllegalArgumentException("expecting Object argument '" + fieldName + "', got " + fieldNode.getNodeType());
+            throw new IllegalArgumentException("expecting Object, got " + fieldNode.getNodeType());
         }
         return (FxObjNode) fieldNode;
     }
@@ -127,7 +124,7 @@ public class FxNodeValueUtils {
         return nodeToChar(fieldNode);
     }
 
-    private static char nodeToChar(FxNode fieldNode) {
+    public static char nodeToChar(FxNode fieldNode) {
         char res;
         if (fieldNode.isTextual()) {
             String text = fieldNode.textValue();
@@ -161,7 +158,7 @@ public class FxNodeValueUtils {
         return nodeToInt(fieldNode);
     }
 
-    private static int nodeToInt(FxNode fieldNode) {
+    public static int nodeToInt(FxNode fieldNode) {
         if (!fieldNode.isNumber()) {
             throw new IllegalArgumentException("expecting 'int', got " + fieldNode.getNodeType());
         }
@@ -187,7 +184,7 @@ public class FxNodeValueUtils {
         return nodeToLong(fieldNode);
     }
 
-    private static long nodeToLong(FxNode fieldNode) {
+    public static long nodeToLong(FxNode fieldNode) {
         if (!fieldNode.isNumber()) {
             throw new IllegalArgumentException("expecting 'Long', got " + fieldNode.getNodeType());
         }
@@ -248,11 +245,15 @@ public class FxNodeValueUtils {
     
     public static FxArrayNode getArrayOrNull(FxObjNode parent, String fieldName) {
         FxNode fieldNode = parent.get(fieldName);
+        return nodeToArray(fieldNode);
+    }
+
+    public static FxArrayNode nodeToArray(FxNode fieldNode) {
         if (fieldNode == null) {
             return null;
         }
         if (!fieldNode.isArray()) {
-            return null;
+            throw new IllegalArgumentException("expecting 'array', got " + fieldNode.getNodeType());
         }
         return (FxArrayNode) fieldNode;
     }

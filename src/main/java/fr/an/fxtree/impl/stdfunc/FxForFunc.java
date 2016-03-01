@@ -29,9 +29,11 @@ public class FxForFunc extends FxNodeFunc {
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
-        int startIndex = FxNodeValueUtils.getOrDefault(srcObj, "start", 0);
-        int incr = FxNodeValueUtils.getOrDefault(srcObj, "incr", 1);
-        int endIndex = FxNodeValueUtils.getIntOrThrow(srcObj, "end");
+        
+        int startIndex = FxCurrEvalCtxUtil.recurseEvalToIntOrDefault(ctx, srcObj.get("start"), 0);
+        int incr = FxCurrEvalCtxUtil.recurseEvalToIntOrDefault(ctx, srcObj.get("incr"), 1);
+        int endIndex = FxCurrEvalCtxUtil.recurseEvalToIntOrThrow(ctx, srcObj.get("end"));
+        
         String iterIndexName = FxNodeValueUtils.getOrDefault(srcObj, "indexName", "index");
         FxNode templateNode = srcObj.get("template");
 

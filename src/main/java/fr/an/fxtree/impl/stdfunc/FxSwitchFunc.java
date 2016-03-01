@@ -24,19 +24,17 @@ public class FxSwitchFunc extends FxNodeFunc {
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
-        String expr = FxNodeValueUtils.getStringOrThrow(srcObj, "expr");
+        FxNode expr = FxNodeValueUtils.getOrThrow(srcObj, "expr");
         FxObjNode whenNodes = FxNodeValueUtils.getObjOrThrow(srcObj, "when");
-        FxNode whenDefaultNode = srcObj.get("default");
-
-        // TOADD ... may expose Eager dependency graph "expr" -> "when.<<expr>>" or "expr" -> "default" 
-        FxNode templateNode = whenNodes.get(expr);
+        
+        String exprValue = FxCurrEvalCtxUtil.recurseEvalToString(ctx, expr); 
+        FxNode templateNode = whenNodes.get(exprValue);
         if (templateNode == null) {
-            templateNode = whenDefaultNode;
+            templateNode = srcObj.get("default");
         }
         
-        FxNode res = null;
         if (templateNode != null) {
-            res = FxNodeCopyVisitor.copyTo(dest, templateNode);
+            FxNodeCopyVisitor.copyTo(dest, templateNode);
         }
     }
     
