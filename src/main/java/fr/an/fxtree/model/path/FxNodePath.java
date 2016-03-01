@@ -43,12 +43,16 @@ public class FxNodePath {
     }
 
     public FxNode select(FxNode src) {
+        return select(src, src);
+    }
+    
+    public FxNode select(FxNode baseSrc, FxNode src) {
         if (src == null) {
             return null;
         }
         FxNode tmp = src;
         for(int i = 0; i < elements.length; i++) {
-            tmp = elements[i].select(tmp);
+            tmp = elements[i].select(baseSrc, tmp);
             if (tmp == null) {
                 return null;
             }
@@ -89,6 +93,13 @@ public class FxNodePath {
             resElts[i] = FxChildPathElement.of(fieldOrIndex); // should not use "$." inside path?
             i++;
         }
+        return new FxNodePath(resElts);
+    }
+    
+    public FxNodePath childSubPath() {
+        if (elements.length == 0) return null;
+        FxChildPathElement[] resElts = new FxChildPathElement[elements.length - 1];
+        System.arraycopy(elements, 1, resElts, 0, elements.length-1);
         return new FxNodePath(resElts);
     }
     

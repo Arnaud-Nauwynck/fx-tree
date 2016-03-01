@@ -13,15 +13,15 @@ public abstract class FxChildPathElement {
         } else if (obj instanceof Integer) {
             int index = ((Integer) obj).intValue();
             return of(index);
-        } else if (obj instanceof FxThisPathElement) {
-            return (FxThisPathElement) obj;
+        } else if (obj instanceof FxThisRootPathElement) {
+            return (FxThisRootPathElement) obj;
         } else {
             throw new IllegalArgumentException();
         }
     }
 
-    public static FxThisPathElement ofThis() {
-        return FxThisPathElement.INSTANCE;
+    public static FxThisRootPathElement thisRoot() {
+        return FxThisRootPathElement.INSTANCE;
     }
     
     public static FxObjFieldPathElt of(String field) {
@@ -33,26 +33,24 @@ public abstract class FxChildPathElement {
     }
 
     
-    
-    
-    public abstract FxNode select(FxNode src);
+    public abstract FxNode select(FxNode baseSrc, FxNode src);
     
     
     // ------------------------------------------------------------------------
     
     /**
-     * <PRE>$.</PRE>  json child path element = current json node 
+     * <PRE>$.</PRE>  json child path element = base "=root" json node 
      */
-    public static final class FxThisPathElement extends FxChildPathElement {
+    public static final class FxThisRootPathElement extends FxChildPathElement {
         
-        public static final FxThisPathElement INSTANCE = new FxThisPathElement();
+        public static final FxThisRootPathElement INSTANCE = new FxThisRootPathElement();
         
-        private FxThisPathElement() {
+        private FxThisRootPathElement() {
         }
         
         @Override
-        public FxNode select(FxNode src) {
-            return src;
+        public FxNode select(FxNode baseSrc, FxNode src) {
+            return baseSrc;
         }
         
         @Override
@@ -101,7 +99,7 @@ public abstract class FxChildPathElement {
         }
 
         @Override
-        public FxNode select(FxNode src) {
+        public FxNode select(FxNode baseSrc, FxNode src) {
             if (!(src instanceof FxObjNode)) {
                 return null;
             }
@@ -173,7 +171,7 @@ public abstract class FxChildPathElement {
         }
 
         @Override
-        public FxNode select(FxNode src) {
+        public FxNode select(FxNode baseSrc, FxNode src) {
             if (!(src instanceof FxArrayNode)) {
                 return null;
             }
