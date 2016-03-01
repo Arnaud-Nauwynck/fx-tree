@@ -81,6 +81,9 @@ public class FxVarsReplaceFunc extends FxNodeFunc {
         @Override
         public FxNode visitTextValue(FxTextNode src, FxChildWriter out) {
             String text = src.textValue();
+            if (text == null) {
+                return super.visitTextValue(src, out); // ???
+            }
             // detect patterns "#{{....}}"  for variables 
             int replStart = text.indexOf("#{");
             if (replStart == -1) {

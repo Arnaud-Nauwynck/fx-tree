@@ -1,0 +1,16 @@
+{
+  "@fx-eval": "#phase0:try-catch",
+  body: {
+    "@fx-eval": "#phase0:invoke",
+    method: "fr.an.fxtree.impl.stdfunc.FxTryCatchFuncTest.throwRuntimeException",
+    params: [ "some-message", "some-nested-message" ]
+  },
+  catch: {
+  	"catch-exClass": "#{exClass}",
+  	"catch-exMessage": "#{exMessage}",
+  	/*"catch-exStackTrace": "#{exStackTrace}",*/
+  	"catch-causeClass": "#{causeClass}",
+  	"catch-causeMessage": "#{causeMessage}"
+  	/*"catch-causeStackTrace": "#{causeStackTrace}"*/
+  }
+}
