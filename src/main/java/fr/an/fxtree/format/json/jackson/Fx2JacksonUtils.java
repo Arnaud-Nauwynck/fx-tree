@@ -1,4 +1,4 @@
-package fr.an.fxtree.json.jackson;
+package fr.an.fxtree.format.json.jackson;
 
 import com.fasterxml.jackson.core.JsonParser.NumberType;
 

@@ -10,8 +10,8 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.an.fxtree.format.json.FxJsonUtils;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
-import fr.an.fxtree.json.FxJsonUtils;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;

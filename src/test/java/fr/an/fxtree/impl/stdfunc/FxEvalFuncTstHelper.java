@@ -2,8 +2,8 @@ package fr.an.fxtree.impl.stdfunc;
 
 import org.junit.Assert;
 
+import fr.an.fxtree.format.json.FxJsonUtilsTest;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
-import fr.an.fxtree.json.FxJsonUtilsTest;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.func.FxEvalContext;

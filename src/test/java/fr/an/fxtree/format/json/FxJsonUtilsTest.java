@@ -1,4 +1,4 @@
-package fr.an.fxtree.json;
+package fr.an.fxtree.format.json;
 
 import java.io.File;
 
@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.an.fxtree.format.json.FxJsonUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxNode;
 

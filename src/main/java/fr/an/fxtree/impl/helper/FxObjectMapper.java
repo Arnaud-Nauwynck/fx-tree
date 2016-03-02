@@ -6,7 +6,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 
-import fr.an.fxtree.json.jackson.FxNodeTreeTraversingParser;
+import fr.an.fxtree.format.json.jackson.FxNodeTreeTraversingParser;
 import fr.an.fxtree.model.FxObjNode;
 
 public class FxObjectMapper {

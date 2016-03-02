@@ -1,4 +1,4 @@
-package fr.an.fxtree.json;
+package fr.an.fxtree.format.json;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fr.an.fxtree.json.jackson.Jackson2FxTreeBuilder;
+import fr.an.fxtree.format.json.jackson.Jackson2FxTreeBuilder;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 

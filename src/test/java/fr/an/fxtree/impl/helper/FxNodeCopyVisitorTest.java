@@ -3,8 +3,8 @@ package fr.an.fxtree.impl.helper;
 import org.junit.Assert;
 import org.junit.Test;
 
+import fr.an.fxtree.format.json.FxJsonUtilsTest;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
-import fr.an.fxtree.json.FxJsonUtilsTest;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxObjNode;
 

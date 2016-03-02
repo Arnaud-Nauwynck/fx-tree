@@ -1,4 +1,4 @@
-package fr.an.fxtree.json.jackson;
+package fr.an.fxtree.format.json.jackson;
 
 import java.util.Iterator;
 import java.util.Map;
