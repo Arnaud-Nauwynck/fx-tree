@@ -3,10 +3,6 @@ package fr.an.fxtree.model.func;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
-import fr.an.fxtree.impl.stdfunc.FxPhaseRecursiveEvalFunc;
-import fr.an.fxtree.model.FxNode;
-
 public class FxEvalContext {
 
     private FxEvalContext parentContext;

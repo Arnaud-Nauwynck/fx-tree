@@ -52,7 +52,7 @@ public class FxMemObjNode extends FxObjNode {
     }
 
     public Map<String, FxNode> fieldsHashMapCopy() {
-        return new HashMap<>(_children);
+        return new LinkedHashMap<>(_children);
     }
     
     @SuppressWarnings("unchecked")

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.an.fxtree.impl.util.FxUtils;
-import fr.an.fxtree.json.jackson.FxNodeAsToken;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxNode;

@@ -3,8 +3,8 @@ package fr.an.fxtree.model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -44,12 +44,16 @@ public abstract class FxObjNode extends FxContainerNode {
     public abstract Iterator<Map.Entry<String, FxNode>> fields();
 
     public Map<String, FxNode> fieldsHashMapCopy() {
-        Map<String, FxNode> res = new HashMap<>();
+        Map<String, FxNode> res = new LinkedHashMap<>();
         for(Iterator<Map.Entry<String, FxNode>> iter = fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();
             res.put(e.getKey(), e.getValue());
         }
         return res;
+    }
+
+    public Iterator<Map.Entry<String, FxNode>> fieldsIterCopy(boolean useCopy) {
+        return (useCopy)? fieldsHashMapCopy().entrySet().iterator() : fields();
     }
 
     @FunctionalInterface
@@ -89,9 +93,13 @@ public abstract class FxObjNode extends FxContainerNode {
     // ------------------------------------------------------------------------
 
     public FxChildWriter putBuilder(String name) {
-        return new ObjChildWriter(this, name);
+        return new ObjChildWriter(this, name, false);
     }
-    
+
+    public FxChildWriter putBuilder(String name, boolean useIncrSuffix) {
+        return new ObjChildWriter(this, name, useIncrSuffix);
+    }
+
     public FxArrayNode putArray(String name) {
         FxArrayNode res = getNodeFactory().newArray();
         return onPut(name, res);
@@ -208,17 +216,23 @@ public abstract class FxObjNode extends FxContainerNode {
         
         private FxObjNode dest;
         private String baseName;
+        private boolean useIncrSuffix;
         private int currIndex;
         
-        public ObjChildWriter(FxObjNode dest, String name) {
+        public ObjChildWriter(FxObjNode dest, String name, boolean useIncrSuffix) {
             this.dest = dest;
             this.baseName = name;
+            this.useIncrSuffix = useIncrSuffix;
         }
 
         private String incrName() {
-            String res = (currIndex == 0)? baseName : baseName + currIndex;
-            currIndex++;
-            return res;
+            if (!useIncrSuffix) {
+                return baseName;
+            } else {
+                String res = (currIndex == 0)? baseName : baseName + currIndex;
+                currIndex++;
+                return res;
+            }
         }
         
         @Override

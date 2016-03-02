@@ -1,0 +1,31 @@
+{
+  "eval_tree_merge": {
+    "@fx-eval": "#phase0:tree.merge",
+    fromPaths: [ ".a1.a2", ".b1.b2" ],
+    ignoreFromPathsNotfound: false,
+    toPath: ".res1.res2",
+    body: {
+      other_before: 1,
+      a1: {
+        a2: { 
+          a2Field1: 123,
+          a2Field2: 234, 
+          sharedField1: "a-sharedField1", 
+      	  sharedField2: 123  
+        }  
+      },
+      b1: {
+        b2: {  
+          b2Field1: 123,
+          b2Field2: 234, 
+      	  sharedField1: "b-sharedField1", 
+      	  sharedField2: 234  
+        }  
+      },
+      res1: {
+        res2: {}
+      },
+      other_after: 1
+    }
+  }
+}

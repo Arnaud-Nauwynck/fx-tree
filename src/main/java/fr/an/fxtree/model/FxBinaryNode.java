@@ -33,6 +33,14 @@ public abstract class FxBinaryNode extends FxValueNode {
 
     public abstract void setValue(byte[] value);
 
+    public byte[] getValueClone() {
+        byte[] tmpres = getValue();
+        if (tmpres != null) {
+            tmpres = tmpres.clone();
+        }
+        return tmpres;
+    }
+
     @Override
     public byte[] binaryValue() {
         return getValue();
