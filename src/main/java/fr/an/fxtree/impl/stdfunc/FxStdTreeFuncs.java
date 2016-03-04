@@ -2,6 +2,7 @@ package fr.an.fxtree.impl.stdfunc;
 
 import java.util.Map;
 
+import fr.an.fxtree.impl.helper.FxNodeCopyDefaultsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeCopyMergeVisitor;
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
@@ -21,6 +22,7 @@ public final class FxStdTreeFuncs {
     public static void registerBuiltinFuncs(Map<String, FxNodeFunc> dest) {
         dest.put(FxCopyTreeFunc.NAME, FxCopyTreeFunc.INSTANCE);
         dest.put(FxMergeTreeFunc.NAME, FxMergeTreeFunc.INSTANCE);
+        dest.put(FxMergeDefaultsTreeFunc.NAME, FxMergeDefaultsTreeFunc.INSTANCE);
         
     }
     
@@ -181,4 +183,109 @@ public final class FxStdTreeFuncs {
         }
     }
     
+    
+    
+    /**
+     * FxFunction to merge add defaults from child path to another child path
+     * Example usage:
+     *<PRE>
+{
+  "eval_tree_mergeDefaults": {
+    "@fx-eval": "#phase0:tree.mergeDefaults",
+    fromPaths: [ ".defaults.a" ], 
+    ignoreFromPathsNotfound: false,
+    toPath: ".res1.res2",
+    body: {
+      other_before: 1,
+      defaults: {
+        a: { 
+          field1: 123,
+          field2: 234,
+          subObj3: { 
+            field2_1: 345,
+            field2_2: 456 
+          }
+        }
+      },
+      res1: {
+        res2: {
+          field1: 1,
+          subObj3: { 
+            field2_1: 3 
+          }
+        }
+      },
+      other_after: 1
+    }
+  }
+}
+     </PRE>
+     * => 
+     * <PRE>
+{
+  "eval_tree_mergeDefaults": {
+    other_before: 1,
+    defaults: {
+      a: { 
+        field1: 123,
+        field2: 234,
+        subObj3: { 
+          field2_1: 345,
+          field2_2: 456, 
+        }
+      }
+    },
+    res1: {
+      res2: {
+        field1: 1,
+        subObj3: { 
+          field2_1: 3,
+          field2_2: 456
+        },
+        field2: 234
+      }
+    },
+    other_after: 1
+  }
+}
+
+     * </PRE
+     *
+     */
+    public static class FxMergeDefaultsTreeFunc extends FxNodeFunc {
+        public static final String NAME = "tree.mergeDefaults";
+        public static final FxMergeDefaultsTreeFunc INSTANCE = new FxMergeDefaultsTreeFunc();
+        
+        @Override
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+            FxObjNode srcObj = (FxObjNode) src;
+            FxNode body = srcObj.get("body");
+            FxArrayNode fromPathsArray = FxCurrEvalCtxUtil.recurseEvalToArray(ctx, srcObj.get("fromPaths"));
+            FxNodePath toPath = FxCurrEvalCtxUtil.recurseEvalToPath(ctx, srcObj.get("toPath"));
+            boolean ignoreNotFound = FxCurrEvalCtxUtil.recurseEvalToBooleanOrDefault(ctx, srcObj.get("ignoreFromPathsNotfound"), false);
+            
+            FxNode destBody = FxNodeCopyVisitor.copyTo(dest, body);
+
+            FxNode destNode = toPath.select(destBody);
+
+            FxNodeCopyDefaultsVisitor mergeVisitor = FxNodeCopyDefaultsVisitor.INSTANCE; 
+
+            final int fromPathsLen = fromPathsArray.size();
+            for (int i = 0; i < fromPathsLen; i++) {
+                FxNode fromPathNode = fromPathsArray.get(i);
+                FxNodePath fromPath = FxNodeValueUtils.nodeToPath(fromPathNode);
+                
+                FxNode fromNode = fromPath.select(body);
+                if (fromNode == null) {
+                    if (ignoreNotFound) {
+                        throw new IllegalArgumentException("can not add defaults node, fromPath '" + fromPath + "' not found in body");
+                    } else {
+                        continue;
+                    }
+                }
+    
+                fromNode.accept(mergeVisitor, destNode);
+            }
+        }
+    }
 }

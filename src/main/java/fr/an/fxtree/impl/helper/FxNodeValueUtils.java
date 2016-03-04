@@ -1,7 +1,9 @@
 package fr.an.fxtree.impl.helper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fr.an.fxtree.impl.util.FxUtils;
 import fr.an.fxtree.model.FxArrayNode;
@@ -372,6 +374,35 @@ public class FxNodeValueUtils {
         } else {
             throw new IllegalArgumentException("expected tree path as string or array, got " + src.getNodeType());
         }
+    }
+
+    // TODO .. should be more customizable... currently use equality based on 'id' field for object...  
+    public static Object tryExtractId(FxNode src) {
+        if (src.isObject()) {
+            FxObjNode obj = (FxObjNode) src;
+            FxNode idValue = obj.get("id");
+            if (idValue != null) {
+                if (idValue.isTextual()) {
+                    return idValue.textValue(); 
+                } else if (idValue.isNumber()) {
+                    return idValue.intValue();
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Map<Object, FxNode> tryIndexEltsByIds(FxArrayNode array) {
+        Map<Object, FxNode> res = new HashMap<>();
+        int len = array.size();
+        for (int i = 0; i < len; i++) {
+            FxNode elt = array.get(i);
+            Object eltId = FxNodeValueUtils.tryExtractId(elt);
+            if (eltId != null) {
+                res.put(eltId, elt);
+            }
+        }
+        return res;
     }
 
 }

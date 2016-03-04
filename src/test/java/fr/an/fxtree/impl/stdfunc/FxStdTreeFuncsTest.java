@@ -15,4 +15,10 @@ public class FxStdTreeFuncsTest {
     public void testEval_TreeMerge() {
         tstHelper.doTestFile("eval-TreeMerge");
     }
+
+    @Test
+    public void testEval_MergeDefaults() {
+        tstHelper.doTestFile("eval-mergeDefaults");
+    }
+
 }

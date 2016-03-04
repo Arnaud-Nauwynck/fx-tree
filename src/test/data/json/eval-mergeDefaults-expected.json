@@ -1,0 +1,26 @@
+{
+  "eval_tree_mergeDefaults": {
+    other_before: 1,
+    defaults: {
+      a: { 
+        field1: 123,
+        field2: 234,
+        subObj3: { 
+          field2_1: 345,
+          field2_2: 456
+        }
+      }
+    },
+    res1: {
+      res2: {
+        field1: 1,
+        subObj3: { 
+          field2_1: 3,
+          field2_2: 456
+        },
+        field2: 234
+      }
+    },
+    other_after: 1
+  }
+}
