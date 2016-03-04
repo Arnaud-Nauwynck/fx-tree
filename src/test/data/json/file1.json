@@ -10,10 +10,13 @@
 		"a": 1,
 		"b": 2,
 		"fieldObjObj": {
+		  c: 1
 		}
 	},
 	
-	"fieldArray": [ true, 1, "Hello" ]
-	
+	"fieldArray": [ true, 1, "Hello" ],
+	emptyArray: [],
+ 	emptyObject: {},
+ 	emptyString: ""
 }
 

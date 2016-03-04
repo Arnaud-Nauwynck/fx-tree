@@ -1,48 +1,30 @@
-package fr.an.fxtree.format.json;
+package fr.an.fxtree.format.yaml;
 
 import java.io.File;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import fr.an.fxtree.format.json.FxJsonUtils;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxArrayNode;
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 
-public class FxJsonUtilsTest {
+public class FxYamlUtilsTest {
 
-    public static FxMemRootDocument getJsonTstFile(String fileName) {
-        FxMemRootDocument doc = new FxMemRootDocument(); 
-        File inFile = new File("src/test/data/json/" + fileName);
-        // Perform
-        FxJsonUtils.readTree(doc.contentWriter(), inFile);
-        return doc;
-    }
-    
     @Test
-    public void testReadTree() throws Exception {
+    public void testReadTree() {
         // Prepare
         FxMemRootDocument doc = new FxMemRootDocument(); 
-        File inFile = new File("src/test/data/json/file1.json");
+        File inputFile = new File("src/test/data/yaml/file1.yaml");
+        FxChildWriter contentWriter = doc.contentWriter();
         // Perform
-        FxJsonUtils.readTree(doc.contentWriter(), inFile);
+        FxYamlUtils.readTree(contentWriter, inputFile);
         FxNode content = doc.getContent();
         // Post-check
         Assert.assertNotNull(content);
-        String contentStr = content.toString();
-        ObjectMapper jacksonOM = new ObjectMapper();
-        JsonNode reReadTree = jacksonOM.readTree(contentStr);
-        JsonNode origTree = jacksonOM.readTree(contentStr);
-        Assert.assertTrue(reReadTree.equals(origTree));
-        Assert.assertEquals(contentStr, origTree.toString());
-        
-        
         FxObjNode r = (FxObjNode) content; 
         Assert.assertEquals(true, FxNodeValueUtils.nodeToBoolean(r.get("fieldBoolTrue")));
         Assert.assertEquals(false, FxNodeValueUtils.nodeToBoolean(r.get("fieldBoolfalse")));
