@@ -1,5 +1,8 @@
 package fr.an.fxtree.model.path;
 
+import java.util.List;
+
+import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.path.impl.FxNodePathParserUtils;
 
 /**
@@ -35,6 +38,16 @@ public final class FxNodeOuterPath {
 
     public FxNodePath getThenPath() {
         return thenPath;
+    }
+
+    /**
+     * select child node for this path when starting from <code>src</code> node
+     * @param src
+     * @return
+     */
+    public FxNode selectOuterFromStack(List<FxNode> currStackNode) {
+        FxNode parentNode = currStackNode.get(currStackNode.size() - parentCount - 1);
+        return thenPath.select(parentNode);
     }
 
     // ------------------------------------------------------------------------

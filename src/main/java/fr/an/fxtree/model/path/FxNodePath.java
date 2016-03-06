@@ -68,6 +68,11 @@ public class FxNodePath {
         return elements[index];
     }
 
+    /**
+     * select child node for this path when starting from <code>src</code> node
+     * @param src
+     * @return
+     */
     public FxNode select(FxNode src) {
         return select(src, src);
     }
@@ -85,7 +90,6 @@ public class FxNodePath {
         }
         return tmp;
     }
-    
     
     public FxChildWriter selectInsertBuilder(FxNode src) {
         return selectInsertBuilder(src, src);
