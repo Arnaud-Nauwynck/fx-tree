@@ -4,6 +4,7 @@ import java.util.Map;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyDefaultsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeCopyMergeVisitor;
+import fr.an.fxtree.impl.helper.FxNodePerformCopyDeclsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.model.FxArrayNode;
@@ -21,6 +22,7 @@ public final class FxStdTreeFuncs {
     
     public static void registerBuiltinFuncs(Map<String, FxNodeFunc> dest) {
         dest.put(FxCopyTreeFunc.NAME, FxCopyTreeFunc.INSTANCE);
+        dest.put(FxOuterCopyDeclsPerformFunc.NAME, FxOuterCopyDeclsPerformFunc.INSTANCE);
         dest.put(FxMergeTreeFunc.NAME, FxMergeTreeFunc.INSTANCE);
         dest.put(FxMergeDefaultsTreeFunc.NAME, FxMergeDefaultsTreeFunc.INSTANCE);
         
@@ -72,6 +74,54 @@ public final class FxStdTreeFuncs {
             FxNodeCopyVisitor.copyTo(toPathWriter, copyFromNode);
         }
     }
+    
+    
+    /**
+     * FxFunction to scan and execute "outer copies declarations" from extended paths to path
+     * 
+     * This is a way to keep pure functions acting on child content, but still allow copies outside : going to parent ancestors, then re-descending in child
+     * On a file system, such extended paths would be noted "../../a/b" 
+     * proposed extended path syntaxes: "^2.a.b" 
+     * 
+     * Example usage:
+     *<PRE>
+     * {                                         
+     *  "@fx-eval": "#phase0:tree.performOuterCopyDecls"
+     *  body: {
+     *     a1: {
+     *      b1: {
+     *       c1: 123
+     *      }      
+     *      "#phase0:@fx-decl-outercopy": {
+     *        fromExtPath: ".b1",
+     *        toExtPath: "^.a2.b2"
+     *      }
+     *     },
+     *     a2: {
+     *      b2: {}
+     *     }
+     *  }
+     * }
+     *</PRE> 
+     *
+     */
+    public static class FxOuterCopyDeclsPerformFunc extends FxNodeFunc {
+        public static final String NAME = "tree.performOuterCopyDecls";
+        public static final FxOuterCopyDeclsPerformFunc INSTANCE = new FxOuterCopyDeclsPerformFunc();
+        
+        @Override
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+            FxObjNode srcObj = (FxObjNode) src;
+            FxNode body = srcObj.get("body");
+            
+            String declMarkerFieldname = "#" + FxCurrEvalCtxUtil.currPhaseName(ctx) + ":@fx-decl-outercopy";
+            
+            FxNode destBody = FxNodeCopyVisitor.copyTo(dest, body);
+            
+            FxNodePerformCopyDeclsVisitor.recursivePerformCopyDeclsOn(destBody, ctx, declMarkerFieldname);
+        }
+    }
+    
     
     /**
      * FxFunction to merge 2 (or more) trees from child paths to another child path

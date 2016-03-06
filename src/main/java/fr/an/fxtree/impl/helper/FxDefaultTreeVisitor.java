@@ -40,7 +40,9 @@ public class FxDefaultTreeVisitor extends FxTreeVisitor {
     public void visitObj(FxObjNode node) {
         for (Iterator<Entry<String, FxNode>> iter = node.fields(); iter.hasNext();) {
             Entry<String, FxNode> e = iter.next();
-            recurseObjFieldNode(node, e.getKey(), e.getValue());
+            String fieldname = e.getKey();
+            FxNode childNode = e.getValue();
+            recurseObjFieldNode(node, fieldname, childNode);
         }
     }
 

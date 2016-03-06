@@ -13,6 +13,7 @@ import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.FxPOJONode;
 import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.path.FxChildPathElement;
+import fr.an.fxtree.model.path.FxNodeOuterPath;
 import fr.an.fxtree.model.path.FxNodePath;
 
 public class FxNodeValueUtils {
@@ -376,6 +377,38 @@ public class FxNodeValueUtils {
         }
     }
 
+    public static FxNodeOuterPath nodeToOuterPath(FxNode src) {
+        if (src.isArray()) {
+            FxArrayNode array = (FxArrayNode) src;
+            final int len = array.size();
+            int parentCount = 0;
+            if (len > 0) {
+                FxNode parentCountNode = array.get(0);
+                parentCount = nodeToInt(parentCountNode);
+            }
+            FxChildPathElement[] elts = new FxChildPathElement[len-1];            
+            for(int i = 1; i < len; i++) {
+                FxNode e = array.get(i);
+                if (e.isNumber()) {
+                    int arrayIndex = e.intValue();
+                    elts[i] = FxChildPathElement.of(arrayIndex);
+                } else if (e.isTextual()) {
+                    elts[i] = FxChildPathElement.of(e.textValue());
+                } else {
+                    throw new IllegalArgumentException("expected jsonpath array containing 'int'(index) or 'string' fieldname, got " + e.getNodeType());    
+                }
+            }
+            FxNodePath remainPath = FxNodePath.of(elts);
+            return FxNodeOuterPath.of(parentCount, remainPath);
+        } else if (src.isTextual()) {
+            String pathText = src.textValue();
+            return FxNodeOuterPath.parse(pathText);
+        } else {
+            throw new IllegalArgumentException("expected tree outer path as string or array, got " + src.getNodeType());
+        }
+    }
+
+    
     // TODO .. should be more customizable... currently use equality based on 'id' field for object...  
     public static Object tryExtractId(FxNode src) {
         if (src.isObject()) {

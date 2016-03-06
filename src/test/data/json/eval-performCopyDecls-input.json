@@ -1,0 +1,17 @@
+{
+  "@fx-eval": "#phase0:tree.performOuterCopyDecls",
+  body: {
+    a1: {
+      b1: {
+        c1: 123
+      },
+      "#phase0:@fx-decl-outercopy": {
+        fromExtPath: ".b1",
+        toExtPath: "^.a2.b2"
+      }
+    },
+    a2: {
+      b2: {}
+    }
+  }
+}

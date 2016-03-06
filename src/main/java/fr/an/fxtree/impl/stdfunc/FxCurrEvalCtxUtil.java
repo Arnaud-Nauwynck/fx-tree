@@ -9,6 +9,7 @@ import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFunc;
+import fr.an.fxtree.model.path.FxNodeOuterPath;
 import fr.an.fxtree.model.path.FxNodePath;
 
 public final class FxCurrEvalCtxUtil {
@@ -123,4 +124,10 @@ public final class FxCurrEvalCtxUtil {
         return FxNodeValueUtils.nodeToPath(tmpres);
     }
 
+    public static FxNodeOuterPath recurseEvalToOuterPath(FxEvalContext ctx, FxNode src) {
+        FxNode tmpres = recurseEval(ctx, src);
+        return FxNodeValueUtils.nodeToOuterPath(tmpres);
+    }
+
+    
 }

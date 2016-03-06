@@ -2,6 +2,7 @@ package fr.an.fxtree.model.path;
 
 import java.util.List;
 
+import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.path.impl.FxNodePathParserUtils;
 
@@ -45,9 +46,14 @@ public final class FxNodeOuterPath {
      * @param src
      * @return
      */
-    public FxNode selectOuterFromStack(List<FxNode> currStackNode) {
+    public FxNode selectFromStack(List<FxNode> currStackNode) {
         FxNode parentNode = currStackNode.get(currStackNode.size() - parentCount - 1);
         return thenPath.select(parentNode);
+    }
+    
+    public FxChildWriter selectInsertBuilderFromStack(List<FxNode> currStackNode) {
+        FxNode parentNode = currStackNode.get(currStackNode.size() - parentCount - 1);
+        return thenPath.selectInsertBuilder(parentNode);
     }
 
     // ------------------------------------------------------------------------

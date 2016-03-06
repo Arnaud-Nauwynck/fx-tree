@@ -21,4 +21,9 @@ public class FxStdTreeFuncsTest {
         tstHelper.doTestFile("eval-mergeDefaults");
     }
 
+    @Test
+    public void testEval_performCopyDecls() {
+        tstHelper.doTestFile("eval-performCopyDecls");
+    }
+
 }

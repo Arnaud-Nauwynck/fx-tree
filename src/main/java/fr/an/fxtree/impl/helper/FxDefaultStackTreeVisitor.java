@@ -25,7 +25,7 @@ public class FxDefaultStackTreeVisitor extends FxDefaultTreeVisitor {
         try {
             super.recurseObjFieldNode(parent, fieldname, value);
         } finally {
-            currentNodeStack.remove(currentNodeStack.size());
+            currentNodeStack.remove(currentNodeStack.size()-1);
         }
     }
 
@@ -36,7 +36,7 @@ public class FxDefaultStackTreeVisitor extends FxDefaultTreeVisitor {
         try {
             super.recurseArrayEltNode(parent, index, elt);
         } finally {
-            currentNodeStack.remove(currentNodeStack.size());
+            currentNodeStack.remove(currentNodeStack.size()-1);
         }
     }
     
