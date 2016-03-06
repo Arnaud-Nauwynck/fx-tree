@@ -50,8 +50,6 @@ public class FxUserPhasesProcessFunc extends FxNodeFunc {
         FxNode contentSrc = srcObj.get("src");
         if (contentSrc == null) return;
         
-        // TODO use childCtx + recursive eval ??
-        
         FxNode currPhaseRes = contentSrc;
         final int intermediatePhaseLen = phases.length - 1;
         for(int i = 0; i < intermediatePhaseLen; i++) {

@@ -32,7 +32,7 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
 
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        FxEvalContext childCtx = FxCurrEvalCtxUtil.childEvalCtx(ctx, this);
+        FxEvalContext childCtx = FxCurrEvalCtxUtil.childEvalCtx(ctx, phase, this);
         
         src.accept(new InnerVisitor(childCtx), dest); 
     }

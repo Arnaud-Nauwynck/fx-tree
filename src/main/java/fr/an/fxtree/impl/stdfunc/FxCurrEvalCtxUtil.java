@@ -13,12 +13,18 @@ import fr.an.fxtree.model.path.FxNodePath;
 
 public final class FxCurrEvalCtxUtil {
 
+    private static final String PROP_CURR_PHASE_NAME = "currPhaseName";
     private static final String PROP_CURR_PHASE_EVAL_FUNC = "currPhaseEvalFunc";
 
-    public static FxEvalContext childEvalCtx(FxEvalContext ctx, FxNodeFunc evalFunc) { 
+    public static FxEvalContext childEvalCtx(FxEvalContext ctx, String phaseName, FxNodeFunc evalFunc) { 
         FxEvalContext childCtx = ctx.createChildContext();
+        childCtx.putVariable(PROP_CURR_PHASE_NAME, phaseName);
         childCtx.putVariable(PROP_CURR_PHASE_EVAL_FUNC, evalFunc);
         return childCtx;
+    }
+
+    public static String currPhaseName(FxEvalContext ctx) {
+        return (String) ctx.lookupVariable(PROP_CURR_PHASE_NAME);
     }
 
     public static FxNodeFunc currPhaseEvalFunc(FxEvalContext ctx) {

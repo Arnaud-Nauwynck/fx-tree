@@ -1,5 +1,6 @@
 package fr.an.fxtree.model.path;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,6 +44,14 @@ public class FxNodePath {
             i++;
         }
         return new FxNodePath(tmp);
+    }
+    
+    public static FxNodePath ofEmpty() {
+        return of();
+    }
+    
+    public static FxNodePath ofThis() {
+        return of(FxChildPathElement.thisRoot());
     }
     
     public static FxNodePath parse(String text) {
@@ -191,6 +200,58 @@ public class FxNodePath {
             sb.append(elements[i].toString());
         }
         return sb.toString();
+    }
+    
+    public void toString(StringBuilder sb) {
+        for(int i = 0; i < elements.length; i++) {
+            sb.append(elements[i].toString());
+        }
+    }
+    
+    // ------------------------------------------------------------------------
+
+    public static class Builder {
+        private final List<FxChildPathElement> elements = new ArrayList<>();
+        
+        public FxNodePath build() {
+            return FxNodePath.of(elements);
+        }
+        
+        public List<FxChildPathElement> getElements() {
+            return elements;
+        }
+        
+        public void append(FxNodePath childPath) {
+            elements.addAll(Arrays.asList(childPath.elements));
+        }
+        
+        public void push(FxChildPathElement child) {
+            elements.add(child);
+        }
+
+        public void push(String fieldname) {
+            elements.add(FxChildPathElement.of(fieldname));
+        }
+
+        public void push(int index) {
+            elements.add(FxChildPathElement.of(index));
+        }
+
+        public void pop() {
+            elements.remove(elements.size()-1);
+        }
+
+        @Override
+        public String toString() {
+            if (elements.size() == 1) {
+                return elements.get(0).toString();
+            }
+            StringBuilder sb = new StringBuilder(elements.size() * 8);
+            for(int i = 0; i < elements.size(); i++) {
+                sb.append(elements.get(i).toString());
+            }
+            return sb.toString();
+        }
     }
     
 }

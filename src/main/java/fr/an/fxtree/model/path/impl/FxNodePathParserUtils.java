@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.an.fxtree.model.path.FxChildPathElement;
+import fr.an.fxtree.model.path.FxNodeOuterPath;
 import fr.an.fxtree.model.path.FxNodePath;
 
 public class FxNodePathParserUtils {
 
     /* private to force all static */
     private FxNodePathParserUtils() {}
-    
+
     public static FxNodePath parse(String text) {
+        return parse(text, 0);
+    }
+
+    public static FxNodePath parse(String text, int pos) {
         List<FxChildPathElement> elts = new ArrayList<>();
-        int pos = 0;
         final int textLen = text.length(); 
         for(; pos < textLen; ) {
             char ch = text.charAt(pos);
@@ -70,6 +74,41 @@ public class FxNodePathParserUtils {
     protected static RuntimeException throwUnexpectedTextAt(String text, int pos, String expected) {
         throw new IllegalArgumentException("unparsable jsonpath '" + text + "'" 
                 + ", at position " + pos + " got '" + text.charAt(pos) + "' expecting " + expected);
+    }
+
+    protected static void checkCharAt(String text, int pos, char expectedChar) {
+        char ch = text.charAt(pos);
+        if (ch != expectedChar) {
+            throw throwUnexpectedTextAt(text, pos, "'" + expectedChar + "'");
+        }
+    }
+    
+    public static FxNodeOuterPath parseOuterPath(String text) {
+        int pos = 0;
+        int parentCount;
+        char ch = text.charAt(pos); 
+        final int textLength = text.length();
+        if (ch == '^') {
+            if (pos+1 == textLength) {
+                parentCount = 1;
+                pos++;
+            } else {
+                ch = text.charAt(++pos);
+                if (ch == '.') {
+                    parentCount = 1;
+                } else {
+                    int fromPos = pos;
+                    while(pos < textLength && Character.isDigit(text.charAt(pos))) {
+                        ++pos;
+                    }
+                    parentCount = Integer.parseInt(text.substring(fromPos, pos));
+                }
+            }
+        } else {
+            parentCount = 0;
+        }
+        FxNodePath remainPath = pos < textLength ? parse(text, pos) : FxNodePath.ofEmpty();
+        return FxNodeOuterPath.of(parentCount, remainPath);
     }
     
 }

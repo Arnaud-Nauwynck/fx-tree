@@ -213,7 +213,7 @@ public class FxNodeValueUtils {
         return nodeToDouble(fieldNode);
     }
 
-    private static double nodeToDouble(FxNode fieldNode) {
+    public static double nodeToDouble(FxNode fieldNode) {
         if (!fieldNode.isNumber()) {
             throw new IllegalArgumentException("expecting 'double', got " + fieldNode.getNodeType());
         }
