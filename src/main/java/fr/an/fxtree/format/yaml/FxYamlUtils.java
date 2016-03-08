@@ -12,13 +12,29 @@ import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
 
+import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.impl.util.FxUtils;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 
-public class FxYamlUtils {
+public final class FxYamlUtils {
+    
+    private FxYamlUtils() {
+    }
+
+    public static FxNode readTree(InputStream in) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        readTree(doc.contentWriter(), in);
+        return doc.getContent();
+    }
+
+    public static FxNode readTree(File in) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        readTree(doc.contentWriter(), in);
+        return doc.getContent();
+    }
     
     public static FxNode readTree(FxChildWriter dest, InputStream in) {
         Yaml yaml = new Yaml();

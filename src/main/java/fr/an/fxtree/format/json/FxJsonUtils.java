@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.an.fxtree.format.json.jackson.Jackson2FxTreeBuilder;
+import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 
@@ -20,6 +21,18 @@ public class FxJsonUtils {
         jacksonObjectMapper.enable(Feature.ALLOW_COMMENTS);
         jacksonObjectMapper.enable(Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
         // jacksonObjectMapper.enable(DeserializationFeature.);
+    }
+    
+    public static FxNode readTree(InputStream in) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        readTree(doc.contentWriter(), in);
+        return doc.getContent();
+    }
+
+    public static FxNode readTree(File in) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        readTree(doc.contentWriter(), in);
+        return doc.getContent();
     }
     
     public static FxNode readTree(FxChildWriter dest, InputStream in) {

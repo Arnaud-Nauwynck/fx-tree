@@ -62,6 +62,14 @@ public class FxNodeValueUtils {
         return nodeToObj(fieldNode);
     }
 
+    public static FxObjNode getObjOrNull(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return null;
+        }
+        return nodeToObj(fieldNode);
+    }
+    
     public static FxObjNode nodeToObj(FxNode fieldNode) {
         if (!fieldNode.isObject()) {
             throw new IllegalArgumentException("expecting Object, got " + fieldNode.getNodeType());
@@ -248,6 +256,11 @@ public class FxNodeValueUtils {
 
     /* Array */
     
+    public static FxArrayNode getArrayOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        return nodeToArray(fieldNode);
+    }
+    
     public static FxArrayNode getArrayOrNull(FxObjNode parent, String fieldName) {
         FxNode fieldNode = parent.get(fieldName);
         return nodeToArray(fieldNode);
@@ -263,6 +276,19 @@ public class FxNodeValueUtils {
         return (FxArrayNode) fieldNode;
     }
 
+    public static String[] getStringArrayOrThrow(FxObjNode parent, String fieldName, boolean allowRecurseFlatten) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        return nodeToStringArray(fieldNode, allowRecurseFlatten);
+    }
+
+    public static String[] getStringArrayOrNull(FxObjNode parent, String fieldName, boolean allowRecurseFlatten) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return null;
+        }
+        return nodeToStringArray(fieldNode, allowRecurseFlatten);
+    }
+    
     public static String[] nodeToStringArray(FxNode value, boolean allowRecurseFlatten) {
         if (value == null) return null;
         String[] res;
