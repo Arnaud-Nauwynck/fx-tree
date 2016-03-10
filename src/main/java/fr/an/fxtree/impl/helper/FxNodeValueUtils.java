@@ -16,15 +16,39 @@ import fr.an.fxtree.model.path.FxChildPathElement;
 import fr.an.fxtree.model.path.FxNodeOuterPath;
 import fr.an.fxtree.model.path.FxNodePath;
 
-public class FxNodeValueUtils {
+/**
+ * utility static methods for extracting / converting / type-checking nodes
+ * 
+ * see also FxObjValueHelper 
+ */
+public final class FxNodeValueUtils {
 
     private static final String STRING_ARRAY_FORMAT = "CSV 'str1,str2...' or array ['str1, 'str2'..]";
     private static final String STRING_FLATTEN_ARRAY_FORMAT = "CSV 'str1,str2...' or array ['str1, 'str2'..] or flattenize [ 'str1', [ 'str2', 'str3' ]]";
+    
+    private FxNodeValueUtils() {
+    }
+
+    public static FxNode getOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            throw new IllegalArgumentException("expecting argument '" + fieldName + "'");
+        }
+        return fieldNode;
+    }
     
     public static String getOrDefault(FxObjNode parent, String fieldName, String defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
             return defaultValue;
+        }
+        return nodeToString(fieldNode);
+    }
+
+    public static String getString(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return null;
         }
         return nodeToString(fieldNode);
     }
@@ -47,14 +71,6 @@ public class FxNodeValueUtils {
             return defaultValue;
         }
         return nodeToInt(fieldNode);
-    }
-
-    public static FxNode getOrThrow(FxObjNode parent, String fieldName) {
-        FxNode fieldNode = parent.get(fieldName);
-        if (fieldNode == null) {
-            throw new IllegalArgumentException("expecting argument '" + fieldName + "'");
-        }
-        return fieldNode;
     }
     
     public static FxObjNode getObjOrThrow(FxObjNode parent, String fieldName) {
@@ -163,6 +179,10 @@ public class FxNodeValueUtils {
         return nodeToInt(fieldNode);
     }
     
+    public static int getInt(FxObjNode parent, String fieldName) {
+        return getIntOrThrow(parent, fieldName);
+    }
+    
     public static int getIntOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         if (!fieldNode.isNumber()) {
@@ -247,7 +267,7 @@ public class FxNodeValueUtils {
         return nodeToFloat(fieldNode);
     }
 
-    private static float nodeToFloat(FxNode fieldNode) {
+    public static float nodeToFloat(FxNode fieldNode) {
         if (!fieldNode.isNumber()) {
             throw new IllegalArgumentException("expecting 'float', got " + fieldNode.getNodeType());
         }
