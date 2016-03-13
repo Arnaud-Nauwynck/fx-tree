@@ -1,6 +1,5 @@
 package fr.an.fxtree.model;
 
-import java.util.Collection;
 import java.util.Iterator;
 
 public abstract class FxContainerNode extends FxNode {
@@ -30,8 +29,6 @@ public abstract class FxContainerNode extends FxNode {
     public abstract int size();
 
     public abstract boolean isEmpty();
-
-    public abstract Collection<FxNode> children();
 
     public abstract Iterator<FxNode> childIterator();
 

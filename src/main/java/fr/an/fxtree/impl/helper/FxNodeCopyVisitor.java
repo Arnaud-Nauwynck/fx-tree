@@ -95,7 +95,8 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         FxArrayNode res = out.addArray();
         FxChildWriter outChildAdder = res.insertBuilder();
         int index = 0;
-        for(FxNode srcChild : src.children()) {
+        for(Iterator<FxNode> iter = src.childIterator(); iter.hasNext(); ) {
+            FxNode srcChild = iter.next();
             // recurse copy array element
             visitArrayElt(index, srcChild, outChildAdder);
             index++;

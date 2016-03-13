@@ -38,9 +38,6 @@ public abstract class FxObjNode extends FxContainerNode {
     @Override
     public abstract int size();
 
-    @Override
-    public abstract Collection<FxNode> children();
-
     public abstract Iterator<Map.Entry<String, FxNode>> fields();
 
     public Map<String, FxNode> fieldsHashMapCopy() {
@@ -162,26 +159,26 @@ public abstract class FxObjNode extends FxContainerNode {
 
     // ------------------------------------------------------------------------
 
-    @Override
-    public boolean equals(Object o) {
-        if (o == this)
-            return true;
-        if (o == null)
-            return false;
-        if (o instanceof FxObjNode) {
-            return _childrenEqual((FxObjNode) o);
-        }
-        return false;
-    }
-
-    protected boolean _childrenEqual(FxObjNode other) {
-        return children().equals(other.children());
-    }
-
-    @Override
-    public int hashCode() {
-        return children().hashCode();
-    }
+//    @Override
+//    public boolean equals(Object o) {
+//        if (o == this)
+//            return true;
+//        if (o == null)
+//            return false;
+//        if (o instanceof FxObjNode) {
+//            return _childrenEqual((FxObjNode) o);
+//        }
+//        return false;
+//    }
+//
+//    protected boolean _childrenEqual(FxObjNode other) {
+//        return children().equals(other.children());
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return children().hashCode();
+//    }
 
     @Override
     public String toString() {

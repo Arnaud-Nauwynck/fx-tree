@@ -68,7 +68,7 @@ public abstract class FxRootDocument extends FxContainerNode {
         return childContent == null;
     }
 
-    @Override
+    // @Override
     public Collection<FxNode> children() {
         return childContent != null? Collections.singleton(childContent) : Collections.emptyList();
     }

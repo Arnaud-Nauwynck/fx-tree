@@ -45,12 +45,11 @@ public abstract class _FxReadContainerNodeProxyMixin extends FxContainerNode {
         return delegate.isEmpty();
     }
 
-
-    @Override
+    // @Override
     public Collection<FxNode> children() {
-        Collection<FxNode> delegateChildren = delegate.children();
-        List<FxNode> res = new ArrayList<>(delegateChildren.size());
-        for(FxNode delegateChild : delegateChildren) {
+        List<FxNode> res = new ArrayList<>(delegate.size());
+        for (Iterator<FxNode> iter = delegate.childIterator(); iter.hasNext(); ) {
+            FxNode delegateChild = iter.next();
             res.add(wrapChild(delegateChild));
         }
         return Collections.unmodifiableList(res);
