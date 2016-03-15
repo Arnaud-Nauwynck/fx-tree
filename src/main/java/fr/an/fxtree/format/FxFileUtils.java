@@ -10,12 +10,20 @@ import fr.an.fxtree.model.FxNode;
 
 public final class FxFileUtils {
 
+    public static final String[] STD_FILE_EXTENSIONS = new String[] { ".json", ".yaml", ".yml" };
+
+    
     private FxFileUtils() {
     }
     
     public static FxNode readTree(File file) {
         FxMemRootDocument doc = new FxMemRootDocument();
         return readTree(doc.contentWriter(), file);
+    }
+    
+    public static boolean isSupportedFileExtension(String extension) {
+        return extension.equalsIgnoreCase("json") ||
+                extension.equalsIgnoreCase("yaml") || extension.equalsIgnoreCase("yml");
     }
     
     public static FxNode readTree(FxChildWriter dest, File file) {

@@ -11,6 +11,10 @@
   fieldObjObj:
    c: 1
  fieldArray: [ true, 1, "Hello" ]
+ fieldArray2:
+   - true
+   - 1
+   - Hello
  emptyArray: []
  emptyObject: {}
  emptyString: ""
