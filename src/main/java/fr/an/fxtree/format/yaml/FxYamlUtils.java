@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 import org.yaml.snakeyaml.Yaml;
@@ -91,9 +92,12 @@ public final class FxYamlUtils {
             res = dest.add(value);
         } else if (srcObj instanceof BigDecimal) {
             res = dest.add((BigDecimal) srcObj);
-            
+        } else if (srcObj instanceof Date) {
+            res = dest.addPOJO(srcObj); // add java.util.Date as POJO
+
         } else {
-            throw FxUtils.notImplYet();
+            // fail-through (unrecognized type?) => use POJO ..
+            res = dest.addPOJO(srcObj);
         }
         
         return res;

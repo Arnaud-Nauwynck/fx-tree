@@ -80,7 +80,7 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
             return super.visitTextValue(src, out);
         }
 
-        if (tmpVarReplMatch.replEnd + 1 == text.length()) {
+        if (tmpVarReplMatch.replStart == 0 && tmpVarReplMatch.replEnd + 1 == text.length()) {
             // string is fully replaced by var => return FxNode (maybe TextNode)
 
             // recursive copy replacement using replacement node instead of src node
@@ -92,19 +92,24 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
 
         } else {
             // interpolate expression in string ... return string (assume var is text..)
-
-            // StringBuilder repl = new StringBuilder();
-            // repl.append(text, 0, replStart);
-            // for(; replStart != -1; ) {
-            // if (foundVarRepl != null) {
-            //
-            // } else {
-            // repl.append(text, 0, replStart);
-            // }
-            // replStart = text.indexOf("#{");
-            // }
-
-            throw FxUtils.notImplYet();
+            StringBuilder repl = new StringBuilder();
+            repl.append(text, 0, replStart);
+            for (; replStart != -1;) {
+                FxNode foundVarRepl = tmpVarReplMatch.varNodeRepl;
+                if (foundVarRepl != null) {
+                    repl.append(foundVarRepl.asText());
+                } else {
+                    // not a replacement for this var, leave other unknown vars unmodified
+                    repl.append(text, 0, replStart);
+                }
+                replStart = tmpVarReplMatch.replEnd + 1;
+                boolean next = findNextVarRepl(tmpVarReplMatch, text, replStart);
+                if (! next) {
+                    break;
+                }
+            }
+            repl.append(text, replStart, text.length());
+            return out.add(repl.toString());
         }
 
         // return super.visitTextValue(src, out);
