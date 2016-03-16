@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import com.google.common.collect.ImmutableMap;
 
-import fr.an.fxtree.impl.util.FxUtils;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxTextNode;
@@ -73,8 +72,8 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
             return super.visitTextValue(src, out);
         }
 
-        TmpVarReplMatch tmpVarReplMatch = new TmpVarReplMatch();
-        boolean foundRepl = findNextVarRepl(tmpVarReplMatch, text, replStart);
+        TmpVarReplMatch tmpVarReplMatch = matcher(text);
+        boolean foundRepl = findNextVarRepl(tmpVarReplMatch, replStart);
         if (!foundRepl) {
             // var, but not matching one of varReplacements
             return super.visitTextValue(src, out);
@@ -92,33 +91,42 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
 
         } else {
             // interpolate expression in string ... return string (assume var is text..)
-            StringBuilder repl = new StringBuilder();
-            repl.append(text, 0, replStart);
-            for (; replStart != -1;) {
-                FxNode foundVarRepl = tmpVarReplMatch.varNodeRepl;
-                if (foundVarRepl != null) {
-                    repl.append(foundVarRepl.asText());
-                } else {
-                    // not a replacement for this var, leave other unknown vars unmodified
-                    repl.append(text, 0, replStart);
-                }
-                replStart = tmpVarReplMatch.replEnd + 1;
-                boolean next = findNextVarRepl(tmpVarReplMatch, text, replStart);
-                if (! next) {
-                    break;
-                }
-            }
-            repl.append(text, replStart, text.length());
-            return out.add(repl.toString());
+            String res = replaceMatchingText(text, tmpVarReplMatch);
+            return out.add(res);
         }
 
         // return super.visitTextValue(src, out);
     }
 
-    private boolean findNextVarRepl(TmpVarReplMatch res, String text, int fromIndex) {
-        if (res.matcher == null) {
-            res.matcher = matchVarReplacementPattern.matcher(text);
+    /*pp*/ String replaceMatchingText(String text, TmpVarReplMatch tmpVarReplMatch) {
+        StringBuilder repl = new StringBuilder();
+        assert tmpVarReplMatch.replStart >= 2;
+        int pos = 0;
+        for (;;) {
+            repl.append(text, pos, tmpVarReplMatch.replStart-2);
+            FxNode foundVarRepl = tmpVarReplMatch.varNodeRepl;
+            if (foundVarRepl != null) {
+                repl.append(foundVarRepl.asText());
+            } else {
+                // not a replacement for this var, leave other unknown vars unmodified
+                repl.append(text, pos, tmpVarReplMatch.replStart-2);
+            }
+            pos = tmpVarReplMatch.replEnd + 1;
+            boolean next = findNextVarRepl(tmpVarReplMatch, pos);
+            if (! next) {
+                break;
+            }
         }
+        repl.append(text, pos, text.length());
+        String res = repl.toString();
+        return res;
+    }
+
+    /*pp*/ TmpVarReplMatch matcher(String text) {
+        return new TmpVarReplMatch(this, text);
+    }
+    
+    /*pp*/ boolean findNextVarRepl(TmpVarReplMatch res, int fromIndex) {
         boolean found = res.matcher.find(fromIndex);
         if (found) {
             String varName = res.matcher.group(1);
@@ -130,6 +138,9 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
             res.varName = varName;
             res.varNodeRepl = foundVarRepl;
             return true;
+        } else {
+            res.replStart = -1;
+            res.replEnd = -1;
         }
         return false;
     }
@@ -165,12 +176,14 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
  
     
 
-    private static final class TmpVarReplMatch {
+    /*pp*/ static final class TmpVarReplMatch {
+        /*pp*/ TmpVarReplMatch(FxReplaceNodeCopyVisitor outer, String text) {
+            this.matcher = outer.matchVarReplacementPattern.matcher(text);
+        }
+
         Matcher matcher;
-        @SuppressWarnings("unused")
         int replStart;
         int replEnd;
-        @SuppressWarnings("unused")
         String varName;
         FxNode varNodeRepl;
 //        @SuppressWarnings("unused")
