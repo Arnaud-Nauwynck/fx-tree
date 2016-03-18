@@ -79,7 +79,7 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
             return super.visitTextValue(src, out);
         }
 
-        if (tmpVarReplMatch.replStart == 0 && tmpVarReplMatch.replEnd + 1 == text.length()) {
+        if (tmpVarReplMatch.replStart == 2 && tmpVarReplMatch.replEnd + 1 == text.length()) {
             // string is fully replaced by var => return FxNode (maybe TextNode)
 
             // recursive copy replacement using replacement node instead of src node
