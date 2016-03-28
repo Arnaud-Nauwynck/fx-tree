@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.io.CharTypes;
 
 public abstract class FxObjNode extends FxContainerNode {
 
+    protected String __debugId;
+    
     // ------------------------------------------------------------------------
 
     protected FxObjNode(FxContainerNode parent, FxChildId childId) {
@@ -230,6 +232,24 @@ public abstract class FxObjNode extends FxContainerNode {
                 currIndex++;
                 return res;
             }
+        }
+        
+        private String currChildName() {
+            if (!useIncrSuffix) {
+                return baseName;
+            } else {
+                return (currIndex == 0)? baseName : baseName + currIndex;
+            }
+        }
+        
+        @Override
+        public void remove() {
+            dest.remove(currChildName());
+        }
+
+        @Override
+        public FxNode getResultChild() {
+            return dest.get(currChildName());
         }
         
         @Override

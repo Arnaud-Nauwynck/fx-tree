@@ -1,0 +1,22 @@
+{
+  eval_keya: {
+    "@fx-eval": "#phase0:ext-data",
+    "sourceId": "source0",
+    "dataId": "key-a"
+  },
+  eval_keya_repeat: {
+    "@fx-eval": "#phase0:ext-data",
+    "sourceId": "source0",
+    "dataId": "key-a"
+  },
+  eval_keyb: {
+    "@fx-eval": "#phase0:ext-data",
+    "sourceId": "source0",
+    "dataId": "key-b"
+  },
+  eval_source1_keya: {
+    "@fx-eval": "#phase0:ext-data",
+    "sourceId": "source1",
+    "dataId": "key-a"
+  }
+}

@@ -11,18 +11,5 @@
 	  "@fx-eval": "#phase0:throw",
 	  "message": "Test evalIf-Recursive.json ... lazy 'else' part unused, and could have been skipped from evaluation!"
 	}
-  },
-  "eval_if_false_recursive": {
-	"@fx-eval": "#phase0:if",
-	"expr": false,
-	"then": {
-	  "@fx-eval": "#phase0:throw",
-	  "message": "Test evalIf-Recursive.json ... lazy 'then' part unused, and could have been skipped from evaluation!"
-	},
-	"else": {
-   	  "@fx-eval": "#phase0:num.add",
-	  "left": 1,
-      "right": 2
-	}
   }
 }

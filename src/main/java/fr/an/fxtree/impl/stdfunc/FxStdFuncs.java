@@ -3,6 +3,7 @@ package fr.an.fxtree.impl.stdfunc;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.an.fxtree.impl.stdfunc.datasource.FxExternalDataByIdFunc;
 import fr.an.fxtree.model.func.FxNodeFunc;
 import fr.an.fxtree.model.func.FxNodeFuncRegistry;
 
@@ -32,6 +33,7 @@ public class FxStdFuncs {
         FxStdFileFuncs.registerBuiltinFuncs(funcs);
         FxStdCtxFuncs.registerBuiltinFuncs(funcs);
         FxStdTreeFuncs.registerBuiltinFuncs(funcs);
+        funcs.put(FxExternalDataByIdFunc.NAME, FxExternalDataByIdFunc.INSTANCE);
         
         return funcRegistry;
     }

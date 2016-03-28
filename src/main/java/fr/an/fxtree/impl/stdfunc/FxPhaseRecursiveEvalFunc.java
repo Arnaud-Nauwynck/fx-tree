@@ -115,6 +115,10 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
             // step 2: recurse eval same phase (other functions) on return result
             FxNode res = tmpres.accept(this, destNode);
             
+//            // if no recurse function in "src"... could write directly to output  
+//            func.eval(destNode, ctx, src);
+//            FxNode res = destNode.getResultChild();
+            
             return res;
         }
         

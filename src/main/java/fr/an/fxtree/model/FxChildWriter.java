@@ -5,6 +5,9 @@ import java.math.BigInteger;
 
 public abstract class FxChildWriter {
 
+    public abstract void remove();
+    public abstract FxNode getResultChild();
+    
     public abstract boolean canAddMoveFrom(FxRootDocument otherParentSrc);
     public abstract FxNode addMoveFrom(FxRootDocument otherParentSrc);
     

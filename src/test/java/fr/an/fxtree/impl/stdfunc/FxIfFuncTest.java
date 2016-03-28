@@ -15,4 +15,10 @@ public class FxIfFuncTest {
     public void testEvalIfRecursivePhase() {
         tstHelper.doTestFile("evalIf-Recursive");
     }
+
+    @Test
+    public void testEvalIfFalseRecursivePhase() {
+        tstHelper.doTestFile("evalIf-false-Recursive");
+    }
+
 }

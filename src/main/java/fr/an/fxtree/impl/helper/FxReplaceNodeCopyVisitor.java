@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.google.common.collect.ImmutableMap;
-
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxTextNode;
@@ -23,7 +21,7 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
     // ------------------------------------------------------------------------
     
     public FxReplaceNodeCopyVisitor(Map<String, FxNode> varReplacements) {
-        this.varNodeReplacements = ImmutableMap.copyOf(varReplacements);
+        this.varNodeReplacements = varReplacements;
         this.matchVarReplacementPattern = patternForAnyVarsIn(varReplacements.keySet());
     }
 

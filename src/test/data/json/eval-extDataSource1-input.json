@@ -1,0 +1,7 @@
+{
+  eval_keya: {
+    "@fx-eval": "#phase0:ext-data",
+    "sourceId": "source0",
+    "dataId": "key-a"
+  }
+}

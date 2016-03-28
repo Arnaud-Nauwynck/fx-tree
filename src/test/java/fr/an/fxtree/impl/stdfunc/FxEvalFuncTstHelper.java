@@ -11,7 +11,7 @@ import fr.an.fxtree.model.func.FxNodeFuncRegistry;
 
 public class FxEvalFuncTstHelper {
 
-    FxNodeFuncRegistry funcRegistry;
+    protected FxNodeFuncRegistry funcRegistry;
 
     protected FxPhaseRecursiveEvalFunc phase0Func;
     protected FxMemRootDocument destPhase0;
@@ -31,6 +31,10 @@ public class FxEvalFuncTstHelper {
         phase1Func = new FxPhaseRecursiveEvalFunc("phase1", funcRegistry);
         destPhase1 = new FxMemRootDocument();
         outPhase1 = destPhase1.contentWriter();
+    }
+    
+    public FxNodeFuncRegistry getFuncRegistry() {
+        return funcRegistry;
     }
 
     public void doTestFile(String evalBaseFilename) {
@@ -70,16 +74,22 @@ public class FxEvalFuncTstHelper {
         
         {
             FxEvalContext ctx0 = new FxEvalContext(null, funcRegistry);
+            prepareEvalContext(ctx0, false);
             phase0Func.eval(outPhase0, ctx0, res);
             res = destPhase0.getContent();
         }
         
         if (phase1) {
             FxEvalContext ctx1 = new FxEvalContext(null, funcRegistry);
+            prepareEvalContext(ctx1, true);
             phase1Func.eval(outPhase1, ctx1, res);
             res = destPhase1.getContent();
         }
         return res;
     }
-    
+
+    public void prepareEvalContext(FxEvalContext ctx, boolean phase1) {
+        // overridable, do nothing
+    }
+
 }

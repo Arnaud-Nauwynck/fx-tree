@@ -2,6 +2,12 @@ package fr.an.fxtree.impl.util;
 
 public class FxUtils {
 
+    public static void checkNotNull(Object obj) {
+        if (obj == null) {
+            throw new IllegalStateException();
+        }
+    }
+
     public static RuntimeException fail() {
         return new RuntimeException();
     }
