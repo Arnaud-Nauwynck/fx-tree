@@ -1,22 +1,29 @@
 package fr.an.fxtree.format.json.jackson;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.BinaryNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.NumericNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
+import java.util.Iterator;
+import java.util.Map.Entry;
+
 import fr.an.fxtree.model.FxArrayNode;
+import fr.an.fxtree.model.FxBinaryNode;
+import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
+import fr.an.fxtree.model.FxNumberType;
 import fr.an.fxtree.model.FxObjNode;
+import fr.an.fxtree.model.FxPOJONode;
+import fr.an.fxtree.model.FxTextNode;
+import fr.an.fxtree.model.FxValueNode;
 
 public class Jackson2FxTreeBuilder {
 
@@ -58,7 +65,7 @@ public class Jackson2FxTreeBuilder {
             JsonParser.NumberType numberType = src.numberType();
             switch(numberType) {
             case INT:
-                return dest.add(srcNumber.intValue());
+               return dest.add(srcNumber.intValue());
             case LONG:
                 return dest.add(srcNumber.longValue());
             case BIG_INTEGER:
@@ -119,7 +126,7 @@ public class Jackson2FxTreeBuilder {
                     dest.add(srcNumber.intValue());
                     break;
                 case LONG:
-                    dest.add(srcNumber.longValue());
+                   dest.add(srcNumber.longValue());
                     break;
                 case BIG_INTEGER:
                     dest.addPOJO(srcNumber.bigIntegerValue()); // use POJO for jackson BigInteger
@@ -181,7 +188,7 @@ public class Jackson2FxTreeBuilder {
                 NumericNode srcNumber = (NumericNode) srcElt;
                 JsonParser.NumberType numberType = srcElt.numberType();
                 switch(numberType) {
-                case INT:
+               case INT:
                     dest.put(field, srcNumber.intValue());
                     break;
                 case LONG:
@@ -213,5 +220,158 @@ public class Jackson2FxTreeBuilder {
         }
     }
 
+    // conversion FxNode -> Jackson JsonNode
+    // ------------------------------------------------------------------------
+
+    public static JsonNode buildJacksonTree(FxNode src) {
+        return buildJacksonTree(src, JsonNodeFactory.instance);
+    }
     
+    public static JsonNode buildJacksonTree(FxNode src, JsonNodeFactory jsonNodeFactory) {
+        if (src == null) {
+            return null;
+        }
+        JsonNode res;
+        switch (src.getNodeType()) {
+            case ARRAY:
+                ArrayNode destArray = new ArrayNode(jsonNodeFactory);
+                buildJacksonTree(destArray, (FxArrayNode) src);
+                res = destArray;
+                break;
+            case OBJECT:
+                ObjectNode destObj = new ObjectNode(jsonNodeFactory);
+                buildJacksonTree(destObj, (FxObjNode) src);
+                res = destObj;
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+        return res;
+    }
+        
+    public static void buildJacksonTree(ArrayNode dest, FxArrayNode src) {
+//        if (! dest.isEmpty()) {
+//            dest.removeAl();
+//        }
+        final int len = src.size();
+        for (int i = 0; i < len; i++) {
+            FxNode srcElt = src.get(i);
+            switch (srcElt.getNodeType()) {
+            case ARRAY:
+                ArrayNode eltArray = dest.addArray();
+                buildJacksonTree(eltArray, (FxArrayNode) srcElt);
+                break;
+            case OBJECT:
+                ObjectNode eltObj = dest.addObject();
+                buildJacksonTree(eltObj, (FxObjNode) srcElt);
+                break;
+            case BINARY:
+                dest.add(((FxBinaryNode) srcElt).binaryValue());
+                break;
+            case BOOLEAN:
+                dest.add(((FxBoolNode) srcElt).booleanValue());
+                break;
+            case MISSING:
+                //?? skip / use null
+                break;
+            case NULL:
+                dest.addNull();
+                break;
+            case NUMBER:
+                FxValueNode srcNumber = (FxValueNode) srcElt;
+                FxNumberType numberType = srcElt.numberType();
+                switch(numberType) {
+                case INT:
+                    dest.add(srcNumber.intValue());
+                    break;
+                case LONG:
+                    dest.add(srcNumber.longValue());
+                    break;
+                case BIG_INTEGER:
+                    dest.addPOJO(srcNumber.bigIntegerValue()); // use POJO for jackson BigInteger
+                    break;
+                case FLOAT:
+                    dest.add(srcNumber.floatValue()); // use Double for Jackson Float
+                    break;
+                case DOUBLE:
+                    dest.add(srcNumber.doubleValue());
+                    break;
+                case BIG_DECIMAL:
+                    dest.addPOJO(srcNumber.decimalValue()); // use POJO for jackson BigDecimal
+                    break;
+                }
+                break;
+            case POJO:
+                dest.addPOJO(((FxPOJONode) srcElt).getValue());
+                break;
+            case STRING:
+                dest.add(((FxTextNode) srcElt).textValue());
+                break;
+            default:
+            throw new RuntimeException();
+            }
+        }
+    }
+    
+    public static void buildJacksonTree(ObjectNode dest, FxObjNode src) {
+        for(Iterator<Entry<String, FxNode>> iter = src.fields(); iter.hasNext(); ) {
+            Entry<String, FxNode> e = iter.next();
+            String field = e.getKey();
+            FxNode srcElt = e.getValue();
+            switch (srcElt.getNodeType()) {
+                case ARRAY:
+                    ArrayNode eltArray = dest.putArray(field);
+                    buildJacksonTree(eltArray, (FxArrayNode) srcElt);
+                    break;
+                case OBJECT:
+                    ObjectNode eltObj = dest.putObject(field);
+                    buildJacksonTree(eltObj, (FxObjNode) srcElt);
+                    break;
+                case BINARY:
+                    dest.put(field, ((FxBinaryNode) srcElt).binaryValue());
+                    break;
+                case BOOLEAN:
+                    dest.put(field, ((FxBoolNode) srcElt).booleanValue());
+                    break;
+                case MISSING:
+                    //?? skip / use null
+                    break;
+                case NULL:
+                    dest.putNull(field);
+                    break;
+                case NUMBER:
+                    FxValueNode srcNumber = (FxValueNode) srcElt;
+                    FxNumberType numberType = srcElt.numberType();
+                    switch(numberType) {
+                    case INT:
+                        dest.put(field, srcNumber.intValue());
+                        break;
+                    case LONG:
+                        dest.put(field, srcNumber.longValue());
+                        break;
+                    case BIG_INTEGER:
+                        dest.putPOJO(field, srcNumber.bigIntegerValue()); // use POJO for jackson BigInteger
+                        break;
+                    case FLOAT:
+                        dest.put(field, srcNumber.floatValue()); // use Double for Jackson Float
+                        break;
+                    case DOUBLE:
+                        dest.put(field, srcNumber.doubleValue());
+                        break;
+                    case BIG_DECIMAL:
+                        dest.putPOJO(field, srcNumber.decimalValue()); // use POJO for jackson BigDecimal
+                        break;
+                    }
+                    break;
+                case POJO:
+                    dest.putPOJO(field, ((FxPOJONode) srcElt).getValue());
+                    break;
+               case STRING:
+                    dest.put(field, ((FxTextNode) srcElt).textValue());
+                    break;
+                default:
+                throw new RuntimeException();
+            }
+        }
+    }
 }

@@ -1,12 +1,16 @@
 package fr.an.fxtree.format.json;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.OutputStream;
 
 import fr.an.fxtree.format.json.jackson.Jackson2FxTreeBuilder;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
@@ -20,7 +24,10 @@ public class FxJsonUtils {
         jacksonObjectMapper.enable(Feature.ALLOW_UNQUOTED_FIELD_NAMES);
         jacksonObjectMapper.enable(Feature.ALLOW_COMMENTS);
         jacksonObjectMapper.enable(Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
+
         // jacksonObjectMapper.enable(DeserializationFeature.);
+        
+        jacksonObjectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
     
     public static FxNode readTree(InputStream in) {
@@ -55,4 +62,28 @@ public class FxJsonUtils {
         return Jackson2FxTreeBuilder.buildTree(dest, jacksonNode);
     }
 
+
+    public static void writeTree(OutputStream dest, FxNode tree) throws IOException {
+        JsonNode jacksonTree = Jackson2FxTreeBuilder.buildJacksonTree(tree);
+        try {
+            jacksonObjectMapper.writeValue(dest, jacksonTree);
+        }
+        catch (JsonGenerationException|JsonMappingException ex) {
+            throw new RuntimeException("Failed to write as json", ex);
+        }
+    }
+    
+    public static void writeTree(File dest, FxNode tree) {
+        JsonNode jacksonTree = Jackson2FxTreeBuilder.buildJacksonTree(tree);
+        try {
+            jacksonObjectMapper.writeValue(dest, jacksonTree);
+        }
+        catch (JsonGenerationException|JsonMappingException ex) {
+            throw new RuntimeException("Failed to write as json", ex);
+        }
+        catch(IOException ex) {
+            throw new RuntimeException("Failed to write as json to file '" + dest + "'", ex);
+        }
+    }
+    
 }
