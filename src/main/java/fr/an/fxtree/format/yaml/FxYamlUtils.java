@@ -1,6 +1,8 @@
 package fr.an.fxtree.format.yaml;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,8 +39,23 @@ public final class FxYamlUtils {
         return Fx2SnakeYamlUtils.readTree(dest, inputFile);
     }
 
+    public static FxNode yamlTextToTree(FxChildWriter dest, String yamlText) {
+        ByteArrayInputStream in = new ByteArrayInputStream(yamlText.getBytes()); 
+        return Fx2SnakeYamlUtils.readTree(dest, in);
+    }
+    
     public static void writeTree(OutputStream dest, FxNode tree) throws IOException {
         Fx2SnakeYamlUtils.writeTree(dest, tree);
+    }
+    
+    public static String treeToYamlText(FxNode tree) {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            Fx2SnakeYamlUtils.writeTree(bout, tree);
+        } catch(IOException ex) {
+            throw new RuntimeException("Should not occur: Failed to convert tree to yaml text", ex);
+        }
+        return bout.toString();
     }
     
     public static void writeTree(File dest, FxNode tree) {
@@ -46,7 +63,7 @@ public final class FxYamlUtils {
             writeTree(output, tree);
         }
         catch(IOException ex) {
-            throw new RuntimeException("Failed to write as json to file '" + dest + "'", ex);
+            throw new RuntimeException("Failed to write as yaml to file '" + dest + "'", ex);
         }
     }
 }

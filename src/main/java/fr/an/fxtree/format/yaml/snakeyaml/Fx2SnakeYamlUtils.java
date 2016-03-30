@@ -48,7 +48,7 @@ public final class Fx2SnakeYamlUtils {
         }
     }
     
-    // Conversion in-memory (Map,List,Values...) -> FxNode 
+    // Conversion in-memory SnakeYaml (Map,List,Values...) -> FxNode 
     // ------------------------------------------------------------------------
     
     public static FxNode yamlObjToTree(FxChildWriter dest, Object srcObj) {
