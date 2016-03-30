@@ -39,6 +39,12 @@ public final class FxYamlUtils {
         return Fx2SnakeYamlUtils.readTree(dest, inputFile);
     }
 
+    public static FxNode yamlTextToTree(String yamlText) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        yamlTextToTree(doc.contentWriter(), yamlText);
+        return doc.getContent();
+    }
+    
     public static FxNode yamlTextToTree(FxChildWriter dest, String yamlText) {
         ByteArrayInputStream in = new ByteArrayInputStream(yamlText.getBytes()); 
         return Fx2SnakeYamlUtils.readTree(dest, in);

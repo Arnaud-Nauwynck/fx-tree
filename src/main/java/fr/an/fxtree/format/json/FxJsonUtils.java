@@ -7,12 +7,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import fr.an.fxtree.format.json.jackson.Jackson2FxTreeBuilder;
+import fr.an.fxtree.format.yaml.snakeyaml.Fx2SnakeYamlUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
@@ -84,6 +87,27 @@ public class FxJsonUtils {
         catch(IOException ex) {
             throw new RuntimeException("Failed to write as json to file '" + dest + "'", ex);
         }
+    }
+    
+    public static FxNode jsonTextToTree(String jsonText) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        jsonTextToTree(doc.contentWriter(), jsonText);
+        return doc.getContent();
+    }
+    
+    public static FxNode jsonTextToTree(FxChildWriter dest, String jsonText) {
+        ByteArrayInputStream in = new ByteArrayInputStream(jsonText.getBytes()); 
+        return readTree(dest, in);
+    }
+    
+    public static String treeToJsonText(FxNode tree) {
+        ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        try {
+            writeTree(bout, tree);
+        } catch(IOException ex) {
+            throw new RuntimeException("Should not occur: failed to format tree to json text", ex);
+        }
+        return bout.toString();
     }
     
 }
