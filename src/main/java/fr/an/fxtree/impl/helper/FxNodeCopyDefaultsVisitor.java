@@ -10,6 +10,7 @@ import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
+import fr.an.fxtree.model.FxLinkProxyNode;
 import fr.an.fxtree.model.FxLongNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNullNode;
@@ -152,6 +153,12 @@ public class FxNodeCopyDefaultsVisitor extends FxTreeVisitor2<FxNode,FxNode> {
         return dest;
     }
 
+    @Override
+    public FxNode visitLink(FxLinkProxyNode src, FxNode dest) {
+        // do nothing
+        return dest;
+    }
+    
     @Override
     public FxNode visitNullValue(FxNullNode src, FxNode dest) {
         // do nothing

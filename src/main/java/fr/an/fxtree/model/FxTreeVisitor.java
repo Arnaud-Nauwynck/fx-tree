@@ -17,6 +17,8 @@ public abstract class FxTreeVisitor {
     public abstract void visitBinaryValue(FxBinaryNode node);
     public abstract void visitPOJOValue(FxPOJONode node);
 
+    public abstract void visitLink(FxLinkProxyNode node);
+
     public abstract void visitNullValue(FxNullNode node);
 
 }

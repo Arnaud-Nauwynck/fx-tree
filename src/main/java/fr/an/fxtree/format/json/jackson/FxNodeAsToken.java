@@ -7,6 +7,7 @@ import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
+import fr.an.fxtree.model.FxLinkProxyNode;
 import fr.an.fxtree.model.FxLongNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNullNode;
@@ -75,6 +76,11 @@ public class FxNodeAsToken extends FxTreeVisitor2<Void, JsonToken>{
         return JsonToken.VALUE_EMBEDDED_OBJECT;
     }
 
+    @Override
+    public JsonToken visitLink(FxLinkProxyNode node, Void param) {
+        return JsonToken.START_OBJECT; // ?? => use syntax like { "@link" : "^.a.b[2]" }
+    }
+    
     @Override
     public JsonToken visitNullValue(FxNullNode node, Void param) {
         return JsonToken.VALUE_NULL;

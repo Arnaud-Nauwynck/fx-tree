@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import fr.an.fxtree.model.path.FxNodeOuterPath;
+
 public abstract class FxRootDocument extends FxContainerNode {
 
     private FxNodeFactoryRegistry nodeFactory;
@@ -218,6 +220,11 @@ public abstract class FxRootDocument extends FxContainerNode {
         @Override
         public FxPOJONode addPOJO(Object value) {
             return addContent(nodeFactory.newPOJO(value));
+        }
+
+        @Override
+        public FxLinkProxyNode addLink(FxNodeOuterPath value) {
+            return addContent(nodeFactory.newLink(value));
         }
 
         @Override

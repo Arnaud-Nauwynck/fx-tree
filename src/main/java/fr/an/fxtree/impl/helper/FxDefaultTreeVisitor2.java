@@ -8,6 +8,7 @@ import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
+import fr.an.fxtree.model.FxLinkProxyNode;
 import fr.an.fxtree.model.FxLongNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNullNode;
@@ -98,6 +99,16 @@ public class FxDefaultTreeVisitor2<P,R> extends FxTreeVisitor2<P,R> {
     @Override
     public R visitPOJOValue(FxPOJONode node, P param) {
         return null;
+    }
+    
+    @Override
+    public R visitLink(FxLinkProxyNode node, P param) {
+        FxNode targetNode = node.getTargetNode();
+        R res = null;
+        if (targetNode != null) {
+            res = node.accept(this, param);
+        }
+        return res;
     }
 
     @Override

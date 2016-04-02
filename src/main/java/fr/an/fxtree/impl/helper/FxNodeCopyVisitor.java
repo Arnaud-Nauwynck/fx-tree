@@ -11,6 +11,7 @@ import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
+import fr.an.fxtree.model.FxLinkProxyNode;
 import fr.an.fxtree.model.FxLongNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNullNode;
@@ -152,6 +153,11 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         Object pojo = src.getValue();
         // TODO clone pojo??
         return out.addPOJO(pojo);
+    }
+    
+    @Override
+    public FxNode visitLink(FxLinkProxyNode node, FxChildWriter out) {
+        return out.addLink(node.getTargetRelativePath());
     }
 
     @Override

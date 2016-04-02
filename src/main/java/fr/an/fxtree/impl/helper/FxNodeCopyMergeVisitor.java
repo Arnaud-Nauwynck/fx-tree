@@ -10,6 +10,7 @@ import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
+import fr.an.fxtree.model.FxLinkProxyNode;
 import fr.an.fxtree.model.FxLongNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNullNode;
@@ -210,6 +211,12 @@ public class FxNodeCopyMergeVisitor extends FxTreeVisitor2<FxNode,FxNode> {
         } else {
             skipMergeTypeMismatch(src, dest);
         }
+        return dest;
+    }
+    
+    @Override
+    public FxNode visitLink(FxLinkProxyNode node, FxNode dest) {
+        // do nothing?
         return dest;
     }
 

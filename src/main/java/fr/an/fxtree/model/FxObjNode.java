@@ -10,6 +10,8 @@ import java.util.Map.Entry;
 
 import com.fasterxml.jackson.core.io.CharTypes;
 
+import fr.an.fxtree.model.path.FxNodeOuterPath;
+
 public abstract class FxObjNode extends FxContainerNode {
 
     protected String __debugId;
@@ -151,6 +153,11 @@ public abstract class FxObjNode extends FxContainerNode {
 
     public FxPOJONode putPOJO(String name, Object value) {
         FxPOJONode res = getNodeFactory().newPOJO(value);
+        return onPut(name, res);
+    }
+
+    public FxLinkProxyNode putLink(String name, FxNodeOuterPath value) {
+        FxLinkProxyNode res = getNodeFactory().newLink(value);
         return onPut(name, res);
     }
 
@@ -318,6 +325,11 @@ public abstract class FxObjNode extends FxContainerNode {
         @Override
         public FxPOJONode addPOJO(Object value) {
             return dest.putPOJO(incrName(), value);
+        }
+
+        @Override
+        public FxLinkProxyNode addLink(FxNodeOuterPath value) {
+            return dest.putLink(incrName(), value);
         }
 
         @Override

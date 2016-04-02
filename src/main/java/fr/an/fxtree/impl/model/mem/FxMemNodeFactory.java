@@ -5,6 +5,7 @@ import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
+import fr.an.fxtree.model.FxLinkProxyNode;
 import fr.an.fxtree.model.FxLongNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNodeFactoryRegistry;
@@ -12,6 +13,7 @@ import fr.an.fxtree.model.FxNullNode;
 import fr.an.fxtree.model.FxObjNode;
 import fr.an.fxtree.model.FxPOJONode;
 import fr.an.fxtree.model.FxTextNode;
+import fr.an.fxtree.model.path.FxNodeOuterPath;
 
 public class FxMemNodeFactory extends FxNodeFactoryRegistry {
 
@@ -75,6 +77,16 @@ public class FxMemNodeFactory extends FxNodeFactoryRegistry {
     @Override
     public FxPOJONode newPOJO() {
         return new FxMemPOJONode(null, null, null);
+    }
+
+    @Override
+    public FxLinkProxyNode newLink() {
+        return new FxMemLinkProxyNode(null, null);
+    }
+
+    @Override
+    public FxLinkProxyNode newLink(FxNodeOuterPath path) {
+        return new FxMemLinkProxyNode(null, null, path);
     }
 
     @Override

@@ -7,6 +7,7 @@ import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxContainerNode;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
+import fr.an.fxtree.model.FxLinkProxyNode;
 import fr.an.fxtree.model.FxLongNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNullNode;
@@ -92,6 +93,11 @@ public class FxReadProxyNodeWrappers {
 
         @Override
         public FxNode visitPOJOValue(FxPOJONode node, FxContainerNode proxyParent) {
+            throw FxUtils.notImplYet();
+        }
+
+        @Override
+        public FxNode visitLink(FxLinkProxyNode node, FxContainerNode proxyParent) {
             throw FxUtils.notImplYet();
         }
 

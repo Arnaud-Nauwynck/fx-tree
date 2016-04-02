@@ -25,7 +25,7 @@ public class FxStdFileFuncsTest {
         tstHelper.doTestFile("evalExportJsonFile");
         Assert.assertTrue(outFile.exists());
         String content = FileUtils.readFileToString(outFile);
-        Assert.assertEquals("{\"some-content\":1}", content);
+        Assert.assertEquals("{\n  \"some-content\" : 1\n}", content);
     }
 
 }

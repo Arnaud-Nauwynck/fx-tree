@@ -8,6 +8,7 @@ import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxDoubleNode;
 import fr.an.fxtree.model.FxIntNode;
+import fr.an.fxtree.model.FxLinkProxyNode;
 import fr.an.fxtree.model.FxLongNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNullNode;
@@ -22,6 +23,13 @@ import fr.an.fxtree.model.FxTreeVisitor;
  * 
  */
 public class FxDefaultTreeVisitor extends FxTreeVisitor {
+
+    // ------------------------------------------------------------------------
+
+    public FxDefaultTreeVisitor() {
+    }
+
+    // ------------------------------------------------------------------------
 
     protected void recurseNode(FxNode node) {
         if (node != null) {
@@ -98,7 +106,15 @@ public class FxDefaultTreeVisitor extends FxTreeVisitor {
     public void visitPOJOValue(FxPOJONode node) {
 
     }
-
+    
+    @Override
+    public void visitLink(FxLinkProxyNode node) {
+        FxNode targetNode = node.getTargetNode();
+        if (targetNode != null) {
+            targetNode.accept(this);
+        }
+    }
+    
     @Override
     public void visitNullValue(FxNullNode node) {
 

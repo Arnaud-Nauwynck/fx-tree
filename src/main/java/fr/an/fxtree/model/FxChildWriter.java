@@ -3,6 +3,8 @@ package fr.an.fxtree.model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import fr.an.fxtree.model.path.FxNodeOuterPath;
+
 public abstract class FxChildWriter {
 
     public abstract void remove();
@@ -37,6 +39,8 @@ public abstract class FxChildWriter {
     public abstract FxPOJONode add(BigDecimal value);
 
     public abstract FxPOJONode addPOJO(Object value);
+
+    public abstract FxLinkProxyNode addLink(FxNodeOuterPath value);
 
     public abstract FxNullNode addNull();
     

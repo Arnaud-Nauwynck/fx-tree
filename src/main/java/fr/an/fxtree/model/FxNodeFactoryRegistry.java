@@ -4,6 +4,8 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 
+import fr.an.fxtree.model.path.FxNodeOuterPath;
+
 public abstract class FxNodeFactoryRegistry {
 
     public abstract <T extends FxNode> T newNode(Class<T> clss);
@@ -89,6 +91,18 @@ public abstract class FxNodeFactoryRegistry {
         return res;
     }
 
+    public FxLinkProxyNode newLink() {
+        FxLinkProxyNode res = newNode(FxLinkProxyNode.class);
+        return res;
+    }
+
+    public FxLinkProxyNode newLink(FxNodeOuterPath value) {
+        FxLinkProxyNode res = newLink();
+        res.setTargetRelativePath(value);
+        return res;
+    }
+    
+    
     public FxNullNode newNull() {
         return newNode(FxNullNode.class);
     }

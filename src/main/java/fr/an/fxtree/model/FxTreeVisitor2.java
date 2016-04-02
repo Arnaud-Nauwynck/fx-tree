@@ -16,6 +16,8 @@ public abstract class FxTreeVisitor2<P,R> {
     public abstract R visitBinaryValue(FxBinaryNode node, P param);
     public abstract R visitPOJOValue(FxPOJONode node, P param);
 
+    public abstract R visitLink(FxLinkProxyNode node, P param);
+
     public abstract R visitNullValue(FxNullNode node, P param);
 
 }

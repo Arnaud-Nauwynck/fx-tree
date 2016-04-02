@@ -13,6 +13,8 @@ public enum FxNodeType {
     POJO,
     MISSING,
 
+    LINK,
+    
     ROOT
 
 }

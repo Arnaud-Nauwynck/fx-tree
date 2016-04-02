@@ -5,6 +5,8 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Iterator;
 
+import fr.an.fxtree.model.path.FxNodeOuterPath;
+
 public abstract class FxArrayNode extends FxContainerNode {
 
     // ------------------------------------------------------------------------
@@ -173,6 +175,15 @@ public abstract class FxArrayNode extends FxContainerNode {
         return insertPOJO(size(), value);
     }
 
+    public FxLinkProxyNode insertLink(int index, FxNodeOuterPath value) {
+        FxLinkProxyNode res = getNodeFactory().newLink(value);
+        return onInsert(index, res);
+    }
+
+    public FxLinkProxyNode addLink(FxNodeOuterPath value) {
+        return insertLink(size(), value);
+    }
+
     public FxNullNode insertNull(int index) {
         FxNullNode res = getNodeFactory().newNull();
         return onInsert(index, res);
@@ -311,6 +322,11 @@ public abstract class FxArrayNode extends FxContainerNode {
         @Override
         public FxPOJONode addPOJO(Object value) {
             return insertPOJO(incrIndex(), value);
+        }
+        
+        @Override
+        public FxLinkProxyNode addLink(FxNodeOuterPath value) {
+            return insertLink(incrIndex(), value);
         }
 
         @Override
