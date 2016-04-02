@@ -1,0 +1,19 @@
+{
+  "rand_10_50": {
+    "@fx-eval": "#phase0:randomInt",
+    "seed": 0,
+    "min": 10,
+    "max": 50
+  },
+  "rand_10_50_seed2": {
+    "@fx-eval": "#phase0:randomInt",
+    "seed": 2,
+    "min": 10,
+    "max": 50
+  },
+  "rand_10_maxInt": {
+    "@fx-eval": "#phase0:randomInt",
+    "seed": 1234,
+    "min": 10
+  }
+}

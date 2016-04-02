@@ -26,6 +26,7 @@ public class FxStdFuncs {
         
         funcs.put(FxJavaMethodInvokeFunc.NAME, FxJavaMethodInvokeFunc.INSTANCE);
         funcs.put(FxLogVoidFunc.NAME, FxLogVoidFunc.INSTANCE);
+        funcs.put(FxRandomIntFunc.NAME, FxRandomIntFunc.INSTANCE);
         
         funcs.put(FxUserPhasesProcessFunc.NAME, new FxUserPhasesProcessFunc(funcRegistry)); // chicken and egg dilemna..
 

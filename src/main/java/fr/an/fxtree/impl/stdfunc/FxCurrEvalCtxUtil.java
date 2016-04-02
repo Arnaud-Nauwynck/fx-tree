@@ -109,6 +109,30 @@ public final class FxCurrEvalCtxUtil {
         return FxNodeValueUtils.nodeToInt(tmpres);
     }
 
+    public static long recurseEvalToLong(FxEvalContext ctx, FxNode src) {
+        FxNode tmpres = recurseEval(ctx, src);
+        return FxNodeValueUtils.nodeToLong(tmpres);
+    }
+
+    public static long recurseEvalToLongOrDefault(FxEvalContext ctx, FxNode src, Long defaultValue) {
+        if (src == null) {
+            return defaultValue;
+        }
+        FxNode tmpres = recurseEval(ctx, src);
+        if (tmpres == null) {
+            return defaultValue;
+        }
+        return FxNodeValueUtils.nodeToLong(tmpres);
+    }
+
+    public static Long recurseEvalToLongOrThrow(FxEvalContext ctx, FxNode src) {
+        if (src == null) {
+            throw new IllegalArgumentException("expected long, got null");
+        }
+        FxNode tmpres = recurseEval(ctx, src);
+        return FxNodeValueUtils.nodeToLong(tmpres);
+    }
+    
     public static FxObjNode recurseEvalToObj(FxEvalContext ctx, FxNode src) {
         FxNode tmpres = recurseEval(ctx, src);
         return FxNodeValueUtils.nodeToObj(tmpres);
