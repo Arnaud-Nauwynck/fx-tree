@@ -14,8 +14,12 @@ import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 
+/**
+ * Yaml<->FxTree converter utility
+ */
 public final class FxYamlUtils {
     
+    /** privat eto force all static */
     private FxYamlUtils() {
     }
 

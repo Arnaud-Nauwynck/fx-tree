@@ -24,8 +24,13 @@ import fr.an.fxtree.model.FxPOJONode;
 import fr.an.fxtree.model.FxTextNode;
 import fr.an.fxtree.model.FxValueNode;
 
+/**
+ * List/Map/Objects<->FxTree converter utility
+ *
+ */
 public final class Fx2MemMapListUtils {
 
+    /** private to force all static */
     private Fx2MemMapListUtils() {
     }
     

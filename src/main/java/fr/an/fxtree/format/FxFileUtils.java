@@ -8,11 +8,14 @@ import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 
+/**
+ * File read utility method, delegate to Yaml/Json class using file name extension ".yaml", ".json", .. 
+ */
 public final class FxFileUtils {
 
     public static final String[] STD_FILE_EXTENSIONS = new String[] { ".json", ".yaml", ".yml" };
 
-    
+    /** private to force all static */
     private FxFileUtils() {
     }
     

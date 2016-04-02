@@ -1,12 +1,5 @@
 package fr.an.fxtree.format.json;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParser.Feature;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -14,14 +7,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParser.Feature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import fr.an.fxtree.format.json.jackson.Jackson2FxTreeBuilder;
-import fr.an.fxtree.format.yaml.snakeyaml.Fx2SnakeYamlUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 
-public class FxJsonUtils {
+/**
+ * JSon<->FxTree converter utility (delegating to jackson lib)
+ *
+ */
+public final class FxJsonUtils {
 
+    private FxJsonUtils() {
+    }
+    
     private static ObjectMapper jacksonObjectMapper = new ObjectMapper();
     static {
         jacksonObjectMapper.enable(Feature.ALLOW_UNQUOTED_FIELD_NAMES);
