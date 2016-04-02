@@ -13,7 +13,10 @@ import fr.an.fxtree.model.FxNode;
  */
 public final class FxFileUtils {
 
-    public static final String[] STD_FILE_EXTENSIONS = new String[] { ".json", ".yaml", ".yml" };
+    public static final String JSON_EXT = ".json";
+    public static final String YAML_EXT = ".yaml";
+    public static final String YML_EXT = ".yml";
+    public static final String[] STD_FILE_EXTENSIONS = new String[] { JSON_EXT, YAML_EXT, YML_EXT };
 
     /** private to force all static */
     private FxFileUtils() {
@@ -32,14 +35,25 @@ public final class FxFileUtils {
     public static FxNode readTree(FxChildWriter dest, File file) {
         String fileName = file.getName();
         FxNode contentNode; 
-        if (fileName.endsWith(".json")) {
+        if (fileName.endsWith(JSON_EXT)) {
             contentNode = FxJsonUtils.readTree(dest, file);
-        } else if (fileName.endsWith(".yml") || fileName.endsWith(".yaml")) {
+        } else if (fileName.endsWith(YML_EXT) || fileName.endsWith(YAML_EXT)) {
             contentNode = FxYamlUtils.readTree(dest, file);
         } else {
             throw new IllegalArgumentException("expecting .json or .yaml file extension, got " + fileName);
         }
         return contentNode;
+    }
+
+    public static void writeTree(File file, FxNode content) {
+        String fileName = file.getName();
+        if (fileName.endsWith(JSON_EXT)) {
+            FxJsonUtils.writeTree(file, content);
+        } else if (fileName.endsWith(YML_EXT) || fileName.endsWith(YAML_EXT)) {
+            FxYamlUtils.writeTree(file, content);
+        } else {
+            throw new IllegalArgumentException("expecting .json or .yaml file extension, got " + fileName);
+        }
     }
     
 }
