@@ -24,7 +24,16 @@ public class FxMemoizedFileStoreFuncHelperTest {
         if (! dir.exists()) {
             dir.mkdirs();
         }
-        sut = new FxMemoizedFileStoreFuncHelper(new File(dir, "test-memoized-filestore.yaml"));
+        File pendingStoreFile = new File(dir, "test-pendingjobs-filestore.yaml");
+        if (pendingStoreFile.exists()) {
+            pendingStoreFile.delete();
+        }
+        File memoizedStoreFile = new File(dir, "test-memoized-filestore.yaml");
+        if (memoizedStoreFile.exists()) {
+            memoizedStoreFile.delete();
+        }
+        FxPendingJobsFileStoreHelper pendingJobsHelper = new FxPendingJobsFileStoreHelper(pendingStoreFile);
+        sut = new FxMemoizedFileStoreFuncHelper(memoizedStoreFile, pendingJobsHelper);
     }
     
     @Test

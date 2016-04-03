@@ -1,8 +1,6 @@
 package fr.an.fxtree.impl.helper;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +27,13 @@ public class FxMemoizedFileStoreFuncHelper {
     private File storeFile;
     private FxObjNode fileContent;
     
-    private Set<String> pendings = new HashSet<>();
+    private FxPendingJobsFileStoreHelper pendingJobsFileStoreHelper;
     
     // ------------------------------------------------------------------------
 
-    public FxMemoizedFileStoreFuncHelper(File storeFile) {
+    public FxMemoizedFileStoreFuncHelper(File storeFile, FxPendingJobsFileStoreHelper pendingJobsFileStoreHelper) {
         this.storeFile = storeFile;
+        this.pendingJobsFileStoreHelper = pendingJobsFileStoreHelper;
         if (storeFile.exists()) {
             this.fileContent = (FxObjNode) FxFileUtils.readTree(storeFile);
         } else {
@@ -56,15 +55,9 @@ public class FxMemoizedFileStoreFuncHelper {
             resultNode = fileContent.get(resultId);
             
             if (resultNode == null) {
-                boolean addedPending = pendings.add(resultId);
+                boolean addedPending = pendingJobsFileStoreHelper.addPending(resultId, src);
                 if (!addedPending) {
-                    while(pendings.contains(resultId)) {
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            break;
-                        }
-                    }
+                    pendingJobsFileStoreHelper.waitPending(resultId);
                     resultNode = fileContent.get(resultId);
                 }
             }
@@ -82,7 +75,7 @@ public class FxMemoizedFileStoreFuncHelper {
             synchronized (lock) {
                 FxChildWriter fileResultWriter = fileContent.putBuilder(resultId);
                 FxNodeCopyVisitor.copyTo(fileResultWriter, resultNode);
-                pendings.remove(resultId);
+                pendingJobsFileStoreHelper.removePending(resultId);
                 try {
                     FxFileUtils.writeTree(storeFile, fileContent);
                 } catch(Exception ex) {
