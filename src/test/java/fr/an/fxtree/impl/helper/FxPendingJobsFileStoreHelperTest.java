@@ -10,7 +10,9 @@ import org.junit.Test;
 
 import com.google.common.collect.ImmutableList;
 
+import fr.an.fxtree.impl.helper.FxPendingJobsFileStoreHelper.PendingEntry;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.util.FxNodeAssert;
 import fr.an.fxtree.model.FxObjNode;
 
 public class FxPendingJobsFileStoreHelperTest {
@@ -42,6 +44,11 @@ public class FxPendingJobsFileStoreHelperTest {
         
         List<String> pendings = sut.listPendings();
         Assert.assertEquals(ImmutableList.of("job1"), pendings);
+        
+        PendingEntry job1Entry = sut.getPendingValueCopyOrNull("job1");
+        Assert.assertEquals("job1", job1Entry.id);
+        Assert.assertNotNull(job1Entry.startTime);
+        FxNodeAssert.assertEquals(job1Entry.pendingData, job1);
         
         FxPendingJobsFileStoreHelper sutReload = new FxPendingJobsFileStoreHelper(new FxKeyNodeFileStore(pendingStore.getStoreFile()));
         Assert.assertEquals(ImmutableList.of("job1"), sutReload.listPendings());

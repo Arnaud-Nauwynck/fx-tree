@@ -1,5 +1,6 @@
 package fr.an.fxtree.impl.helper;
 
+import fr.an.fxtree.impl.helper.FxPendingJobsFileStoreHelper.PendingEntry;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.func.FxEvalContext;
@@ -33,8 +34,8 @@ public class FxMemoizedFileStoreFuncHelper {
             resultNode = keyStore.getCopy(resultId);
             
             if (resultNode == null) {
-                boolean addedPending = pendingJobsFileStoreHelper.addPending(resultId, src);
-                if (!addedPending) {
+                PendingEntry pending = pendingJobsFileStoreHelper.addPending(resultId, src);
+                if (pending == null) {
                     pendingJobsFileStoreHelper.waitPending(resultId);
                     resultNode = keyStore.getCopy(resultId);
                 }

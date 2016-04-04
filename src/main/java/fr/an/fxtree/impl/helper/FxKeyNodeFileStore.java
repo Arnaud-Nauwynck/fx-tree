@@ -108,6 +108,17 @@ public class FxKeyNodeFileStore {
         }
     }
 
+    public void updatePutIfPresent(String key, FxNode nodeToCopy) {
+        synchronized (lock) {
+            FxNode prev = contentObj.remove(key);
+            if (prev != null) {                
+                FxChildWriter writer = contentObj.putBuilder(key);
+                FxNodeCopyVisitor.copyTo(writer, nodeToCopy);
+                flushWrite(key);
+            }
+        }
+    }
+
     /**
      * @param key
      */
