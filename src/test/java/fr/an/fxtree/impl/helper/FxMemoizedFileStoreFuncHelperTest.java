@@ -32,8 +32,10 @@ public class FxMemoizedFileStoreFuncHelperTest {
         if (memoizedStoreFile.exists()) {
             memoizedStoreFile.delete();
         }
-        FxPendingJobsFileStoreHelper pendingJobsHelper = new FxPendingJobsFileStoreHelper(pendingStoreFile);
-        sut = new FxMemoizedFileStoreFuncHelper(memoizedStoreFile, pendingJobsHelper);
+        FxKeyNodeFileStore memoizedStore = new FxKeyNodeFileStore(memoizedStoreFile);
+        FxKeyNodeFileStore pendingStore = new FxKeyNodeFileStore(pendingStoreFile);
+        FxPendingJobsFileStoreHelper pendingJobsHelper = new FxPendingJobsFileStoreHelper(pendingStore);
+        sut = new FxMemoizedFileStoreFuncHelper(memoizedStore, pendingJobsHelper);
     }
     
     @Test
