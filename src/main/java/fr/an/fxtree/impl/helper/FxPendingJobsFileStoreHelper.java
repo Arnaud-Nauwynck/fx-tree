@@ -1,16 +1,11 @@
 package fr.an.fxtree.impl.helper;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import fr.an.fxtree.format.FxFileUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
@@ -21,30 +16,17 @@ import fr.an.fxtree.model.FxObjNode;
  */
 public class FxPendingJobsFileStoreHelper {
     
-    private static final Logger LOG = LoggerFactory.getLogger(FxPendingJobsFileStoreHelper.class);
-    
     private final Object lock = new Object();
     
     private Set<String> pendings = new HashSet<>();
 
-    private File pendingJobsStoreFile;
-    private FxObjNode pendingJobsContent;
+    private FxKeyNodeFileStore pendingJobsStore;
     
     // ------------------------------------------------------------------------
 
-    public FxPendingJobsFileStoreHelper(File storeFile) {
-        this.pendingJobsStoreFile = storeFile;
-        if (storeFile.exists()) {
-            this.pendingJobsContent = (FxObjNode) FxFileUtils.readTree(pendingJobsStoreFile);
-        } else {
-            FxMemRootDocument doc = new FxMemRootDocument();
-            this.pendingJobsContent = doc.setContentObj();
-            try {
-                FxFileUtils.writeTree(pendingJobsStoreFile, pendingJobsContent);
-            } catch(Exception ex) {
-                throw new RuntimeException("can not write to file '" + pendingJobsStoreFile + "'", ex);
-            }
-        }
+    public FxPendingJobsFileStoreHelper(FxKeyNodeFileStore pendingJobsStore) {
+        this.pendingJobsStore = pendingJobsStore;
+        pendings.addAll(pendingJobsStore.keySet());
     }
 
     // ------------------------------------------------------------------------
@@ -91,24 +73,14 @@ public class FxPendingJobsFileStoreHelper {
     // ------------------------------------------------------------------------
     
     protected void doWriteAddPendingJobNode(String jobId, FxNode src) {
-        FxObjNode jobNode = pendingJobsContent.putObj(jobId);
+        FxObjNode jobNode = new FxMemRootDocument().setContentObj();
         FxNodeCopyVisitor.copyTo(jobNode.putBuilder("src"), src);
         jobNode.putPOJO("startDate", new Date());
-        doWriteFileContentNoEx("add pending job '" + jobId + "'");
+        pendingJobsStore.put(jobId, jobNode);
     }
     
     protected void doWriteRemovePendingJobNode(String jobId) {
-        pendingJobsContent.remove(jobId);
-        doWriteFileContentNoEx("remove pending job '" + jobId + "'");
-    }
-
-    protected void doWriteFileContentNoEx(String displayMsg) {
-        LOG.info(displayMsg + " - write update file " + pendingJobsStoreFile);
-        try {
-            FxFileUtils.writeTree(pendingJobsStoreFile, pendingJobsContent);
-        } catch(Exception ex) {
-            throw new RuntimeException("can not write to file '" + pendingJobsStoreFile + "' .. ignore, no rethrow!" + ex.getMessage());
-        }
+        pendingJobsStore.remove(jobId);
     }
 
     // ------------------------------------------------------------------------
@@ -116,7 +88,7 @@ public class FxPendingJobsFileStoreHelper {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("FxPendingJobsFileStoreHelper [file:" + pendingJobsStoreFile);
+        sb.append("FxPendingJobsFileStoreHelper [" + pendingJobsStore);
         synchronized (lock) {
             sb.append(", pendings=" + pendings);
         }
