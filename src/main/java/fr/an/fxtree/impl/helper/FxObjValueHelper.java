@@ -1,5 +1,6 @@
 package fr.an.fxtree.impl.helper;
 
+import java.util.List;
 import java.util.Map;
 
 import fr.an.fxtree.model.FxArrayNode;
@@ -153,6 +154,10 @@ public class FxObjValueHelper {
 
     public String[] getStringArrayOrNull(String fieldName, boolean allowRecurseFlatten) {
         return FxNodeValueUtils.getStringArrayOrNull(parent, fieldName, allowRecurseFlatten);
+    }
+
+    public List<String> getStringListOrNull(String fieldName, boolean allowRecurseFlatten) {
+        return FxNodeValueUtils.getStringListOrNull(parent, fieldName, allowRecurseFlatten);
     }
 
     public String[] nodeToStringArray(FxNode value, boolean allowRecurseFlatten) {

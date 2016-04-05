@@ -302,12 +302,25 @@ public final class FxNodeValueUtils {
         return nodeToStringArray(fieldNode, allowRecurseFlatten);
     }
 
+    public static List<String> getStringListOrThrow(FxObjNode parent, String fieldName, boolean allowRecurseFlatten) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        return nodeToStringList(fieldNode, allowRecurseFlatten);
+    }
+
     public static String[] getStringArrayOrNull(FxObjNode parent, String fieldName, boolean allowRecurseFlatten) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
             return null;
         }
         return nodeToStringArray(fieldNode, allowRecurseFlatten);
+    }
+
+    public static List<String> getStringListOrNull(FxObjNode parent, String fieldName, boolean allowRecurseFlatten) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return null;
+        }
+        return nodeToStringList(fieldNode, allowRecurseFlatten);
     }
 
     public static List<String> nodeToStringList(FxNode value, boolean allowRecurseFlatten) {
