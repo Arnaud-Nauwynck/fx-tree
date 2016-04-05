@@ -8,7 +8,6 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fr.an.fxtree.format.json.FxJsonUtils;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxArrayNode;
@@ -68,4 +67,64 @@ public class FxJsonUtilsTest {
         Assert.assertEquals(0, emptyObj.size());
         Assert.assertEquals("", FxNodeValueUtils.nodeToString(r.get("emptyString")));
     }
+    
+    protected static class FooObj {
+        private String foo;
+        private int bar;
+        
+        public FooObj() {
+        }
+        
+        public FooObj(String foo, int bar) {
+            this.foo = foo;
+            this.bar = bar;
+        }
+
+        public String getFoo() {
+            return foo;
+        }
+        public void setFoo(String foo) {
+            this.foo = foo;
+        }
+        public int getBar() {
+            return bar;
+        }
+        public void setBar(int bar) {
+            this.bar = bar;
+        }
+        
+    }
+    
+    @Test
+    public void testValueToTree() {
+        // Prepare
+        FxMemRootDocument doc = new FxMemRootDocument();
+        FooObj value = new FooObj("foo", 123);
+        // Perform
+        FxNode res = FxJsonUtils.valueToTree(doc.contentWriter(), value);
+        // Post-check
+        Assert.assertEquals("{\"foo\":\"foo\",\"bar\":123}", res.toString());
+    }
+    
+    @Test
+    public void testValueToTree_return() {
+        // Prepare
+        FooObj value = new FooObj("foo", 123);
+        // Perform
+        FxNode res = FxJsonUtils.valueToTree(value);
+        // Post-check
+        Assert.assertEquals("{\"foo\":\"foo\",\"bar\":123}", res.toString());
+    }
+    
+    @Test
+    public void testTreeToValue() {
+        // Prepare
+        FxNode valueNode = FxJsonUtils.valueToTree(new FooObj("foo", 123));
+        // Perform
+        FooObj res = FxJsonUtils.treeToValue(FooObj.class, valueNode);
+        // Post-check
+        Assert.assertEquals("foo", res.getFoo());
+        Assert.assertEquals(123, res.getBar());
+    }
+
 }

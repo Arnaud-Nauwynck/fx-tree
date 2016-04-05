@@ -58,7 +58,7 @@ public final class FxJsonUtils {
         } catch (IOException ex) {
             throw new RuntimeException("Failed to parse as json", ex);
         }
-        return Jackson2FxTreeBuilder.buildTree(dest, jacksonNode);
+        return Jackson2FxTreeBuilder.jsonNodeToFxTree(dest, jacksonNode);
     }
 
     public static FxNode readTree(FxChildWriter dest, File in) {
@@ -68,12 +68,12 @@ public final class FxJsonUtils {
         } catch (IOException ex) {
             throw new RuntimeException("Failed to parse as json", ex);
         }
-        return Jackson2FxTreeBuilder.buildTree(dest, jacksonNode);
+        return Jackson2FxTreeBuilder.jsonNodeToFxTree(dest, jacksonNode);
     }
 
 
     public static void writeTree(OutputStream dest, FxNode tree) throws IOException {
-        JsonNode jacksonTree = Jackson2FxTreeBuilder.buildJacksonTree(tree);
+        JsonNode jacksonTree = Jackson2FxTreeBuilder.fxTreeToJsonNode(tree);
         try {
             jacksonObjectMapper.writeValue(dest, jacksonTree);
         }
@@ -83,7 +83,7 @@ public final class FxJsonUtils {
     }
     
     public static void writeTree(File dest, FxNode tree) {
-        JsonNode jacksonTree = Jackson2FxTreeBuilder.buildJacksonTree(tree);
+        JsonNode jacksonTree = Jackson2FxTreeBuilder.fxTreeToJsonNode(tree);
         try {
             jacksonObjectMapper.writeValue(dest, jacksonTree);
         }
@@ -115,5 +115,28 @@ public final class FxJsonUtils {
         }
         return bout.toString();
     }
+
+    // converter for POJO <-> FxNode, using Jackson valueToTree()/treeToValue() then json<->FxTree
+    // ------------------------------------------------------------------------
     
+    public static FxNode valueToTree(Object value) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        valueToTree(doc.contentWriter(), value);
+        return doc.getContent();
+    }
+    
+    public static FxNode valueToTree(FxChildWriter dest, Object value) {
+        JsonNode jsonNode = jacksonObjectMapper.valueToTree(value);
+        return Jackson2FxTreeBuilder.jsonNodeToFxTree(dest, jsonNode);
+    }
+    
+    public static <T> T treeToValue(Class<T> destClass, FxNode tree) {
+        JsonNode jsonNode = Jackson2FxTreeBuilder.fxTreeToJsonNode(tree);
+        try {
+            return jacksonObjectMapper.treeToValue(jsonNode, destClass);
+        } catch(Exception ex) {
+            throw new RuntimeException("Failed to convert tree to value (using jackson ObjectMapper)", ex);
+        }
+    }
+
 }

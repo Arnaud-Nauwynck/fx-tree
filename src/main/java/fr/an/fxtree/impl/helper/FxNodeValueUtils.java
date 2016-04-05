@@ -1,6 +1,7 @@
 package fr.an.fxtree.impl.helper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -308,26 +309,29 @@ public final class FxNodeValueUtils {
         }
         return nodeToStringArray(fieldNode, allowRecurseFlatten);
     }
-    
-    public static String[] nodeToStringArray(FxNode value, boolean allowRecurseFlatten) {
-        if (value == null) return null;
-        String[] res;
+
+    public static List<String> nodeToStringList(FxNode value, boolean allowRecurseFlatten) {
+        if (value == null) {
+            return null;
+        }
+        List<String> res;
         if (value.isTextual()) {
-            res = value.textValue().split(",");
+            String[] tmpres = value.textValue().split(",");
+            res = new ArrayList<>(Arrays.asList(tmpres));
         } else if (value.isArray()) {
             FxArrayNode array = (FxArrayNode) value;
             int len = array.size();
-            List<String> tmpRes = new ArrayList<String>(len);
+            res = new ArrayList<String>(len);
             for(int i = 0; i < len; i++) {
                 FxNode child = array.get(i);
                 if (child.isTextual()) {
-                    tmpRes.add(child.textValue());
+                    res.add(child.textValue());
                 } else if (value.isArray()) {
                     if (allowRecurseFlatten) {
                         // recurse
-                        String[] tmpresElts = nodeToStringArray(child, allowRecurseFlatten);
-                        for(String e : tmpresElts) {
-                            tmpRes.add(e);
+                        List<String> tmpresElts = nodeToStringList(child, allowRecurseFlatten);
+                        if (tmpresElts != null) {
+                            res.addAll(tmpresElts);
                         }
                     } else {
                         throw new IllegalArgumentException("expected " + STRING_ARRAY_FORMAT);
@@ -336,11 +340,15 @@ public final class FxNodeValueUtils {
                     throw new IllegalArgumentException("expected " + STRING_FLATTEN_ARRAY_FORMAT);
                 }
             }
-            res = tmpRes.toArray(new String[tmpRes.size()]);
         } else {
             throw new IllegalArgumentException("expected " + (allowRecurseFlatten? STRING_FLATTEN_ARRAY_FORMAT : STRING_ARRAY_FORMAT));
         }
         return res;
+    }
+    
+    public static String[] nodeToStringArray(FxNode value, boolean allowRecurseFlatten) {
+        List<String> tmpres = nodeToStringList(value, allowRecurseFlatten);
+        return tmpres != null? tmpres.toArray(new String[tmpres.size()]) : null;
     }
     
 

@@ -25,32 +25,22 @@ import fr.an.fxtree.model.FxPOJONode;
 import fr.an.fxtree.model.FxTextNode;
 import fr.an.fxtree.model.FxValueNode;
 
-public class Jackson2FxTreeBuilder {
+public final class Jackson2FxTreeBuilder {
 
-    public static FxNode buildTree(FxChildWriter dest, JsonNode src) {
-        FxNode res;
+    /** private to force all static */
+    private Jackson2FxTreeBuilder() {
+    }
+    
+    public static FxNode jsonNodeToFxTree(FxChildWriter dest, JsonNode src) {
         switch (src.getNodeType()) {
-        case ARRAY:
-            FxArrayNode destArray = dest.addArray();
-            buildTree(destArray, (ArrayNode) src);
-            res = destArray;
-            break;
         case OBJECT:
             FxObjNode destObj = dest.addObj();
-            buildTree(destObj, (ObjectNode) src);
-            res = destObj;
-            break;
-        default:
-            res = buildValue(dest, src);
-            break;
-        }
-        return res;
-    }
-
-    public static FxNode buildValue(FxChildWriter dest, JsonNode src) {
-        switch (src.getNodeType()) {
+            fillJsonObjToFxObj(destObj, (ObjectNode) src);
+            return destObj;
         case ARRAY:
-            throw new IllegalStateException("not a value");
+            FxArrayNode destArray = dest.addArray();
+            fillJsonArrayToFxArray(destArray, (ArrayNode) src);
+            return destArray;
         case BINARY:
             return dest.add(((BinaryNode) src).binaryValue());
         case BOOLEAN:
@@ -79,8 +69,6 @@ public class Jackson2FxTreeBuilder {
             default:
                 throw new RuntimeException();
             }
-        case OBJECT:
-            throw new IllegalStateException("not a value");
         case POJO:
             return dest.addPOJO(((POJONode) src).getPojo());
         case STRING:
@@ -90,7 +78,7 @@ public class Jackson2FxTreeBuilder {
         }
     }
     
-    public static void buildTree(FxArrayNode dest, ArrayNode src) {
+    public static void fillJsonArrayToFxArray(FxArrayNode dest, ArrayNode src) {
         if (! dest.isEmpty()) {
             dest.removeAll();
         }
@@ -100,11 +88,11 @@ public class Jackson2FxTreeBuilder {
             switch (srcElt.getNodeType()) {
             case ARRAY:
                 FxArrayNode eltArray = dest.addArray();
-                buildTree(eltArray, (ArrayNode) srcElt);
+                fillJsonArrayToFxArray(eltArray, (ArrayNode) srcElt);
                 break;
             case OBJECT:
                 FxObjNode eltObj = dest.addObj();
-                buildTree(eltObj, (ObjectNode) srcElt);
+                fillJsonObjToFxObj(eltObj, (ObjectNode) srcElt);
                 break;
             case BINARY:
                 dest.add(((BinaryNode) srcElt).binaryValue());
@@ -155,7 +143,7 @@ public class Jackson2FxTreeBuilder {
     }
     
     
-    public static void buildTree(FxObjNode dest, ObjectNode src) {
+    public static void fillJsonObjToFxObj(FxObjNode dest, ObjectNode src) {
         if (! dest.isEmpty()) {
             dest.removeAll();
         }
@@ -166,11 +154,11 @@ public class Jackson2FxTreeBuilder {
             switch (srcElt.getNodeType()) {
             case ARRAY:
                 FxArrayNode eltArray = dest.putArray(field);
-                buildTree(eltArray, (ArrayNode) srcElt);
+                fillJsonArrayToFxArray(eltArray, (ArrayNode) srcElt);
                 break;
             case OBJECT:
                 FxObjNode eltObj = dest.putObj(field);
-                buildTree(eltObj, (ObjectNode) srcElt);
+                fillJsonObjToFxObj(eltObj, (ObjectNode) srcElt);
                 break;
             case BINARY:
                 dest.put(field, ((BinaryNode) srcElt).binaryValue());
@@ -223,11 +211,11 @@ public class Jackson2FxTreeBuilder {
     // conversion FxNode -> Jackson JsonNode
     // ------------------------------------------------------------------------
 
-    public static JsonNode buildJacksonTree(FxNode src) {
-        return buildJacksonTree(src, JsonNodeFactory.instance);
+    public static JsonNode fxTreeToJsonNode(FxNode src) {
+        return fxTreeToJsonNode(src, JsonNodeFactory.instance);
     }
     
-    public static JsonNode buildJacksonTree(FxNode src, JsonNodeFactory jsonNodeFactory) {
+    public static JsonNode fxTreeToJsonNode(FxNode src, JsonNodeFactory jsonNodeFactory) {
         if (src == null) {
             return null;
         }
@@ -235,12 +223,12 @@ public class Jackson2FxTreeBuilder {
         switch (src.getNodeType()) {
             case ARRAY:
                 ArrayNode destArray = new ArrayNode(jsonNodeFactory);
-                buildJacksonTree(destArray, (FxArrayNode) src);
+                fillFxArrayToJsonArray(destArray, (FxArrayNode) src);
                 res = destArray;
                 break;
             case OBJECT:
                 ObjectNode destObj = new ObjectNode(jsonNodeFactory);
-                buildJacksonTree(destObj, (FxObjNode) src);
+                fillFxObjToJsonObj(destObj, (FxObjNode) src);
                 res = destObj;
                 break;
             default:
@@ -249,7 +237,7 @@ public class Jackson2FxTreeBuilder {
         return res;
     }
         
-    public static void buildJacksonTree(ArrayNode dest, FxArrayNode src) {
+    public static void fillFxArrayToJsonArray(ArrayNode dest, FxArrayNode src) {
 //        if (! dest.isEmpty()) {
 //            dest.removeAl();
 //        }
@@ -259,11 +247,11 @@ public class Jackson2FxTreeBuilder {
             switch (srcElt.getNodeType()) {
             case ARRAY:
                 ArrayNode eltArray = dest.addArray();
-                buildJacksonTree(eltArray, (FxArrayNode) srcElt);
+                fillFxArrayToJsonArray(eltArray, (FxArrayNode) srcElt);
                 break;
             case OBJECT:
                 ObjectNode eltObj = dest.addObject();
-                buildJacksonTree(eltObj, (FxObjNode) srcElt);
+                fillFxObjToJsonObj(eltObj, (FxObjNode) srcElt);
                 break;
             case BINARY:
                 dest.add(((FxBinaryNode) srcElt).binaryValue());
@@ -313,7 +301,7 @@ public class Jackson2FxTreeBuilder {
         }
     }
     
-    public static void buildJacksonTree(ObjectNode dest, FxObjNode src) {
+    public static void fillFxObjToJsonObj(ObjectNode dest, FxObjNode src) {
         for(Iterator<Entry<String, FxNode>> iter = src.fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();
             String field = e.getKey();
@@ -321,11 +309,11 @@ public class Jackson2FxTreeBuilder {
             switch (srcElt.getNodeType()) {
                 case ARRAY:
                     ArrayNode eltArray = dest.putArray(field);
-                    buildJacksonTree(eltArray, (FxArrayNode) srcElt);
+                    fillFxArrayToJsonArray(eltArray, (FxArrayNode) srcElt);
                     break;
                 case OBJECT:
                     ObjectNode eltObj = dest.putObject(field);
-                    buildJacksonTree(eltObj, (FxObjNode) srcElt);
+                    fillFxObjToJsonObj(eltObj, (FxObjNode) srcElt);
                     break;
                 case BINARY:
                     dest.put(field, ((FxBinaryNode) srcElt).binaryValue());
