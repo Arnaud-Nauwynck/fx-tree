@@ -1,7 +1,8 @@
 package fr.an.fxtree.impl.stdfunc;
 
+import java.util.List;
+
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
-import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
@@ -44,28 +45,13 @@ public class FxUserPhasesProcessFunc extends FxNodeFunc {
         // resolve arguments: "phases", as string comma separated values, or array of string
         FxNode phasesArg = srcObj.get("phases");
         if (phasesArg == null) return;
-        String[] phases = FxNodeValueUtils.nodeToStringArray(phasesArg, true);
-        if (phases == null || phases.length == 0) return;
+        List<String> phases = FxNodeValueUtils.nodeToStringList(phasesArg, true);
+        if (phases == null || phases.isEmpty()) return;
         
         FxNode contentSrc = srcObj.get("src");
         if (contentSrc == null) return;
         
-        FxNode currPhaseRes = contentSrc;
-        final int intermediatePhaseLen = phases.length - 1;
-        for(int i = 0; i < intermediatePhaseLen; i++) {
-            String phase = phases[i];
-            FxMemRootDocument tmpResDoc = new FxMemRootDocument();
-            FxChildWriter tmpResAdder = tmpResDoc.contentWriter();
-            
-            FxPhaseRecursiveEvalFunc phaseFunc = new FxPhaseRecursiveEvalFunc(phase, extraFuncRegistry);
-            phaseFunc.eval(tmpResAdder, ctx, currPhaseRes);
-            
-            currPhaseRes = tmpResDoc.getContent();
-        }
-
-        String lastPhase = phases[phases.length - 1];
-        FxPhaseRecursiveEvalFunc lastPhaseFunc = new FxPhaseRecursiveEvalFunc(lastPhase, extraFuncRegistry);
-        lastPhaseFunc.eval(dest, ctx, currPhaseRes);
+        FxPhaseRecursiveEvalFunc.evalPhases(dest, phases, ctx, contentSrc, extraFuncRegistry);
     }
     
 }

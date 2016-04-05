@@ -1,5 +1,7 @@
 package fr.an.fxtree.impl.stdfunc;
 
+import java.util.List;
+
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxChildWriter;
@@ -30,6 +32,25 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
     
     // ------------------------------------------------------------------------
 
+    public static void evalPhases(FxChildWriter dest, List<String> phases, FxEvalContext ctx, FxNode src, FxNodeFuncRegistry funcRegistry) {
+        FxNode currPhaseRes = src;
+        final int intermediatePhaseLen = phases.size()- 1;
+        for(int i = 0; i < intermediatePhaseLen; i++) {
+            String phase = phases.get(i);
+            FxMemRootDocument tmpResDoc = new FxMemRootDocument();
+            FxChildWriter tmpResAdder = tmpResDoc.contentWriter();
+            
+            FxPhaseRecursiveEvalFunc phaseFunc = new FxPhaseRecursiveEvalFunc(phase, funcRegistry);
+            phaseFunc.eval(tmpResAdder, ctx, currPhaseRes);
+            
+            currPhaseRes = tmpResDoc.getContent();
+        }
+
+        String lastPhase = phases.get(intermediatePhaseLen);
+        FxPhaseRecursiveEvalFunc lastPhaseFunc = new FxPhaseRecursiveEvalFunc(lastPhase, funcRegistry);
+        lastPhaseFunc.eval(dest, ctx, currPhaseRes);
+    }
+    
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxEvalContext childCtx = FxCurrEvalCtxUtil.childEvalCtx(ctx, phase, this);
