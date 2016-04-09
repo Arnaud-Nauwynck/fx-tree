@@ -151,7 +151,7 @@ public final class FxJsonUtils {
      * @return parser (as supplier<FxNode) for parsing next chars until a FxNode is detected
      */
     public static Supplier<FxNode> createPartialParser(Reader reader) {
-        // force wrapping InputStream to Reader, to avoid read buffering 0...8000 so consuming too much chars! 
+        // force wrapping reader as one-by-one char Reader, to avoid read buffering 0...8000 so consuming too much chars! 
         Reader inReader = wrapForceReadOneByOneCharReader(reader);
         JsonParser parser;
         try {
