@@ -2,12 +2,17 @@ package fr.an.fxtree.format.json;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.util.function.Supplier;
 
+import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -137,6 +142,61 @@ public final class FxJsonUtils {
         } catch(Exception ex) {
             throw new RuntimeException("Failed to convert tree to value (using jackson ObjectMapper)", ex);
         }
+    }
+    
+    // ------------------------------------------------------------------------
+
+    /**
+     * @param reader input chars to read
+     * @return parser (as supplier<FxNode) for parsing next chars until a FxNode is detected
+     */
+    public static Supplier<FxNode> createPartialParser(Reader reader) {
+        // force wrapping InputStream to Reader, to avoid read buffering 0...8000 so consuming too much chars! 
+        Reader inReader = wrapForceReadOneByOneCharReader(reader);
+        JsonParser parser;
+        try {
+            JsonFactory jsonFactory = jacksonObjectMapper.getFactory();
+            parser = jsonFactory.createParser(inReader);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+        Supplier<FxNode> res = () -> {
+            try {
+                JsonNode jsonNode = parser.readValueAsTree();
+                if (jsonNode == null) {
+                    return null;
+                }
+                FxMemRootDocument doc = new FxMemRootDocument();
+                Jackson2FxTreeBuilder.jsonNodeToFxTree(doc.contentWriter(), jsonNode);
+                return doc.getContent();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        };
+        return res;
+    }
+    
+    private static Reader wrapForceReadOneByOneCharReader(Reader delegate) {
+        return new Reader() {
+            public void close() throws IOException {
+                // do nothing!
+            }
+            @Override
+            public int read(char cbuf[], int off, int len) throws IOException {
+                int resCh;
+                try {
+                    resCh = delegate.read();
+                } catch(EOFException ex) {
+                    return -1;
+                }
+                cbuf[off] = (char) resCh;
+                return 1;
+            }
+            @Override
+            public int read() throws IOException {
+                return delegate.read();
+            }
+        };            
     }
 
 }

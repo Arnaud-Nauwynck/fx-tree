@@ -1,6 +1,14 @@
 package fr.an.fxtree.format.json;
 
+import java.io.ByteArrayInputStream;
+import java.io.EOFException;
 import java.io.File;
+import java.io.FilterInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.function.Supplier;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.util.FxNodeAssert;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
@@ -125,6 +134,208 @@ public class FxJsonUtilsTest {
         // Post-check
         Assert.assertEquals("foo", res.getFoo());
         Assert.assertEquals(123, res.getBar());
+    }
+
+    @Test
+    public void testReadTree_several() {
+        // Prepare
+        ByteArrayInputStream bufferIn = new ByteArrayInputStream("{id:1} {id:2}".getBytes());
+        InputStream forceReadByteOneByOneInputStream = new FilterInputStream(bufferIn) {
+            @Override
+            public int read(byte[] b, int off, int len) throws IOException {
+                // Force read bytes one by one !!! ...
+                int resByte;
+                try {
+                    resByte = super.read();
+                } catch(EOFException ex) {
+                    return 0;
+                }
+                b[off] = (byte) resByte;
+                return 1;
+            }
+            @Override
+            public int read() throws IOException {
+                int res = super.read();
+                return res;
+            }
+        };
+        // Perform
+        FxNode res0 = FxJsonUtils.readTree(forceReadByteOneByOneInputStream); // consume buffer 0...8000 bytes, even if only 6 bytes are used!
+        Assert.assertTrue(res0.isObject());
+        // Post-check
+        FxNode res1 = FxJsonUtils.readTree(forceReadByteOneByOneInputStream);
+        Assert.assertTrue(res1.isObject());
+    }
+    
+    protected static final boolean DEBUG_wrapParser = false;
+    
+    @Test 
+    public void testCreatePartialParser() throws IOException {
+        // Prepare
+        InputStream bufferIn = new ByteArrayInputStream("{id:1} {id:2}".getBytes());
+        Reader inReader = new InputStreamReader(bufferIn);
+        if (DEBUG_wrapParser) inReader = wrapDebugReader(inReader);
+        
+        Supplier<FxNode> parserSupplier = FxJsonUtils.createPartialParser(inReader);
+        // Perform
+        FxNode res0 = parserSupplier.get();
+        Assert.assertTrue(res0.isObject());
+        FxNodeAssert.assertIntEquals(1, ((FxObjNode) res0).get("id"));
+        // Post-check
+        FxNode res1 = parserSupplier.get();
+        Assert.assertTrue(res1.isObject());
+        FxNodeAssert.assertIntEquals(2, ((FxObjNode) res1).get("id"));
+        inReader.close();
+    }
+
+    @Test 
+    public void testCreatePartialParser_any() throws IOException {
+     // Prepare
+        InputStream bufferIn = new ByteArrayInputStream("{id:1} [1,2] true 1234 12.45 \"text\"".getBytes());
+        Reader inReader = new InputStreamReader(bufferIn);
+        if (DEBUG_wrapParser) inReader = wrapDebugReader(inReader);
+        
+        Supplier<FxNode> parserSupplier = FxJsonUtils.createPartialParser(inReader);
+        { // Perform
+            FxNode res0 = parserSupplier.get();
+            // Post-check
+            Assert.assertTrue(res0.isObject());
+            FxNodeAssert.assertIntEquals(1, ((FxObjNode) res0).get("id"));
+        }
+        { // Perform
+            FxNode res1 = parserSupplier.get();
+            // Post-check
+            Assert.assertTrue(res1.isArray());
+            FxNodeAssert.assertIntEquals(1, ((FxArrayNode) res1).get(0));
+            FxNodeAssert.assertIntEquals(2, ((FxArrayNode) res1).get(1));
+        }
+        { // Perform
+            FxNode res2 = parserSupplier.get();
+            // Post-check
+            FxNodeAssert.assertBoolEquals(true, res2);
+        }
+        { // Perform
+            FxNode res3 = parserSupplier.get();
+            // Post-check
+            FxNodeAssert.assertIntEquals(1234, res3);
+        }
+        { // Perform
+            FxNode res4 = parserSupplier.get();
+            // Post-check
+            FxNodeAssert.assertDoubleEquals(12.45, res4, 1e-6);
+        }
+        { // Perform
+            FxNode res5 = parserSupplier.get();
+            // Post-check
+            FxNodeAssert.assertTextEquals("text", res5);
+        }
+        inReader.close();
+    }
+        
+    @Test 
+    public void testCreatePartialParser_mixed() throws IOException {
+        // Prepare
+        InputStream bufferIn = new ByteArrayInputStream("..some text obj1={id:1}!..other text obj2={id:2} ..other".getBytes());
+        Reader reader = new InputStreamReader(bufferIn);
+        if (DEBUG_wrapParser) reader = wrapDebugReader(reader);
+        Supplier<FxNode> parserSupplier = FxJsonUtils.createPartialParser(reader);
+        // Perform
+        String text = readUntil(reader, "=");
+        Assert.assertEquals("..some text obj1=", text);
+        FxNode res0 = parserSupplier.get();
+        Assert.assertTrue(res0.isObject());
+        FxNodeAssert.assertIntEquals(1, ((FxObjNode) res0).get("id"));
+        String text2 = readUntil(reader, "=");
+        Assert.assertEquals("!..other text obj2=", text2);
+        FxNode res1 = parserSupplier.get();
+        Assert.assertTrue(res1.isObject());
+        FxNodeAssert.assertIntEquals(2, ((FxObjNode) res1).get("id"));
+        String text3 = readUntil(reader, "?");
+        Assert.assertEquals(" ..other", text3);
+        reader.close();
+    }
+
+    protected String readUntil(Reader reader, String endMarker) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        final int endMarkerLen = endMarker.length();
+        for(;;) {
+            int ch = reader.read();
+            if (ch == -1) {
+                return sb.toString();
+            }
+            sb.append((char) ch);
+            int sbLen = sb.length();
+            if (sbLen >= endMarker.length()) {
+                boolean endWith = true;
+                for(int i = 0, index = sbLen - endMarkerLen; i < endMarkerLen; i++) {
+                    if (endMarker.charAt(i) != sb.charAt(index)) {
+                        endWith = false;
+                        break;
+                    }
+                }
+                if (endWith) {
+                    break;
+                }
+            }
+        }
+        return sb.toString();
+    }
+
+
+    private Reader wrapDebugReader(Reader delegate) {
+        return new Reader() {
+            int count;
+            public void close() throws IOException {
+                delegate.close();
+            }
+            @Override
+            public int read(char cbuf[], int off, int len) throws IOException {
+                int res = 0;
+                for(int i = 0; i < len; i++) {
+                    int resCh;
+                    try {
+                        resCh = delegate.read();
+                    } catch(EOFException ex) {
+                        if (res == 0) {
+                            res = -1;
+                        }
+                        break;
+                    }
+                    res++;
+                    cbuf[off+i] = (char) resCh;
+                    count++;
+                    checkCount((char) resCh);
+                }
+                return res;
+            }
+            @Override
+            public int read() throws IOException {
+                int res = delegate.read();
+                count++;
+                checkCount((char) res);
+                return res;
+            }
+            private void checkCount(char resChar) {
+                if (resChar == -1) {
+                    return;
+                }
+                if (resChar == '=') {
+                    debug_noop();
+                }
+                if (resChar == '}') {
+                    debug_noop();
+                }
+                if (resChar == '!') {
+                    debug_noop();
+                }
+                System.out.println("read: " + (char) resChar);
+                if (count == 6) {
+                    debug_noop();
+                }
+            }
+            private void debug_noop() {
+            }            
+        };
     }
 
 }

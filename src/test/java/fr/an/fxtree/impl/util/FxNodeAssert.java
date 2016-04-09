@@ -18,9 +18,19 @@ public class FxNodeAssert {
         }
     }
 
+    public static void assertBoolEquals(boolean expected, FxNode actual) {
+        Assert.assertTrue(actual.isBoolean());
+        Assert.assertEquals(expected, actual.booleanValue());
+    }
+
     public static void assertIntEquals(int expected, FxNode actual) {
         Assert.assertTrue(actual.isInt());
         Assert.assertEquals(expected, actual.intValue());
+    }
+
+    public static void assertDoubleEquals(double expected, FxNode actual, double eps) {
+        Assert.assertTrue(actual.isDouble());
+        Assert.assertEquals(expected, actual.doubleValue(), eps);
     }
 
     public static void assertTextEquals(String expected, FxNode actual) {
