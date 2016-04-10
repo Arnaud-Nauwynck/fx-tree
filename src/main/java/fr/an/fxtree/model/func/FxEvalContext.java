@@ -15,7 +15,7 @@ public class FxEvalContext {
 
     public FxEvalContext(FxEvalContext parentContext, FxNodeFuncRegistry funcRegistry) {
         this.parentContext = parentContext;
-        this.funcRegistry = funcRegistry;
+        this.funcRegistry = new FxNodeFuncRegistry(parentContext.getFuncRegistry(), funcRegistry);
     }
 
     // ------------------------------------------------------------------------

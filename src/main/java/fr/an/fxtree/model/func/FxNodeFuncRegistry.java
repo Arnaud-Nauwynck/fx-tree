@@ -1,5 +1,6 @@
 package fr.an.fxtree.model.func;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class FxNodeFuncRegistry {
@@ -16,6 +17,11 @@ public class FxNodeFuncRegistry {
     public FxNodeFuncRegistry(FxNodeFuncRegistry parent, Map<String,FxNodeFunc> funcs) {
         this.parent = parent;
         this.funcs = funcs; 
+    }
+
+    public FxNodeFuncRegistry(FxNodeFuncRegistry parent, FxNodeFuncRegistry funcRegistry) {
+        this.parent = parent;
+        this.funcs = (funcRegistry != null)? new HashMap<String,FxNodeFunc>(funcRegistry.funcs) : new HashMap<>();
     }
 
     // ------------------------------------------------------------------------

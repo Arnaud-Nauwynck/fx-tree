@@ -51,6 +51,16 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
         lastPhaseFunc.eval(dest, ctx, currPhaseRes);
     }
     
+    public static FxNode evalPhase(String phase, FxEvalContext ctx, FxNode src, FxNodeFuncRegistry overrideFuncRegistry) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        FxChildWriter docWriter = doc.contentWriter();
+        
+        FxPhaseRecursiveEvalFunc phaseFunc = new FxPhaseRecursiveEvalFunc(phase, overrideFuncRegistry);
+        phaseFunc.eval(docWriter, ctx, src);
+        
+        return doc.getContent();
+    }
+    
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxEvalContext childCtx = FxCurrEvalCtxUtil.childEvalCtx(ctx, phase, this);
