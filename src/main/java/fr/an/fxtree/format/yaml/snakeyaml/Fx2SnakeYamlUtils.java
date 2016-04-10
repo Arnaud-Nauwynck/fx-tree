@@ -52,14 +52,14 @@ public final class Fx2SnakeYamlUtils {
     // ------------------------------------------------------------------------
     
     public static FxNode yamlObjToTree(FxChildWriter dest, Object srcObj) {
-        return Fx2MemMapListUtils.objectToFxTree(dest, srcObj);
+        return Fx2MemMapListUtils.valueToTree(dest, srcObj);
     }
 
     // Conversion FxNode -> SnakeYaml (Map,List,Values...)  
     // ------------------------------------------------------------------------
 
     public static Object buildSnakeYamlTree(FxNode src) {
-        return Fx2MemMapListUtils.fxTreeToObject(src);
+        return Fx2MemMapListUtils.treeToValue(src);
     }
     
 }

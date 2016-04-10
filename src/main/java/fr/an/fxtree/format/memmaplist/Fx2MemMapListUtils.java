@@ -12,11 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.impl.util.FxUtils;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxBoolNode;
 import fr.an.fxtree.model.FxChildWriter;
+import fr.an.fxtree.model.FxDoubleNode;
+import fr.an.fxtree.model.FxIntNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxNumberType;
 import fr.an.fxtree.model.FxObjNode;
@@ -36,19 +39,44 @@ public final class Fx2MemMapListUtils {
     
     // Conversion in-memory Map,List,Values... -> FxNode 
     // ------------------------------------------------------------------------
+
+    public static FxBoolNode valueToTree(boolean value) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        doc.contentWriter().add(value);
+        return (FxBoolNode) doc.getContent();
+    }
+
+    public static FxIntNode valueToTree(int value) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        doc.contentWriter().add(value);
+        return (FxIntNode) doc.getContent();
+    }
+
+    public static FxDoubleNode valueToTree(double value) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        doc.contentWriter().add(value);
+        return (FxDoubleNode) doc.getContent();
+    }
+
+    public static FxTextNode valueToTree(String value) {
+        FxMemRootDocument doc = new FxMemRootDocument();
+        doc.contentWriter().add(value);
+        return (FxTextNode) doc.getContent();
+    }
+
     
     @SuppressWarnings("unchecked")
-    public static FxNode objectToFxTree(FxChildWriter dest, Object srcObj) {
+    public static FxNode valueToTree(FxChildWriter dest, Object srcObj) {
         FxNode res;
         if (srcObj == null) {
             res = dest.addNull();
         } else if (srcObj instanceof Map) {
             FxObjNode destObj = dest.addObj();
-            objectMapToFxTree(destObj, (Map<Object,Object>)srcObj);
+            fillKeyValuesToTree(destObj, (Map<Object,Object>)srcObj);
             res = destObj;
         } else if (srcObj instanceof Collection) {
             FxArrayNode destArray = dest.addArray();
-            objectListToFxArrayTree(destArray, (Collection<Object>)srcObj);
+            fillValuesToTree(destArray, (Collection<Object>)srcObj);
             res = destArray;
             
         } else if (srcObj instanceof String) {
@@ -83,15 +111,15 @@ public final class Fx2MemMapListUtils {
         return res;
     }
 
-    private static void objectListToFxArrayTree(FxArrayNode destArray, Collection<?> srcList) {
+    private static void fillValuesToTree(FxArrayNode destArray, Collection<?> srcList) {
         FxChildWriter destEltWriter = destArray.insertBuilder();
         for(Object srcElt : srcList) {
             // recurse
-            objectToFxTree(destEltWriter, srcElt);
+            valueToTree(destEltWriter, srcElt);
         }
     }
 
-    private static void objectMapToFxTree(FxObjNode dest, Map<Object,Object> src) {
+    private static void fillKeyValuesToTree(FxObjNode dest, Map<Object,Object> src) {
         for(Map.Entry<Object,Object> e : src.entrySet()) {
             Object srcKey = e.getKey();
             Object srcValue = e.getValue();
@@ -105,14 +133,14 @@ public final class Fx2MemMapListUtils {
             
             FxChildWriter destValueWriter = dest.putBuilder(keyText);
             // recurse
-            objectToFxTree(destValueWriter, srcValue);
+            valueToTree(destValueWriter, srcValue);
         }
     }
 
     // Conversion FxNode -> in-memory Map,List,Values...  
     // ------------------------------------------------------------------------
 
-    public static Object fxTreeToObject(FxNode src) {
+    public static Object treeToValue(FxNode src) {
         if (src == null) {
             return null;
         }
@@ -120,12 +148,12 @@ public final class Fx2MemMapListUtils {
         switch (src.getNodeType()) {
             case ARRAY:
                 ArrayList<Object> destArray = new ArrayList<>();
-                fxArrayToObjList(destArray, (FxArrayNode) src);
+                fillArrayTreeToValues(destArray, (FxArrayNode) src);
                 res = destArray;
                 break;
             case OBJECT:
                 Map<String,Object> destObj = new HashMap<>();
-                fxObjToObjMap(destObj, (FxObjNode) src);
+                fillObjTreeToKeyValues(destObj, (FxObjNode) src);
                 res = destObj;
                 break;
             default:
@@ -134,7 +162,7 @@ public final class Fx2MemMapListUtils {
         return res;
     }
         
-    public static void fxArrayToObjList(List<Object> dest, FxArrayNode src) {
+    public static void fillArrayTreeToValues(Collection<Object> dest, FxArrayNode src) {
 //        if (! dest.isEmpty()) {
 //            dest.removeAll();
 //        }
@@ -145,12 +173,12 @@ public final class Fx2MemMapListUtils {
             case ARRAY:
                 List<Object> eltArray = new ArrayList<>();
                 dest.add(eltArray);
-                fxArrayToObjList(eltArray, (FxArrayNode) srcElt);
+                fillArrayTreeToValues(eltArray, (FxArrayNode) srcElt);
                 break;
             case OBJECT:
                 Map<String,Object> eltObj = new LinkedHashMap<>();
                 dest.add(eltObj);
-                fxObjToObjMap(eltObj, (FxObjNode) srcElt);
+                fillObjTreeToKeyValues(eltObj, (FxObjNode) srcElt);
                 break;
             case BINARY:
                 dest.add(((FxBinaryNode) srcElt).binaryValue());
@@ -200,7 +228,7 @@ public final class Fx2MemMapListUtils {
         }
     }
     
-    public static void fxObjToObjMap(Map<String,Object> dest, FxObjNode src) {
+    public static void fillObjTreeToKeyValues(Map<String,Object> dest, FxObjNode src) {
         for(Iterator<Entry<String, FxNode>> iter = src.fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();
             String field = e.getKey();
@@ -209,12 +237,12 @@ public final class Fx2MemMapListUtils {
                 case ARRAY:
                     ArrayList<Object> eltArray = new ArrayList<>();
                     dest.put(field, eltArray);
-                    fxArrayToObjList(eltArray, (FxArrayNode) srcElt);
+                    fillArrayTreeToValues(eltArray, (FxArrayNode) srcElt);
                     break;
                 case OBJECT:
                     Map<String,Object> eltObj = new LinkedHashMap<>();
                     dest.put(field, eltObj);
-                    fxObjToObjMap(eltObj, (FxObjNode) srcElt);
+                    fillObjTreeToKeyValues(eltObj, (FxObjNode) srcElt);
                     break;
                 case BINARY:
                     dest.put(field, ((FxBinaryNode) srcElt).binaryValue());

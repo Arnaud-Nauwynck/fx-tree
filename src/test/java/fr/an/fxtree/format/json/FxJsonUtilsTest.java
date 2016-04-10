@@ -16,6 +16,7 @@ import org.junit.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.an.fxtree.format.util.FxReaderUtils;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.impl.util.FxNodeAssert;
@@ -240,45 +241,19 @@ public class FxJsonUtilsTest {
         if (DEBUG_wrapParser) reader = wrapDebugReader(reader);
         Supplier<FxNode> parserSupplier = FxJsonUtils.createPartialParser(reader);
         // Perform
-        String text = readUntil(reader, "=");
+        String text = FxReaderUtils.readUntil(reader, "=");
         Assert.assertEquals("..some text obj1=", text);
         FxNode res0 = parserSupplier.get();
         Assert.assertTrue(res0.isObject());
         FxNodeAssert.assertIntEquals(1, ((FxObjNode) res0).get("id"));
-        String text2 = readUntil(reader, "=");
+        String text2 = FxReaderUtils.readUntil(reader, "=");
         Assert.assertEquals("!..other text obj2=", text2);
         FxNode res1 = parserSupplier.get();
         Assert.assertTrue(res1.isObject());
         FxNodeAssert.assertIntEquals(2, ((FxObjNode) res1).get("id"));
-        String text3 = readUntil(reader, "?");
+        String text3 = FxReaderUtils.readUntil(reader, "?");
         Assert.assertEquals(" ..other", text3);
         reader.close();
-    }
-
-    protected String readUntil(Reader reader, String endMarker) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        final int endMarkerLen = endMarker.length();
-        for(;;) {
-            int ch = reader.read();
-            if (ch == -1) {
-                return sb.toString();
-            }
-            sb.append((char) ch);
-            int sbLen = sb.length();
-            if (sbLen >= endMarker.length()) {
-                boolean endWith = true;
-                for(int i = 0, index = sbLen - endMarkerLen; i < endMarkerLen; i++) {
-                    if (endMarker.charAt(i) != sb.charAt(index)) {
-                        endWith = false;
-                        break;
-                    }
-                }
-                if (endWith) {
-                    break;
-                }
-            }
-        }
-        return sb.toString();
     }
 
 
