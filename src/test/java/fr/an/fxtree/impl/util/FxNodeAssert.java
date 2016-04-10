@@ -28,6 +28,16 @@ public class FxNodeAssert {
         Assert.assertEquals(expected, actual.intValue());
     }
 
+    public static void assertLongEquals(long expected, FxNode actual) {
+        Assert.assertTrue(actual.isLong());
+        Assert.assertEquals(expected, actual.longValue());
+    }
+
+    public static void assertFloatEquals(float expected, FxNode actual, float eps) {
+        Assert.assertTrue(actual.isFloat());
+        Assert.assertEquals(expected, actual.floatValue(), eps);
+    }
+
     public static void assertDoubleEquals(double expected, FxNode actual, double eps) {
         Assert.assertTrue(actual.isDouble());
         Assert.assertEquals(expected, actual.doubleValue(), eps);
