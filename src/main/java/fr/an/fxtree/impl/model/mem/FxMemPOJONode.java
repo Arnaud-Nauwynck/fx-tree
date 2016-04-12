@@ -26,9 +26,4 @@ public class FxMemPOJONode extends FxPOJONode {
 
     // ------------------------------------------------------------------------
     
-    @Override
-    public String toString() {
-        return (value != null)? value.toString() : "null";
-    }
-    
 }

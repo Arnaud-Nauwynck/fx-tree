@@ -2,6 +2,7 @@ package fr.an.fxtree.impl.helper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -224,6 +225,23 @@ public final class FxNodeValueUtils {
         }
         return fieldNode.longValue();
     }
+
+    public static Long getLongOrNull(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return null;
+        }
+        if (!fieldNode.isNumber()) {
+            throw new IllegalArgumentException("expecting Long argument '" + fieldName + "', got " + fieldNode.getNodeType());
+        }
+        return nodeToLong(fieldNode);
+    }
+
+    public static Date getDateAsLongOrNull(FxObjNode parent, String fieldName) {
+        Long tmpres = getLongOrNull(parent, fieldName);
+        return (tmpres != null)? new Date(tmpres.longValue()) : null;
+    }
+
     
     /* Double: getDoubleOrDefault, getDoubleOrThrow, nodeToDouble */
     

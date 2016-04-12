@@ -1,5 +1,7 @@
 package fr.an.fxtree.model;
 
+import java.text.SimpleDateFormat;
+
 public abstract class FxPOJONode extends FxValueNode {
 
     // ------------------------------------------------------------------------
@@ -94,6 +96,10 @@ public abstract class FxPOJONode extends FxValueNode {
     @Override
     public String toString() {
         Object value = getValue();
+        if (value instanceof java.util.Date) {
+            java.util.Date d = (java.util.Date) value;
+            return "\"" + d.getTime() + " (=" + new SimpleDateFormat("yyyy/MM/dd hh:mm:ss").format(d) + ")\"";
+        }
         return (value != null) ? value.toString() : "null";
     }
 

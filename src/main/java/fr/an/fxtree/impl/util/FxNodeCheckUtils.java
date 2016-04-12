@@ -1,7 +1,6 @@
 package fr.an.fxtree.impl.util;
 
 import fr.an.fxtree.model.FxNode;
-import fr.an.fxtree.model.FxNodeType;
 
 /**
  * similar to FxNodecheck without runtime dependency to junit.jar

@@ -33,6 +33,9 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
     // ------------------------------------------------------------------------
 
     public static void evalPhases(FxChildWriter dest, List<String> phases, FxEvalContext ctx, FxNode src, FxNodeFuncRegistry funcRegistry) {
+        if (src == null) {
+            return;
+        }
         FxNode currPhaseRes = src;
         final int intermediatePhaseLen = phases.size()- 1;
         for(int i = 0; i < intermediatePhaseLen; i++) {
@@ -52,6 +55,9 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
     }
     
     public static FxNode evalPhase(String phase, FxEvalContext ctx, FxNode src, FxNodeFuncRegistry overrideFuncRegistry) {
+        if (src == null) {
+            return null;
+        }
         FxMemRootDocument doc = new FxMemRootDocument();
         FxChildWriter docWriter = doc.contentWriter();
         
@@ -63,8 +69,10 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
     
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        FxEvalContext childCtx = FxCurrEvalCtxUtil.childEvalCtx(ctx, phase, this);
-        
+        if (src == null) {
+            return;
+        }
+        FxEvalContext childCtx = FxCurrEvalCtxUtil.childEvalCtx(ctx, phase, this);        
         src.accept(new InnerVisitor(childCtx), dest); 
     }
 

@@ -14,8 +14,6 @@ import fr.an.fxtree.model.path.FxNodeOuterPath;
 
 public abstract class FxObjNode extends FxContainerNode {
 
-    protected String __debugId;
-    
     // ------------------------------------------------------------------------
 
     protected FxObjNode(FxContainerNode parent, FxChildId childId) {

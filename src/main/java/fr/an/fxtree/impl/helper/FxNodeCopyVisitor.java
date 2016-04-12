@@ -40,6 +40,9 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
     }
     
     public static FxNode cloneMemNode(FxNode src) {
+        if (src == null) {
+            return null;
+        }
         FxMemRootDocument tmpDoc = new FxMemRootDocument();
         copyTo(tmpDoc.contentWriter(), src);
         return tmpDoc.getContent();

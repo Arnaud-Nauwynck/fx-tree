@@ -1,5 +1,6 @@
 package fr.an.fxtree.impl.helper;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -116,6 +117,14 @@ public class FxObjValueHelper {
         return FxNodeValueUtils.nodeToLong(fieldNode);
     }
 
+    public Long getLongOrNull(String fieldName) {
+        return FxNodeValueUtils.getLongOrNull(parent, fieldName);
+    }
+
+    public Date getDateAsLongOrNull(String fieldName) {
+       return FxNodeValueUtils.getDateAsLongOrNull(parent, fieldName);
+    }
+    
     public double getDoubleOrDefault(String fieldName, double defaultValue) {
         return FxNodeValueUtils.getDoubleOrDefault(parent, fieldName, defaultValue);
     }
