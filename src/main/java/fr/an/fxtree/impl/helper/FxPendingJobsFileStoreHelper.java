@@ -103,15 +103,15 @@ public class FxPendingJobsFileStoreHelper {
         }
     }
 
-    public void updatePending(String jobId, FxObjNode newValue) {
+    public void updatePending(String jobId, FxNode newValue) {
         synchronized(lock) {
             PendingEntry pending = getPendingValueCopyOrNull(jobId);
             if (pending != null) {
                 FxObjNode pendingNode = new FxMemRootDocument().setContentObj();
                 pendingNode.putPOJO(FIELD_startTime, pending.startTime);
-                FxNodeCopyVisitor.copyTo(pendingNode.putBuilder(FIELD_pendingData), pending.pendingData);
+                FxNodeCopyVisitor.copyTo(pendingNode.putBuilder(FIELD_pendingData), newValue);
                 
-                pendingJobsStore.updatePutIfPresent(jobId, newValue);
+                pendingJobsStore.updatePutIfPresent(jobId, pendingNode);
             } // else.. should not occur
         }
     }
