@@ -1,6 +1,7 @@
 package fr.an.fxtree.impl.helper;
 
 import java.io.File;
+import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -10,11 +11,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import fr.an.fxtree.impl.helper.FxAsyncTaskFileStoreHelper.AsyncTaskData;
 import fr.an.fxtree.impl.helper.FxAsyncTaskFileStoreHelper.FxAsyncTaskCallback;
 import fr.an.fxtree.impl.helper.FxAsyncTaskFileStoreHelper.FxAsyncTaskLauncher;
+import fr.an.fxtree.impl.helper.FxAsyncTaskFileStoreHelper.TaskStatus;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
-import fr.an.fxtree.impl.util.FxNodeAssert;
-import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 
 public class FxAsyncTaskFileStoreHelperTest {
@@ -51,11 +52,12 @@ public class FxAsyncTaskFileStoreHelperTest {
         FxAsyncTaskLauncher taskLauncher = (callback) -> {
             FxObjNode taskRes = new FxMemRootDocument().setContentObj();
             taskRes.put("taskTmpData", taskData);
+            callback.onTaskUpdate(taskRes);
+            
             threadExecutor.execute(() -> runSlowTask(callback, taskData, finishFlag, launchCount));
-            return taskRes;
         };
         // Perform
-        FxObjNode res0 = sut.reloadResultOrLaunchTask("task1", taskLauncher);
+        AsyncTaskData res0 = sut.reloadResultOrLaunchTask("task1", taskLauncher);
         if (0 == launchCount.get()) {
             // thread executor launched... must wait few millis
             try {
@@ -64,7 +66,7 @@ public class FxAsyncTaskFileStoreHelperTest {
             }
             Assert.assertEquals(1, launchCount.get());
         }
-        FxObjNode res1 = sut.reloadResultOrLaunchTask("task1", taskLauncher);
+        AsyncTaskData res1 = sut.reloadResultOrLaunchTask("task1", taskLauncher);
         Assert.assertEquals(1, launchCount.get());
         while(! finishFlag.get()) {
             try {
@@ -72,7 +74,7 @@ public class FxAsyncTaskFileStoreHelperTest {
             } catch (InterruptedException e) {
             }
         }
-        FxObjNode res2 = sut.reloadResultOrLaunchTask("task1", taskLauncher);
+        AsyncTaskData res2 = sut.reloadResultOrLaunchTask("task1", taskLauncher);
         Assert.assertEquals(1, launchCount.get());
         // Post-check
         System.out.println("res0:" + res0);
@@ -83,18 +85,18 @@ public class FxAsyncTaskFileStoreHelperTest {
         //res1:{"startTime":Tue Apr 05 01:02:52 CEST 2016,"status":"running","result":{"taskTmpData":123}}
         //res2:{"startTime":Tue Apr 05 01:02:52 CEST 2016,"endTime":Tue Apr 05 01:02:53 CEST 2016,"status":"finished","result":{"taskFinishedData":"some-data"}}
 
-        Assert.assertEquals("running", res0.get("status").asText());
-        FxNode startTime = res0.get("startTime");
+        Assert.assertEquals(TaskStatus.RUNNING, res0.getStatus());
+        Date startTime = res0.getStartTime();
         Assert.assertNotNull(startTime);
-        FxObjNode res0Result = (FxObjNode) res0.get("result");
+        FxObjNode res0Result = (FxObjNode) res0.getResult();
         Assert.assertEquals(123, res0Result.get("taskTmpData").asInt());
         
-        FxNodeAssert.assertEquals(res0, res1); // same pending ... but task not relaunched twice!
+        // Assert.assertEquals(res0, res1); // same pending ... but task not relaunched twice!
 
-        Assert.assertEquals("finished", res2.get("status").asText());
-        FxNodeAssert.assertEquals(startTime, res2.get("startTime"));
-        Assert.assertNotNull(res2.get("endTime"));
-        FxObjNode res2Result = (FxObjNode) res2.get("result");
+        Assert.assertEquals(TaskStatus.FINISHED, res2.getStatus());
+        Assert.assertEquals(startTime, res2.getStartTime());
+        Assert.assertNotNull(res2.getEndTime());
+        FxObjNode res2Result = (FxObjNode) res2.getResult();
         Assert.assertEquals("some-data", res2Result.get("taskFinishedData").asText());
     }
     
