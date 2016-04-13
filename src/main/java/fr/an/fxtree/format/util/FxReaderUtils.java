@@ -101,6 +101,7 @@ public final class FxReaderUtils {
             return null;
         }
         char ch = (char) readCh;
+        reader.unread(readCh);
         if (Character.isJavaIdentifierPart(ch)
                 || (ch == '/' && acceptSlashPath)) {
             // identifier or path: example: abc, a12, _123, /a/b/1, a/b/1, ... 
