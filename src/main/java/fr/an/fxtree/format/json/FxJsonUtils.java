@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-import fr.an.fxtree.format.json.jackson.Jackson2FxTreeBuilder;
+import fr.an.fxtree.format.json.jackson.Fx2JacksonUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
@@ -63,7 +63,7 @@ public final class FxJsonUtils {
         } catch (IOException ex) {
             throw new RuntimeException("Failed to parse as json", ex);
         }
-        return Jackson2FxTreeBuilder.jsonNodeToFxTree(dest, jacksonNode);
+        return Fx2JacksonUtils.jsonNodeToFxTree(dest, jacksonNode);
     }
 
     public static FxNode readTree(FxChildWriter dest, File in) {
@@ -73,12 +73,12 @@ public final class FxJsonUtils {
         } catch (IOException ex) {
             throw new RuntimeException("Failed to parse as json", ex);
         }
-        return Jackson2FxTreeBuilder.jsonNodeToFxTree(dest, jacksonNode);
+        return Fx2JacksonUtils.jsonNodeToFxTree(dest, jacksonNode);
     }
 
 
     public static void writeTree(OutputStream dest, FxNode tree) throws IOException {
-        JsonNode jacksonTree = Jackson2FxTreeBuilder.fxTreeToJsonNode(tree);
+        JsonNode jacksonTree = Fx2JacksonUtils.fxTreeToJsonNode(tree);
         try {
             jacksonObjectMapper.writeValue(dest, jacksonTree);
         }
@@ -88,7 +88,7 @@ public final class FxJsonUtils {
     }
     
     public static void writeTree(File dest, FxNode tree) {
-        JsonNode jacksonTree = Jackson2FxTreeBuilder.fxTreeToJsonNode(tree);
+        JsonNode jacksonTree = Fx2JacksonUtils.fxTreeToJsonNode(tree);
         try {
             jacksonObjectMapper.writeValue(dest, jacksonTree);
         }
@@ -132,11 +132,11 @@ public final class FxJsonUtils {
     
     public static FxNode valueToTree(FxChildWriter dest, Object value) {
         JsonNode jsonNode = jacksonObjectMapper.valueToTree(value);
-        return Jackson2FxTreeBuilder.jsonNodeToFxTree(dest, jsonNode);
+        return Fx2JacksonUtils.jsonNodeToFxTree(dest, jsonNode);
     }
     
     public static <T> T treeToValue(Class<T> destClass, FxNode tree) {
-        JsonNode jsonNode = Jackson2FxTreeBuilder.fxTreeToJsonNode(tree);
+        JsonNode jsonNode = Fx2JacksonUtils.fxTreeToJsonNode(tree);
         try {
             return jacksonObjectMapper.treeToValue(jsonNode, destClass);
         } catch(Exception ex) {
@@ -167,7 +167,7 @@ public final class FxJsonUtils {
                     return null;
                 }
                 FxMemRootDocument doc = new FxMemRootDocument();
-                Jackson2FxTreeBuilder.jsonNodeToFxTree(doc.contentWriter(), jsonNode);
+                Fx2JacksonUtils.jsonNodeToFxTree(doc.contentWriter(), jsonNode);
                 return doc.getContent();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

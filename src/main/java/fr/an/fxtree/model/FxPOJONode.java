@@ -94,6 +94,32 @@ public abstract class FxPOJONode extends FxValueNode {
     // ------------------------------------------------------------------------
 
     @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof FxPOJONode) {
+            return _pojoEquals((FxPOJONode) o);
+        }
+        return false;
+    }
+
+    protected boolean _pojoEquals(FxPOJONode other) {
+        Object value = getValue();
+        Object otherValue = other.getValue();
+        return ((value == otherValue)
+                || (value != null && otherValue != null && value.equals(otherValue)));
+    }
+
+    @Override
+    public int hashCode() {
+        return getValue().hashCode();
+    }
+
+    @Override
     public String toString() {
         Object value = getValue();
         if (value instanceof java.util.Date) {

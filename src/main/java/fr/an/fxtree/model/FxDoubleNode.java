@@ -88,8 +88,12 @@ public abstract class FxDoubleNode extends FxValueNode {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (o == null) return false;
+        if (o == this) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
         if (o instanceof FxDoubleNode) {
             final double otherValue = ((FxDoubleNode) o).getValue();
             // .. NaN does not equal NaN

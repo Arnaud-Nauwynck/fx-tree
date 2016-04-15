@@ -196,10 +196,12 @@ public abstract class FxTextNode extends FxValueNode {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
-        if (o == null)
+        }
+        if (o == null) {
             return false;
+        }
         if (o instanceof FxTextNode) {
             return ((FxTextNode) o).getValue().equals(getValue());
         }

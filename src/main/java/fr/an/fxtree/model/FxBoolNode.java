@@ -72,8 +72,12 @@ public abstract class FxBoolNode extends FxValueNode {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (o == null) return false;
+        if (o == this) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
         if (!(o instanceof FxBoolNode)) {
             return false;
         }

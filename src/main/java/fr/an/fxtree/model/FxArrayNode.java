@@ -195,24 +195,28 @@ public abstract class FxArrayNode extends FxContainerNode {
     
     // ------------------------------------------------------------------------
     
-//    @Override
-//    public boolean equals(Object o) {
-//        if (o == this) return true;
-//        if (o == null) return false;
-//        if (o instanceof FxArrayNode) {
-//            return children().equals(((FxArrayNode) o).children());
-//        }
-//        return false;
-//    }
-//
-//    protected boolean _childrenEqual(FxArrayNode other) {
-//        return children().equals(other.children());
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return children().hashCode();
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof FxArrayNode) {
+            return children().equals(((FxArrayNode) o).children());
+        }
+        return false;
+    }
+
+    protected boolean _childrenEqual(FxArrayNode other) {
+        return children().equals(other.children());
+    }
+
+    @Override
+    public int hashCode() {
+        return children().hashCode();
+    }
 
     @Override
     public String toString() {

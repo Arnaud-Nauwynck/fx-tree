@@ -126,4 +126,23 @@ public abstract class FxIntNode extends FxValueNode {
         return Integer.toString(getValue());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (o == null) {
+            return false;
+        }
+        if (o instanceof FxIntNode) {
+            return ((FxIntNode) o).getValue() == getValue();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return getValue();
+    }
+
 }

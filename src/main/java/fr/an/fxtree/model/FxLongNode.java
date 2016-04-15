@@ -114,10 +114,12 @@ public abstract class FxLongNode extends FxValueNode {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this)
+        if (o == this) {
             return true;
-        if (o == null)
+        }
+        if (o == null) {
             return false;
+        }
         if (o instanceof FxLongNode) {
             return ((FxLongNode) o).getValue() == getValue();
         }

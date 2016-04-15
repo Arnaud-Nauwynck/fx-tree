@@ -14,14 +14,13 @@ public final class FxNodeCheckUtils {
     }
     
     public static void checkEquals(FxNode expected, FxNode actual) {
-        String expectedText = expected.toString();
-        String resString = actual.toString();
-        if (! expectedText.equals(resString)) {
-            System.out.println("expecting:" + expectedText);
-            System.out.println("actual   :" + resString);
-            // TODO ... pretty print as json
+//        JsonNode expectedJson = Fx2JacksonUtils.fxTreeToJsonNode(expected);
+//        JsonNode actualJson = Fx2JacksonUtils.fxTreeToJsonNode(actual);
+        if (! expected.equals(actual)) {
+            System.out.println("expecting:" + expected);
+            System.out.println("actual   :" + actual);
             
-            checkEquals(expectedText, resString);
+            throw new IllegalArgumentException("expecting\n" + expected + "\nactual\n" + actual);
         }
     }
 
