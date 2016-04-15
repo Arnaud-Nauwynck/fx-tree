@@ -27,6 +27,16 @@ public final class FxFileUtils {
         return readTree(doc.contentWriter(), file);
     }
     
+    public static FxNode readFirstFileWithSupportedExtension(File dir, String baseFileName) {
+        for(String ext : STD_FILE_EXTENSIONS) {
+            File file = new File(dir, baseFileName + ext);
+            if (file.exists()) {
+                return readTree(file);
+            }
+        }
+        return null;
+    }
+    
     public static boolean isSupportedFileExtension(String extension) {
         return extension.equalsIgnoreCase("json") ||
                 extension.equalsIgnoreCase("yaml") || extension.equalsIgnoreCase("yml");
