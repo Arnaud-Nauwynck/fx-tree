@@ -1,6 +1,9 @@
 package fr.an.fxtree.format;
 
 import java.io.File;
+import java.util.Set;
+
+import com.google.common.collect.ImmutableSet;
 
 import fr.an.fxtree.format.json.FxJsonUtils;
 import fr.an.fxtree.format.yaml.FxYamlUtils;
@@ -16,7 +19,7 @@ public final class FxFileUtils {
     public static final String JSON_EXT = ".json";
     public static final String YAML_EXT = ".yaml";
     public static final String YML_EXT = ".yml";
-    public static final String[] STD_FILE_EXTENSIONS = new String[] { JSON_EXT, YAML_EXT, YML_EXT };
+    public static final Set<String> STD_FILE_EXTENSIONS = ImmutableSet.of(JSON_EXT, YAML_EXT, YML_EXT);
 
     /** private to force all static */
     private FxFileUtils() {
@@ -36,10 +39,22 @@ public final class FxFileUtils {
         }
         return null;
     }
+
+    public static boolean isSupportedFileExtension(File file) {
+        String fileName = file.getName();
+        int lastDot = fileName.lastIndexOf('.');
+        if (lastDot == -1) {
+            return false;
+        }
+        String extension = fileName.substring(lastDot+1, fileName.length());
+        return isSupportedFileExtension(extension);
+    }
     
     public static boolean isSupportedFileExtension(String extension) {
-        return extension.equalsIgnoreCase("json") ||
-                extension.equalsIgnoreCase("yaml") || extension.equalsIgnoreCase("yml");
+        if (!extension.startsWith(".")) {
+            extension = "." + extension;
+        }
+        return STD_FILE_EXTENSIONS.contains(extension);
     }
     
     public static FxNode readTree(FxChildWriter dest, File file) {

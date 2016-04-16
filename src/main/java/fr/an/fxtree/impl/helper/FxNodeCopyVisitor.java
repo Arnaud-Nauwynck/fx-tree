@@ -48,6 +48,21 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         return tmpDoc.getContent();
     }
     
+    public static FxNode copyChildTo(FxObjNode dest, String name, FxNode src) {
+        if (src != null) {
+            return FxNodeCopyVisitor.copyTo(dest.putBuilder(name), src);
+        }
+        return null;
+    }
+
+    public static void copyChildMapTo(FxObjNode dest, Map<String,FxNode> src) {
+        if (src != null && !src.isEmpty()) {
+            src.forEach((name,value)-> {
+                copyTo(dest.putBuilder(name), value);
+            });
+        }
+    }
+
     
     public static void removeAndCopyContentTo(FxChildWriter out, FxRootDocument parentSrc) {
         if (out.canAddMoveFrom(parentSrc)) {

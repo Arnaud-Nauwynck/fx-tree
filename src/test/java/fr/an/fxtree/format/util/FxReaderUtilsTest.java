@@ -29,4 +29,25 @@ public class FxReaderUtilsTest {
         String res = FxReaderUtils.readUntil(reader, '=', false);
         Assert.assertEquals("param1", res);
     }
+    
+    @Test
+    public void testReadExpected() throws IOException {
+        PushbackReader reader = new PushbackReader(new StringReader("abcd"));
+        FxReaderUtils.readExpected(reader, "ab");
+        try {
+            FxReaderUtils.readExpected(reader, "cZ");
+            Assert.fail();
+        } catch(RuntimeException ex) {
+            Assert.assertEquals("expecting read 'cZ', got 'cd'...", ex.getMessage());
+        }
+    }
+    
+    @Test
+    public void testReadIdentifier() throws IOException {
+        PushbackReader reader = new PushbackReader(new StringReader("abcd_12=12"));
+        String name = FxReaderUtils.readIdentifier(reader);
+        Assert.assertEquals("abcd_12", name);
+        FxReaderUtils.readExpected(reader, "=");
+    }
+    
 }
