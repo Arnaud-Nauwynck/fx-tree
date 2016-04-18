@@ -49,6 +49,10 @@ public class FxObjValueHelper {
         return FxNodeValueUtils.nodeToString(fieldNode);
     }
 
+    public String getAsTextOrDefault(String fieldName, String defaultValue) {
+        return FxNodeValueUtils.getAsTextOrDefault(parent, fieldName, defaultValue);
+    }
+    
     public FxObjNode getObjOrThrow(String fieldName) {
         return FxNodeValueUtils.getObjOrThrow(parent, fieldName);
     }

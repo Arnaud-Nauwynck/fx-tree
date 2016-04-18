@@ -66,7 +66,32 @@ public final class FxNodeValueUtils {
         }
         return fieldNode.textValue();
     }
-    
+
+    public static String getAsTextOrDefault(FxObjNode parent, String fieldName, String defaultValue) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return defaultValue;
+        }
+        return nodeAsText(fieldNode);
+    }
+
+    public static String getAsText(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = parent.get(fieldName);
+        if (fieldNode == null) {
+            return null;
+        }
+        return nodeAsText(fieldNode);
+    }
+
+    public static String getAsTextOrThrow(FxObjNode parent, String fieldName) {
+        FxNode fieldNode = getOrThrow(parent, fieldName);
+        return nodeAsText(fieldNode);
+    }
+
+    public static String nodeAsText(FxNode fieldNode) {
+        return fieldNode.asText();
+    }
+
     public static int getOrDefault(FxObjNode parent, String fieldName, int defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
