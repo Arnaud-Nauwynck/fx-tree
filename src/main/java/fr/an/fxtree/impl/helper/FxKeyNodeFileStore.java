@@ -2,7 +2,9 @@ package fr.an.fxtree.impl.helper;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -61,7 +63,7 @@ public class FxKeyNodeFileStore {
             return res;
         }
     }
-
+    
     public boolean containsKey(String key) {
         synchronized (lock) {
             FxNode tmpres = contentObj.get(key);
@@ -92,6 +94,16 @@ public class FxKeyNodeFileStore {
             } else {
                 FxNodeCopyVisitor.copyTo(out, tmpres);
             }
+        }
+    }
+
+    public Map<String, FxNode> listResultCopies() {
+        synchronized (lock) {
+            Map<String, FxNode> res = new LinkedHashMap<>();
+            contentObj.forEachFields((n, v) -> {
+                res.put(n, FxNodeCopyVisitor.cloneMemNode(v));
+            });
+            return res;
         }
     }
 

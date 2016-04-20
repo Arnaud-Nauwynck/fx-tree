@@ -3,6 +3,8 @@ package fr.an.fxtree.impl.helper;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,6 +141,20 @@ public class FxAsyncTaskFileStoreHelper {
                 AsyncTaskData taskData = treeToTaskData(pendingTask.pendingData);
                 res.add(taskData);
             }
+        }
+        return res;
+    }
+
+    public Set<String> listTaskResultIds() {
+        return taskResultStore.keySet();
+    }
+
+    public List<AsyncTaskData> listTaskResults() {
+        List<AsyncTaskData> res = new ArrayList<>();
+        Map<String, FxNode> tmpres = taskResultStore.listResultCopies();
+        for (FxNode e : tmpres.values()) {
+            AsyncTaskData resElt = treeToTaskData(e);
+            res.add(resElt);
         }
         return res;
     }
