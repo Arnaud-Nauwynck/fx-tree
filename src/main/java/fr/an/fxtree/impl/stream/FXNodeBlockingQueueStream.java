@@ -39,7 +39,7 @@ public class FXNodeBlockingQueueStream {
     // ------------------------------------------------------------------------
 
     public FXNodeBlockingQueueStream(int capacity) {
-        eventQueue = new ArrayBlockingQueue<>(capacity);
+        this.eventQueue = new ArrayBlockingQueue<>(capacity);
     }
     
     // ------------------------------------------------------------------------
@@ -93,10 +93,10 @@ public class FXNodeBlockingQueueStream {
         
         @Override
         public FxNodeStreamToken read() {
-            curr = null;
+            this.curr = null;
             for(;;) {
                 try {
-                    curr = eventQueue.poll(60, TimeUnit.SECONDS);
+                    this.curr = eventQueue.poll(60, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -110,7 +110,7 @@ public class FXNodeBlockingQueueStream {
         @Override
         public FxNodeStreamToken read(long timeoutMillis) {
             try {
-                curr = eventQueue.poll(timeoutMillis, TimeUnit.MILLISECONDS);
+                this.curr = eventQueue.poll(timeoutMillis, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
                 // ignore, no rethrow
             }
@@ -143,6 +143,5 @@ public class FXNodeBlockingQueueStream {
         }
         
     }
-
 
 }
