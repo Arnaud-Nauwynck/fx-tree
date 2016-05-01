@@ -1,0 +1,29 @@
+{
+  "eval_jq_select": {
+	  "@fx-eval": "#phase0:jq",
+	  "expr": ".[] | select( .name | contains(\"a\") )",
+	  "in": [
+	    { "id": 1, "name": "a1" },
+	    { "id": 2, "name": "a2" },
+	    { "id": 3, "name": "b1" },
+	    { "id": 4, "name": "b2" }
+	  ]
+	},
+  "eval_jq_[0]": {
+	  "@fx-eval": "#phase0:jq",
+	  "expr": ".[0]",
+	  "in": [
+	    { "id": 1, "name": "a1" },
+	    { "id": 2, "name": "a2" }
+	  ]
+  },
+  "eval_jq_[0]_single": {
+	  "@fx-eval": "#phase0:jq",
+	  "expr": ".[0]",
+	  "single": true,
+	  "in": [
+	    { "id": 1, "name": "a1" },
+	    { "id": 2, "name": "a2" }
+	  ]
+  }
+}

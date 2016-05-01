@@ -53,6 +53,14 @@ public final class Fx2JacksonUtils {
         jsonNodeToFxTree(doc.contentWriter(), src);
         return doc.getContent();
     }
+
+    public static void jsonNodesToFxTrees(FxChildWriter dest, Collection<JsonNode> src) {
+        if (src != null && !src.isEmpty()) {
+            for(JsonNode e : src) {
+                jsonNodeToFxTree(dest, e);
+            }
+        }
+    }
     
     public static FxNode jsonNodeToFxTree(FxChildWriter dest, JsonNode src) {
         switch (src.getNodeType()) {
