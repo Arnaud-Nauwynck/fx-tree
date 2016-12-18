@@ -112,6 +112,12 @@ public abstract class FxRootDocument extends FxContainerNode {
         return res;
     }
 
+    public FxTextNode setContentText(String text) {
+        FxTextNode res = nodeFactory.newText(text);
+        setContent(res);
+        return res;
+    }
+    
     public void setContent(FxNode node) {
         if (node == childContent) return;
         addContent(node);

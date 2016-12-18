@@ -5,6 +5,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import fr.an.fxtree.format.json.jackson.Fx2JacksonUtils;
+import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
@@ -66,4 +67,34 @@ public class FxJqFunc extends FxNodeFunc {
             
         }
     }
+    
+
+	public static String evalJqExprAsText(String jqExpr, FxNode inputValue) {
+		JsonQuery jsonQuery;
+        try {
+            jsonQuery = JsonQuery.compile(jqExpr);
+        } catch(JsonQueryException ex) {
+            throw new RuntimeException("Failed to parse jq expr '" + jqExpr + "'", ex);
+        }
+        
+        JsonNode inNode = Fx2JacksonUtils.fxTreeToJsonNode(inputValue);
+        
+        List<JsonNode> tmpres;
+        try {
+        	// *** eval JQ expr (on json) ***
+            tmpres = jsonQuery.apply(inNode);
+        } catch(JsonQueryException ex) {
+            throw new RuntimeException("Failed to apply JQ query '" + jqExpr + "' to input ..", ex);
+        }
+        
+        // expecting single result
+        if (tmpres.size() == 1) {
+        	FxNode output = Fx2JacksonUtils.jsonNodeToFxTree(new FxMemRootDocument().contentWriter(), tmpres.get(0));
+            return output.asText();
+        } else if (tmpres.size() > 1) {
+            throw new RuntimeException("Expecting single result, got " + tmpres.size());
+        } else {
+        	return "";
+        }
+	}
 }
