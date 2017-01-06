@@ -56,14 +56,16 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
         }
         
         StringBuilder sb = new StringBuilder();
+        int prevPos = 0;
         int currPos = 0;
         for(;;) {
             int nextExprIndex = text.indexOf("#{", currPos);
             if (nextExprIndex == -1) {
-            	sb.append(text, currPos, textLen);
+            	sb.append(text, prevPos, textLen);
             	break;
             }
-            sb.append(text, currPos, nextExprIndex);
+            sb.append(text, prevPos, nextExprIndex);
+            prevPos = nextExprIndex;
         
             // detect "#{varName" ...  until '.', '[', ':' or '}')
             int nextExprVarIndex = nextCharNotVar(text, nextExprIndex+2);
@@ -79,7 +81,8 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
                 if (nextCh == '}') {
                 	// detected exact var: "#{varName}"  => simply replace
                 	sb.append(foundVarRepl.asText());
-                	currPos = nextExprVarIndex+1;
+                	prevPos = nextExprVarIndex+1;
+                	currPos = prevPos;
                 } else {
                 	// detect closing "}" .. accepting nested "{.. {} }"
                 	int closeBraceIndex = nextClosingBrace(text, nextExprVarIndex);
@@ -99,7 +102,8 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
         	        	String pathExpr = text.substring(nextExprVarIndex, closeBraceIndex);
         	        	throw new UnsupportedOperationException("TODO not implemented here eval pathExpr " + pathExpr);
         	        }
-                	currPos = closeBraceIndex + 1;
+                	prevPos = closeBraceIndex + 1;
+                	currPos = prevPos;
                 }
 
             }

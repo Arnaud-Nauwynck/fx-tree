@@ -41,8 +41,15 @@ public class FxReplaceNodeCopyVisitorTest {
         assertReplaceText("...value1", "...#{var1}");
         assertReplaceText("...value1...", "...#{var1}...");
         assertReplaceText("...value1..value1...", "...#{var1}..#{var1}...");
+        assertReplaceText("value1value2", "#{var1}#{var2}");
         assertReplaceText("...value1..value2...", "...#{var1}..#{var2}...");
         assertReplaceText("...value1..value2", "...#{var1}..#{var2}");
+    }
+    
+    @Test
+    public void testReplaceMatchingText_leave_unmatching_vars() {
+        assertReplaceText("#{varUnmodified}", "#{varUnmodified}");
+        assertReplaceText("..#{varUnmodified}...", "..#{varUnmodified}...");
     }
 
     @Test
