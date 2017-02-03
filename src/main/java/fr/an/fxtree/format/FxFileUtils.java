@@ -12,7 +12,7 @@ import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 
 /**
- * File read utility method, delegate to Yaml/Json class using file name extension ".yaml", ".json", .. 
+ * File read utility method, delegate to Yaml/Json class using file name extension ".yaml", ".json", ..
  */
 public final class FxFileUtils {
 
@@ -24,12 +24,12 @@ public final class FxFileUtils {
     /** private to force all static */
     private FxFileUtils() {
     }
-    
+
     public static FxNode readTree(File file) {
         FxMemRootDocument doc = new FxMemRootDocument();
         return readTree(doc.contentWriter(), file);
     }
-    
+
     public static FxNode readFirstFileWithSupportedExtension(File dir, String baseFileName) {
         for(String ext : STD_FILE_EXTENSIONS) {
             File file = new File(dir, baseFileName + ext);
@@ -49,17 +49,17 @@ public final class FxFileUtils {
         String extension = fileName.substring(lastDot+1, fileName.length());
         return isSupportedFileExtension(extension);
     }
-    
+
     public static boolean isSupportedFileExtension(String extension) {
         if (!extension.startsWith(".")) {
             extension = "." + extension;
         }
         return STD_FILE_EXTENSIONS.contains(extension);
     }
-    
+
     public static FxNode readTree(FxChildWriter dest, File file) {
         String fileName = file.getName();
-        FxNode contentNode; 
+        FxNode contentNode;
         if (fileName.endsWith(JSON_EXT)) {
             contentNode = FxJsonUtils.readTree(dest, file);
         } else if (fileName.endsWith(YML_EXT) || fileName.endsWith(YAML_EXT)) {
@@ -80,5 +80,5 @@ public final class FxFileUtils {
             throw new IllegalArgumentException("expecting .json or .yaml file extension, got " + fileName);
         }
     }
-    
+
 }

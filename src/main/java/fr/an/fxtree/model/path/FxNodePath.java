@@ -21,11 +21,11 @@ public class FxNodePath {
     private final FxChildPathElement[] elements;
 
     // ------------------------------------------------------------------------
-    
+
     public FxNodePath(FxChildPathElement[] elements) {
         this.elements = elements;
     }
-    
+
     public static FxNodePath of(FxChildPathElement... elements) {
         FxChildPathElement[] copy = elements.clone();
         return new FxNodePath(copy);
@@ -45,19 +45,19 @@ public class FxNodePath {
         }
         return new FxNodePath(tmp);
     }
-    
+
     public static FxNodePath ofEmpty() {
         return of();
     }
-    
+
     public static FxNodePath ofThis() {
         return of(FxChildPathElement.thisRoot());
     }
-    
+
     public static FxNodePath parse(String text) {
         return FxNodePathParserUtils.parse(text);
     }
-    
+
     // ------------------------------------------------------------------------
 
     public int size() {
@@ -76,7 +76,7 @@ public class FxNodePath {
     public FxNode select(FxNode src) {
         return select(src, src);
     }
-    
+
     public FxNode select(FxNode baseSrc, FxNode src) {
         if (src == null) {
             return null;
@@ -90,21 +90,21 @@ public class FxNodePath {
         }
         return tmp;
     }
-    
+
     public FxChildWriter selectInsertBuilder(FxNode src) {
         return selectInsertBuilder(src, src);
     }
-    
+
     public FxChildWriter selectInsertBuilder(FxNode baseSrc, FxNode src) {
         FxNodePath parentPath = parent();
         FxNode destParent = parentPath.select(baseSrc, src);
-        
+
         FxChildPathElement insertPathElt = get(size()-1);
         FxChildWriter destWriter;
         if (destParent == null) {
             throw FxUtils.notImplYet(); // create missing path?...
         }
-        
+
         if (insertPathElt instanceof FxArrayIndexPathElt) {
             int arrayIndex = ((FxArrayIndexPathElt) insertPathElt).getIndex();
             if (!destParent.isArray()) {
@@ -122,19 +122,19 @@ public class FxNodePath {
         } else {
             throw new IllegalArgumentException("invalid copy toPath:'" + this + "' expecting writable array/obj node content, got " + insertPathElt);
         }
-        
+
         return destWriter;
     }
-    
-    
+
+
     // ------------------------------------------------------------------------
-    
+
     public FxNodePath parent() {
-        if (elements.length == 0) throw new IllegalArgumentException(); 
+        if (elements.length == 0) throw new IllegalArgumentException();
         FxChildPathElement[] parentElts = Arrays.copyOf(elements, elements.length - 1);
         return new FxNodePath(parentElts);
     }
-    
+
     public FxNodePath child(FxNodePath append) {
         FxChildPathElement[] resElts = Arrays.copyOf(elements, elements.length + append.elements.length);
         System.arraycopy(append.elements, 0, resElts, elements.length, append.elements.length);
@@ -146,7 +146,7 @@ public class FxNodePath {
         resElts[elements.length] = FxChildPathElement.of(childFieldname);
         return new FxNodePath(resElts);
     }
-    
+
     public FxNodePath child(int index) {
         FxChildPathElement[] resElts = Arrays.copyOf(elements, elements.length + 1);
         resElts[elements.length] = FxChildPathElement.of(index);
@@ -162,16 +162,16 @@ public class FxNodePath {
         }
         return new FxNodePath(resElts);
     }
-    
+
     public FxNodePath childSubPath() {
         if (elements.length == 0) return null;
         FxChildPathElement[] resElts = new FxChildPathElement[elements.length - 1];
         System.arraycopy(elements, 1, resElts, 0, elements.length-1);
         return new FxNodePath(resElts);
     }
-    
+
     // ------------------------------------------------------------------------
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -205,30 +205,30 @@ public class FxNodePath {
         }
         return sb.toString();
     }
-    
+
     public void toString(StringBuilder sb) {
         for(int i = 0; i < elements.length; i++) {
             sb.append(elements[i].toString());
         }
     }
-    
+
     // ------------------------------------------------------------------------
 
     public static class Builder {
         private final List<FxChildPathElement> elements = new ArrayList<>();
-        
+
         public FxNodePath build() {
             return FxNodePath.of(elements);
         }
-        
+
         public List<FxChildPathElement> getElements() {
             return elements;
         }
-        
+
         public void append(FxNodePath childPath) {
             elements.addAll(Arrays.asList(childPath.elements));
         }
-        
+
         public void push(FxChildPathElement child) {
             elements.add(child);
         }
@@ -257,5 +257,5 @@ public class FxNodePath {
             return sb.toString();
         }
     }
-    
+
 }

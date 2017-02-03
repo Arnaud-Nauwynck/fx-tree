@@ -10,16 +10,16 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 public class FxIfFunc extends FxNodeFunc {
 
     public static final String NAME = "if";
-    
+
     // ------------------------------------------------------------------------
 
     public static final FxIfFunc INSTANCE = new FxIfFunc();
-    
+
     private FxIfFunc() {
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
@@ -36,6 +36,6 @@ public class FxIfFunc extends FxNodeFunc {
             FxNodeCopyVisitor.copyTo(dest, templateNode);
         }
     }
-    
-    
+
+
 }

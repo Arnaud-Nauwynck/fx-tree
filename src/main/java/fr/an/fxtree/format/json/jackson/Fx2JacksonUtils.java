@@ -61,7 +61,7 @@ public final class Fx2JacksonUtils {
             }
         }
     }
-    
+
     public static FxNode jsonNodeToFxTree(FxChildWriter dest, JsonNode src) {
         switch (src.getNodeType()) {
         case OBJECT:
@@ -108,7 +108,7 @@ public final class Fx2JacksonUtils {
             throw new RuntimeException();
         }
     }
-    
+
     public static void fillJsonArrayToFxArray(FxArrayNode dest, ArrayNode src) {
         if (! dest.isEmpty()) {
             dest.removeAll();
@@ -172,8 +172,8 @@ public final class Fx2JacksonUtils {
             }
         }
     }
-    
-    
+
+
     public static void fillJsonObjToFxObj(FxObjNode dest, ObjectNode src) {
         if (! dest.isEmpty()) {
             dest.removeAll();
@@ -245,7 +245,7 @@ public final class Fx2JacksonUtils {
     public static JsonNode fxTreeToJsonNode(FxNode src) {
         return fxTreeToJsonNode(src, JsonNodeFactory.instance);
     }
-    
+
     public static JsonNode fxTreeToJsonNode(FxNode src, JsonNodeFactory jsonNodeFactory) {
         if (src == null) {
             return null;
@@ -297,7 +297,7 @@ public final class Fx2JacksonUtils {
                 case BIG_DECIMAL:
                     res = DecimalNode.valueOf(srcNumber.decimalValue());
                     break;
-                default:                
+                default:
                     throw new UnsupportedOperationException();
                 }
                 break;
@@ -307,12 +307,12 @@ public final class Fx2JacksonUtils {
            case STRING:
                 res = TextNode.valueOf(((FxTextNode) src).textValue());
                 break;
-            default:                
+            default:
                 throw new UnsupportedOperationException();
         }
         return res;
     }
-        
+
     public static void fillFxArrayToJsonArray(ArrayNode dest, FxArrayNode src) {
 //        if (! dest.isEmpty()) {
 //            dest.removeAl();
@@ -376,7 +376,7 @@ public final class Fx2JacksonUtils {
             }
         }
     }
-    
+
     public static void fillFxObjToJsonObj(ObjectNode dest, FxObjNode src) {
         for(Iterator<Entry<String, FxNode>> iter = src.fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();
@@ -437,23 +437,23 @@ public final class Fx2JacksonUtils {
                 throw new RuntimeException();
             }
         }
-    }    
+    }
 
     // ------------------------------------------------------------------------
-    
+
     public static NumberType numberType2Jackson(FxNumberType value) {
         if (value == null) return null;
         switch(value) {
-        case INT: return NumberType.INT; 
-        case LONG: return NumberType.LONG; 
-        case BIG_INTEGER: return NumberType.BIG_INTEGER; 
-        case FLOAT: return NumberType.FLOAT; 
-        case DOUBLE: return NumberType.DOUBLE; 
+        case INT: return NumberType.INT;
+        case LONG: return NumberType.LONG;
+        case BIG_INTEGER: return NumberType.BIG_INTEGER;
+        case FLOAT: return NumberType.FLOAT;
+        case DOUBLE: return NumberType.DOUBLE;
         case BIG_DECIMAL: return NumberType.BIG_DECIMAL;
         default: return null;
         }
     }
-    
+
 
     /** helper for jsonNodeToFxTree on map */
     public static <K> Map<K,FxNode> jsonNodesToFxTrees(Map<K,JsonNode> src) {
@@ -488,9 +488,9 @@ public final class Fx2JacksonUtils {
             }
         }
     }
-    
+
     // ------------------------------------------------------------------------
-    
+
     /** helper for jsonNodeToFxTree on map */
     public static <K> Map<K,JsonNode> fxTreesToJsonNodes(Map<K,FxNode> src) {
         Map<K,JsonNode> res = new LinkedHashMap<>();
@@ -524,5 +524,5 @@ public final class Fx2JacksonUtils {
             }
         }
     }
-    
+
 }

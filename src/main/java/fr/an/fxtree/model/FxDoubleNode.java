@@ -50,7 +50,7 @@ public abstract class FxDoubleNode extends FxValueNode {
     @Override public boolean canConvertToLong() {
         return (getValue() >= Long.MIN_VALUE && getValue() <= Long.MAX_VALUE);
     }
-    
+
     @Override
     public Number numberValue() {
         return Double.valueOf(getValue());
@@ -67,7 +67,7 @@ public abstract class FxDoubleNode extends FxValueNode {
 
     @Override
     public float floatValue() { return (float) getValue(); }
-    
+
     @Override
     public double doubleValue() { return getValue(); }
 
@@ -83,7 +83,7 @@ public abstract class FxDoubleNode extends FxValueNode {
     public String asText() {
         return NumberOutput.toString(getValue());
     }
-    
+
     // ------------------------------------------------------------------------
 
     @Override
@@ -111,5 +111,5 @@ public abstract class FxDoubleNode extends FxValueNode {
     public String toString() {
         return Double.toString(getValue());
     }
-    
+
 }

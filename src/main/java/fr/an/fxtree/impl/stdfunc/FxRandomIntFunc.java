@@ -11,16 +11,16 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 public class FxRandomIntFunc extends FxNodeFunc {
 
     public static final String NAME = "randomInt";
-    
+
     // ------------------------------------------------------------------------
 
     public static final FxRandomIntFunc INSTANCE = new FxRandomIntFunc();
-    
+
     private FxRandomIntFunc() {
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
@@ -30,11 +30,11 @@ public class FxRandomIntFunc extends FxNodeFunc {
         int minValue = (minNode != null)? FxCurrEvalCtxUtil.recurseEvalToInt(ctx, minNode) : 0;
         FxNode maxNode = (srcObj != null)? srcObj.get("max") : null;
         int maxValue = (maxNode != null)? FxCurrEvalCtxUtil.recurseEvalToInt(ctx, maxNode) : Integer.MAX_VALUE;
-        
+
         Random rand = new Random(seed);
         int value = minValue + rand.nextInt(maxValue - minValue);
 
         dest.add(value);
     }
-    
+
 }

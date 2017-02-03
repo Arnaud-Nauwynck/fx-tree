@@ -17,15 +17,15 @@ public class FxMemArrayNode extends FxArrayNode {
     private List<FxNode> _children = new ArrayList<>();
 
     private int childIdGenerator = 1;
-    
+
     // ------------------------------------------------------------------------
-    
+
     protected FxMemArrayNode(FxContainerNode parent, FxMemChildId childId) {
         super(parent, childId);
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public int size() {
         return _children.size();
@@ -57,7 +57,8 @@ public class FxMemArrayNode extends FxArrayNode {
         return onInsert(index, res);
     }
 
-    protected <T extends FxNode> T onInsert(int index, T node) {
+    @Override
+	protected <T extends FxNode> T onInsert(int index, T node) {
         int newChildId = childIdGenerator++;
         FxMemArrayInsertChildId childId = new FxMemArrayInsertChildId(newChildId, index);
         _children.add(index, node);
@@ -66,7 +67,7 @@ public class FxMemArrayNode extends FxArrayNode {
         return node;
     }
 
-    
+
     @Override
     public void remove(FxNode child) {
         if (child.getParent() != this) throw new IllegalArgumentException();
@@ -86,7 +87,8 @@ public class FxMemArrayNode extends FxArrayNode {
         return doRemove(index);
     }
 
-    public void removeAll() {
+    @Override
+	public void removeAll() {
         int len = size();
         for(int i = len-1; i >= 0; i--) {
             FxNode res = _children.get(i);
@@ -101,7 +103,7 @@ public class FxMemArrayNode extends FxArrayNode {
         reindexRemainingChildIds(index);
         return res;
     }
-    
+
     private void reindexRemainingChildIds(int index) {
         final int len = _children.size();
         for(int i = index; i < len; i++) {
@@ -110,6 +112,6 @@ public class FxMemArrayNode extends FxArrayNode {
             childId._setCurrIndex(i);
         }
     }
-    
-    
+
+
 }

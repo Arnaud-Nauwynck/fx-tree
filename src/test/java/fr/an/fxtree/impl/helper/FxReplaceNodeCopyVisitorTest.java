@@ -25,12 +25,12 @@ public class FxReplaceNodeCopyVisitorTest {
         FxObjNode content = doc.contentWriter().addObj();
         repls.put("var1", content.put("1", "value1"));
         repls.put("var2", content.put("2", "value2"));
-        
+
         FxObjNode objRepl = content.putObj("3");
         objRepl.put("subField1", "valueSubField1");
         objRepl.put("subField2", "valueSubField2");
         repls.put("var3", objRepl);
-        
+
         sut = new FxReplaceNodeCopyVisitor(repls);
     }
 
@@ -45,7 +45,7 @@ public class FxReplaceNodeCopyVisitorTest {
         assertReplaceText("...value1..value2...", "...#{var1}..#{var2}...");
         assertReplaceText("...value1..value2", "...#{var1}..#{var2}");
     }
-    
+
     @Test
     public void testReplaceMatchingText_leave_unmatching_vars() {
         assertReplaceText("#{varUnmodified}", "#{varUnmodified}");
@@ -60,7 +60,7 @@ public class FxReplaceNodeCopyVisitorTest {
     	assertReplaceText("...valueSubField1...", "...#{var3:.subField1}...");
     	assertReplaceText("...valueSubField1..valueSubField2..", "...#{var3:.subField1}..#{var3:.subField2}..");
     }
-    
+
     @Test @Ignore // TODO
     public void testReplacePathExpr() {
         assertReplaceText("valueSubField1", "#{var3.subField1}");
@@ -69,7 +69,7 @@ public class FxReplaceNodeCopyVisitorTest {
         assertReplaceText("...valueSubField1...", "...#{var3.subField1}...");
         assertReplaceText("...valueSubField1..valueSubField2..", "...#{var3.subField1}..#{var3.subField2}..");
     }
-    
+
     private void assertReplaceText(String expected, String text) {
     	FxTextNode textNode = new FxMemRootDocument().setContentText(text);
         FxChildWriter outWriter = new FxMemRootDocument().contentWriter();

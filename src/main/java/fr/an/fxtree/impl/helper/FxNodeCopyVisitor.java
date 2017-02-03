@@ -24,7 +24,7 @@ import fr.an.fxtree.model.FxTreeVisitor2;
 public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
 
     public static final FxNodeCopyVisitor INSTANCE = new FxNodeCopyVisitor();
-    
+
     // ------------------------------------------------------------------------
 
     public FxNodeCopyVisitor() {
@@ -38,7 +38,7 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         }
         return src.accept(INSTANCE, out);
     }
-    
+
     public static FxNode cloneMemNode(FxNode src) {
         if (src == null) {
             return null;
@@ -47,7 +47,7 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         copyTo(tmpDoc.contentWriter(), src);
         return tmpDoc.getContent();
     }
-    
+
     public static FxNode copyChildTo(FxObjNode dest, String name, FxNode src) {
         if (src != null) {
             return FxNodeCopyVisitor.copyTo(dest.putBuilder(name), src);
@@ -63,7 +63,7 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         }
     }
 
-    
+
     public static void removeAndCopyContentTo(FxChildWriter out, FxRootDocument parentSrc) {
         if (out.canAddMoveFrom(parentSrc)) {
             // OPTIMISATION ... equivalent to "remove() + copyTo()"
@@ -75,7 +75,7 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
             parentSrc.remove(contentSrc);
         }
     }
-    
+
     public static void removeAndCopyChildTo(FxChildWriter out, FxObjNode parentSrc, String fieldName) {
 //        if (out.canAddMoveFrom(parentSrc)) {
 //            // OPTIMISATION ... equivalent to "remove() + copyTo()"
@@ -86,10 +86,10 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
             FxNodeCopyVisitor.copyTo(out, node);
 //        }
     }
-    
+
     // ------------------------------------------------------------------------
 
-    
+
     @Override
     public FxNode visitRoot(FxRootDocument src, FxChildWriter out) {
         throw new UnsupportedOperationException();
@@ -97,7 +97,7 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
 
     @Override
     public FxNode visitObj(FxObjNode src, FxChildWriter out) {
-        FxObjNode res = out.addObj(); 
+        FxObjNode res = out.addObj();
         for(Iterator<Map.Entry<String, FxNode>> iter = src.fields(); iter.hasNext(); ) {
             Entry<String, FxNode> srcFieldEntry = iter.next();
             String name = srcFieldEntry.getKey();
@@ -122,16 +122,16 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         }
         return res;
     }
-    
+
 
     protected void visitObjField(String name, FxNode srcValue, FxChildWriter out) {
         srcValue.accept(this, out);
     }
-    
+
     protected void visitArrayElt(int index, FxNode srcValue, FxChildWriter out) {
         srcValue.accept(this, out);
     }
-    
+
     @Override
     public FxNode visitTextValue(FxTextNode src, FxChildWriter out) {
         return out.add(src.getValue());
@@ -172,7 +172,7 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
         // TODO clone pojo??
         return out.addPOJO(pojo);
     }
-    
+
     @Override
     public FxNode visitLink(FxLinkProxyNode node, FxChildWriter out) {
         return out.addLink(node.getTargetRelativePath());
@@ -182,5 +182,5 @@ public class FxNodeCopyVisitor extends FxTreeVisitor2<FxChildWriter,FxNode> {
     public FxNode visitNullValue(FxNullNode src, FxChildWriter out) {
         return out.addNull();
     }
-    
+
 }

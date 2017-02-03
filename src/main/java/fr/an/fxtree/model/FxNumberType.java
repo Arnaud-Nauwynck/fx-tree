@@ -6,5 +6,5 @@ package fr.an.fxtree.model;
 public enum FxNumberType {
 
     INT, LONG, BIG_INTEGER, FLOAT, DOUBLE, BIG_DECIMAL
-    
+
 }

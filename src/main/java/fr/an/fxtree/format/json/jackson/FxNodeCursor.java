@@ -14,21 +14,21 @@ import fr.an.fxtree.model.FxObjNode;
 
 /**
  * similar to jackson NodeCursor, but for FxNode
- * 
+ *
  * Helper class used by {@link TreeTraversingParser} to keep track
  * of current location within traversed JSON tree.
  */
 public abstract class FxNodeCursor extends JsonStreamContext {
-    
+
     /** Parent cursor of this cursor, if any; null for root cursors. */
     protected final FxNodeCursor _parent;
 
     protected String _currentName;
 
     protected java.lang.Object _currentValue;
-    
+
     // ------------------------------------------------------------------------
-    
+
     public FxNodeCursor(int contextType, FxNodeCursor parent) {
         _type = contextType;
         _index = -1;
@@ -36,7 +36,7 @@ public abstract class FxNodeCursor extends JsonStreamContext {
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public final FxNodeCursor getParent() { return _parent; }
 
@@ -58,14 +58,14 @@ public abstract class FxNodeCursor extends JsonStreamContext {
     public void setCurrentValue(java.lang.Object v) {
         _currentValue = v;
     }
-    
+
     public abstract JsonToken nextToken();
     public abstract JsonToken nextValue();
     public abstract JsonToken endToken();
 
     public abstract FxNode currentNode();
     public abstract boolean currentHasChildren();
-    
+
     /**
      * Method called to create a new context for iterating all
      * contents of the current structured value (JSON array or object)
@@ -84,7 +84,7 @@ public abstract class FxNodeCursor extends JsonStreamContext {
 
     // Concrete implementations
     // ------------------------------------------------------------------------
-    
+
     /**
      * Context matching root-level value nodes (i.e. anything other
      * than JSON Object and Array).
@@ -101,9 +101,9 @@ public abstract class FxNodeCursor extends JsonStreamContext {
         }
 
         @Override
-        public void overrideCurrentName(String name) {            
+        public void overrideCurrentName(String name) {
         }
-        
+
         @Override
         public JsonToken nextToken() {
             if (!_done) {
@@ -113,7 +113,7 @@ public abstract class FxNodeCursor extends JsonStreamContext {
             _node = null;
             return null;
         }
-        
+
         @Override
         public JsonToken nextValue() { return nextToken(); }
         @Override
@@ -168,7 +168,7 @@ public abstract class FxNodeCursor extends JsonStreamContext {
         protected Map.Entry<String, FxNode> _current;
 
         protected boolean _needEntry;
-        
+
         public FxObjectCursor(FxObjNode n, FxNodeCursor parent) {
             super(JsonStreamContext.TYPE_OBJECT, parent);
             _contents = n.fields();

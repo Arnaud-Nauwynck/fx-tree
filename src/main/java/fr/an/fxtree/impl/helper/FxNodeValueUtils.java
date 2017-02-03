@@ -20,14 +20,14 @@ import fr.an.fxtree.model.path.FxNodePath;
 
 /**
  * utility static methods for extracting / converting / type-checking nodes
- * 
- * see also FxObjValueHelper 
+ *
+ * see also FxObjValueHelper
  */
 public final class FxNodeValueUtils {
 
     private static final String STRING_ARRAY_FORMAT = "CSV 'str1,str2...' or array ['str1, 'str2'..]";
     private static final String STRING_FLATTEN_ARRAY_FORMAT = "CSV 'str1,str2...' or array ['str1, 'str2'..] or flattenize [ 'str1', [ 'str2', 'str3' ]]";
-    
+
     private FxNodeValueUtils() {
     }
 
@@ -38,7 +38,7 @@ public final class FxNodeValueUtils {
         }
         return fieldNode;
     }
-    
+
     public static String getOrDefault(FxObjNode parent, String fieldName, String defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
@@ -99,7 +99,7 @@ public final class FxNodeValueUtils {
         }
         return nodeToInt(fieldNode);
     }
-    
+
     public static FxObjNode getObjOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         return nodeToObj(fieldNode);
@@ -112,21 +112,21 @@ public final class FxNodeValueUtils {
         }
         return nodeToObj(fieldNode);
     }
-    
+
     public static FxObjNode nodeToObj(FxNode fieldNode) {
         if (!fieldNode.isObject()) {
             throw new IllegalArgumentException("expecting Object, got " + fieldNode.getNodeType());
         }
         return (FxObjNode) fieldNode;
     }
-    
+
     /* Boolean : getBooleanOrThrow, getOrDefault, nodeToBoolean */
-    
+
     public static boolean getBooleanOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         return nodeToBoolean(fieldNode);
     }
-    
+
     public static boolean getBooleanOrDefault(FxObjNode parent, String fieldName, boolean defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
@@ -134,7 +134,7 @@ public final class FxNodeValueUtils {
         }
         return nodeToBoolean(fieldNode);
     }
-    
+
     public static boolean nodeToBoolean(FxNode src) {
         boolean res;
         if (src.isBoolean()) {
@@ -143,11 +143,11 @@ public final class FxNodeValueUtils {
             // also accept "true"/"false", "y"/"n", "yes"/"no" ...
             String text = src.textValue();
             switch(text) {
-            case "true": case "True": case "TRUE": case "y": case "Y": case "yes": case "Yes": case "YES": 
-                res = true; 
+            case "true": case "True": case "TRUE": case "y": case "Y": case "yes": case "Yes": case "YES":
+                res = true;
                 break;
-            case "false": case "False": case "FALSE": case "n": case "N": case "no": case "No": case "NO":   
-                res = false; 
+            case "false": case "False": case "FALSE": case "n": case "N": case "no": case "No": case "NO":
+                res = false;
                 break;
             default:
                 throw new IllegalArgumentException("expecting boolean argument '" + src + "', or true/false, y/n, yes/no .. got text '" + text + "'");
@@ -163,7 +163,7 @@ public final class FxNodeValueUtils {
 
 
     /* Char: getCharOrDefault, getCharOrThrow, nodeToChar */
-    
+
     public static char getCharOrDefault(FxObjNode parent, String fieldName, char defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
@@ -171,7 +171,7 @@ public final class FxNodeValueUtils {
         }
         return nodeToChar(fieldNode);
     }
-    
+
     public static char getCharOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         if (!fieldNode.isNumber()) {
@@ -197,7 +197,7 @@ public final class FxNodeValueUtils {
     }
 
     /* Int: getIntOrDefault, getIntOrThrow, nodeToInt */
-    
+
     public static int getIntOrDefault(FxObjNode parent, String fieldName, int defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
@@ -205,11 +205,11 @@ public final class FxNodeValueUtils {
         }
         return nodeToInt(fieldNode);
     }
-    
+
     public static int getInt(FxObjNode parent, String fieldName) {
         return getIntOrThrow(parent, fieldName);
     }
-    
+
     public static int getIntOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         if (!fieldNode.isNumber()) {
@@ -227,7 +227,7 @@ public final class FxNodeValueUtils {
     }
 
     /* Long: getLongOrDefault, getLongOrThrow, nodeToLong */
-    
+
     public static long getLongOrDefault(FxObjNode parent, String fieldName, Long defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
@@ -235,7 +235,7 @@ public final class FxNodeValueUtils {
         }
         return nodeToLong(fieldNode);
     }
-    
+
     public static long getLongOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         if (!fieldNode.isNumber()) {
@@ -267,9 +267,9 @@ public final class FxNodeValueUtils {
         return (tmpres != null)? new Date(tmpres.longValue()) : null;
     }
 
-    
+
     /* Double: getDoubleOrDefault, getDoubleOrThrow, nodeToDouble */
-    
+
     public static double getDoubleOrDefault(FxObjNode parent, String fieldName, double defaultValue) {
         FxNode fieldNode = parent.get(fieldName);
         if (fieldNode == null) {
@@ -277,7 +277,7 @@ public final class FxNodeValueUtils {
         }
         return nodeToDouble(fieldNode);
     }
-    
+
     public static double getDoubleOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         if (!fieldNode.isNumber()) {
@@ -302,7 +302,7 @@ public final class FxNodeValueUtils {
         }
         return nodeToFloat(fieldNode);
     }
-    
+
     public static float getFloatOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         if (!fieldNode.isNumber()) {
@@ -319,12 +319,12 @@ public final class FxNodeValueUtils {
     }
 
     /* Array */
-    
+
     public static FxArrayNode getArrayOrThrow(FxObjNode parent, String fieldName) {
         FxNode fieldNode = getOrThrow(parent, fieldName);
         return nodeToArray(fieldNode);
     }
-    
+
     public static FxArrayNode getArrayOrNull(FxObjNode parent, String fieldName) {
         FxNode fieldNode = parent.get(fieldName);
         return nodeToArray(fieldNode);
@@ -377,7 +377,7 @@ public final class FxNodeValueUtils {
         } else if (value.isArray()) {
             FxArrayNode array = (FxArrayNode) value;
             int len = array.size();
-            res = new ArrayList<String>(len);
+            res = new ArrayList<>(len);
             for(int i = 0; i < len; i++) {
                 FxNode child = array.get(i);
                 if (child.isTextual()) {
@@ -401,12 +401,12 @@ public final class FxNodeValueUtils {
         }
         return res;
     }
-    
+
     public static String[] nodeToStringArray(FxNode value, boolean allowRecurseFlatten) {
         List<String> tmpres = nodeToStringList(value, allowRecurseFlatten);
         return tmpres != null? tmpres.toArray(new String[tmpres.size()]) : null;
     }
-    
+
 
     public static byte[] nodeToByteArray(FxNode src) {
         if (src instanceof FxBinaryNode) {
@@ -414,12 +414,12 @@ public final class FxNodeValueUtils {
             if (tmpres != null) {
                 tmpres = tmpres.clone();
             }
-            return tmpres;  
+            return tmpres;
         } else {
             throw new IllegalArgumentException("expected byte[], got " + src.getNodeType());
         }
     }
-    
+
     // ------------------------------------------------------------------------
 
     public static Object nodeToValueForType(FxNode src, Class<?> destType, FxEvalContext evalCtx) {
@@ -429,7 +429,7 @@ public final class FxNodeValueUtils {
             return nodeToValueForType(src, destType);
         }
     }
-    
+
     public static Object nodeToValueForType(FxNode src, Class<?> destType) {
         if (destType.isPrimitive()) {
             switch(destType.getName()) {
@@ -466,7 +466,7 @@ public final class FxNodeValueUtils {
         if (src.isArray()) {
             FxArrayNode array = (FxArrayNode) src;
             final int len = array.size();
-            FxChildPathElement[] elts = new FxChildPathElement[len]; 
+            FxChildPathElement[] elts = new FxChildPathElement[len];
             for(int i = 0; i < len; i++) {
                 FxNode e = array.get(i);
                 if (e.isNumber()) {
@@ -475,7 +475,7 @@ public final class FxNodeValueUtils {
                 } else if (e.isTextual()) {
                     elts[i] = FxChildPathElement.of(e.textValue());
                 } else {
-                    throw new IllegalArgumentException("expected jsonpath array containing 'int'(index) or 'string' fieldname, got " + e.getNodeType());    
+                    throw new IllegalArgumentException("expected jsonpath array containing 'int'(index) or 'string' fieldname, got " + e.getNodeType());
                 }
             }
             return FxNodePath.of(elts);
@@ -496,7 +496,7 @@ public final class FxNodeValueUtils {
                 FxNode parentCountNode = array.get(0);
                 parentCount = nodeToInt(parentCountNode);
             }
-            FxChildPathElement[] elts = new FxChildPathElement[len-1];            
+            FxChildPathElement[] elts = new FxChildPathElement[len-1];
             for(int i = 1; i < len; i++) {
                 FxNode e = array.get(i);
                 if (e.isNumber()) {
@@ -505,7 +505,7 @@ public final class FxNodeValueUtils {
                 } else if (e.isTextual()) {
                     elts[i] = FxChildPathElement.of(e.textValue());
                 } else {
-                    throw new IllegalArgumentException("expected jsonpath array containing 'int'(index) or 'string' fieldname, got " + e.getNodeType());    
+                    throw new IllegalArgumentException("expected jsonpath array containing 'int'(index) or 'string' fieldname, got " + e.getNodeType());
                 }
             }
             FxNodePath remainPath = FxNodePath.of(elts);
@@ -518,15 +518,15 @@ public final class FxNodeValueUtils {
         }
     }
 
-    
-    // TODO .. should be more customizable... currently use equality based on 'id' field for object...  
+
+    // TODO .. should be more customizable... currently use equality based on 'id' field for object...
     public static Object tryExtractId(FxNode src) {
         if (src.isObject()) {
             FxObjNode obj = (FxObjNode) src;
             FxNode idValue = obj.get("id");
             if (idValue != null) {
                 if (idValue.isTextual()) {
-                    return idValue.textValue(); 
+                    return idValue.textValue();
                 } else if (idValue.isNumber()) {
                     return idValue.intValue();
                 }

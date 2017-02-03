@@ -15,7 +15,7 @@ public class FxNodePathParserUtilsTest {
         Assert.assertEquals(FxNodePath.of("a", "b"), FxNodePathParserUtils.parse(".a.b"));
         Assert.assertEquals(FxNodePath.of(123, -12), FxNodePathParserUtils.parse("[123][-12]"));
     }
-    
+
     @Test
     public void testParseOuterPath() {
         FxNodeOuterPath res;
@@ -39,5 +39,5 @@ public class FxNodePathParserUtilsTest {
         Assert.assertEquals(12, res.getParentCount());
         Assert.assertEquals(0, res.getThenPath().size());
     }
-    
+
 }

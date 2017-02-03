@@ -8,15 +8,15 @@ import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxTextNode;
 
 /**
- * helper recursive node copier with name-value substitution 
- * for <PRE>#{name}</PRE>, and <PRE>#{name:..jqExpr..}</PRE> 
+ * helper recursive node copier with name-value substitution
+ * for <PRE>#{name}</PRE>, and <PRE>#{name:..jqExpr..}</PRE>
  */
 public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
 
     private final Map<String, FxNode> varNodeReplacements;
 
     // ------------------------------------------------------------------------
-    
+
     public FxReplaceNodeCopyVisitor(Map<String, FxNode> varReplacements) {
         this.varNodeReplacements = varReplacements;
     }
@@ -25,9 +25,9 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
         FxReplaceNodeCopyVisitor copyVisitor = new FxReplaceNodeCopyVisitor(varReplacements);
         template.accept(copyVisitor, dest);
     }
-    
+
     // ------------------------------------------------------------------------
-    
+
     @Override
     public FxNode visitTextValue(FxTextNode src, FxChildWriter out) {
         final String text = src.textValue();
@@ -49,12 +49,12 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
             if (foundVarRepl != null) {
             	return foundVarRepl.accept(this, out);
             }
-            
+
             if (-1 == text.indexOf("#{", replStart+2)) {
             	// TODO detected "#{ .... }" => replace by expr
             }
         }
-        
+
         StringBuilder sb = new StringBuilder();
         int prevPos = 0;
         int currPos = 0;
@@ -66,7 +66,7 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
             }
             sb.append(text, prevPos, nextExprIndex);
             prevPos = nextExprIndex;
-        
+
             // detect "#{varName" ...  until '.', '[', ':' or '}')
             int nextExprVarIndex = nextCharNotVar(text, nextExprIndex+2);
             final String varName = text.substring(nextExprIndex+2, nextExprVarIndex);
@@ -91,7 +91,7 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
                 		sb.append(text, currPos, textLen);
                 		break;
                 	}
-                	
+
                 	if (nextCh == ':') {
         	        	// detected jq expression  "#{varName:  ..jq-expr..}"
                 		String jqExpr = text.substring(nextExprVarIndex+1, closeBraceIndex);
@@ -136,10 +136,10 @@ public class FxReplaceNodeCopyVisitor extends FxNodeCopyVisitor {
         label_replVarEnd: for(; replVarEnd < textLen; replVarEnd++) {
         	char ch = text.charAt(replVarEnd);
         	switch(ch) {
-        	case '}': case '.': case '[' : case ':': 
+        	case '}': case '.': case '[' : case ':':
         		break label_replVarEnd;
         	default:
-        	}        	
+        	}
         }
 		return replVarEnd;
 	}

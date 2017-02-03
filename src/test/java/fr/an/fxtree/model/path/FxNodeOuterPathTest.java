@@ -30,5 +30,5 @@ public class FxNodeOuterPathTest {
             // Post-check
             Assert.assertSame(c2Obj, res);
         }
-    
+
 }

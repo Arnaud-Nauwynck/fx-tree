@@ -27,17 +27,17 @@ import fr.an.fxtree.model.FxObjNode;
 public class FxJsonUtilsTest {
 
     public static FxMemRootDocument getJsonTstFile(String fileName) {
-        FxMemRootDocument doc = new FxMemRootDocument(); 
+        FxMemRootDocument doc = new FxMemRootDocument();
         File inFile = new File("src/test/data/json/" + fileName);
         // Perform
         FxJsonUtils.readTree(doc.contentWriter(), inFile);
         return doc;
     }
-    
+
     @Test
     public void testReadTree() throws Exception {
         // Prepare
-        FxMemRootDocument doc = new FxMemRootDocument(); 
+        FxMemRootDocument doc = new FxMemRootDocument();
         File inFile = new File("src/test/data/json/file1.json");
         // Perform
         FxJsonUtils.readTree(doc.contentWriter(), inFile);
@@ -50,9 +50,9 @@ public class FxJsonUtilsTest {
         JsonNode origTree = jacksonOM.readTree(contentStr);
         Assert.assertTrue(reReadTree.equals(origTree));
         Assert.assertEquals(contentStr, origTree.toString());
-        
-        
-        FxObjNode r = (FxObjNode) content; 
+
+
+        FxObjNode r = (FxObjNode) content;
         Assert.assertEquals(true, FxNodeValueUtils.nodeToBoolean(r.get("fieldBoolTrue")));
         Assert.assertEquals(false, FxNodeValueUtils.nodeToBoolean(r.get("fieldBoolfalse")));
         Assert.assertEquals(1, FxNodeValueUtils.nodeToInt(r.get("fieldInt")));
@@ -65,7 +65,7 @@ public class FxJsonUtilsTest {
         Assert.assertEquals(2, FxNodeValueUtils.nodeToInt(rFieldObj.get("b")));
         FxObjNode rFieldObjObj = FxNodeValueUtils.nodeToObj(rFieldObj.get("fieldObjObj"));
         Assert.assertNotNull(rFieldObjObj);
-        Assert.assertEquals(1, FxNodeValueUtils.nodeToInt(rFieldObjObj.get("c")));        
+        Assert.assertEquals(1, FxNodeValueUtils.nodeToInt(rFieldObjObj.get("c")));
         FxArrayNode rFieldArray = FxNodeValueUtils.nodeToArray(r.get("fieldArray"));
         Assert.assertEquals(3, rFieldArray.size());
         Assert.assertEquals(true, FxNodeValueUtils.nodeToBoolean(rFieldArray.get(0)));
@@ -77,14 +77,14 @@ public class FxJsonUtilsTest {
         Assert.assertEquals(0, emptyObj.size());
         Assert.assertEquals("", FxNodeValueUtils.nodeToString(r.get("emptyString")));
     }
-    
+
     protected static class FooObj {
         private String foo;
         private int bar;
-        
+
         public FooObj() {
         }
-        
+
         public FooObj(String foo, int bar) {
             this.foo = foo;
             this.bar = bar;
@@ -102,9 +102,9 @@ public class FxJsonUtilsTest {
         public void setBar(int bar) {
             this.bar = bar;
         }
-        
+
     }
-    
+
     @Test
     public void testValueToTree() {
         // Prepare
@@ -115,7 +115,7 @@ public class FxJsonUtilsTest {
         // Post-check
         Assert.assertEquals("{\"foo\":\"foo\",\"bar\":123}", res.toString());
     }
-    
+
     @Test
     public void testValueToTree_return() {
         // Prepare
@@ -125,7 +125,7 @@ public class FxJsonUtilsTest {
         // Post-check
         Assert.assertEquals("{\"foo\":\"foo\",\"bar\":123}", res.toString());
     }
-    
+
     @Test
     public void testTreeToValue() {
         // Prepare
@@ -167,16 +167,16 @@ public class FxJsonUtilsTest {
         FxNode res1 = FxJsonUtils.readTree(forceReadByteOneByOneInputStream);
         Assert.assertTrue(res1.isObject());
     }
-    
+
     protected static final boolean DEBUG_wrapParser = false;
-    
-    @Test 
+
+    @Test
     public void testCreatePartialParser() throws IOException {
         // Prepare
         InputStream bufferIn = new ByteArrayInputStream("{id:1} {id:2}".getBytes());
         Reader inReader = new InputStreamReader(bufferIn);
         if (DEBUG_wrapParser) inReader = wrapDebugReader(inReader);
-        
+
         Supplier<FxNode> parserSupplier = FxJsonUtils.createPartialParser(inReader);
         // Perform
         FxNode res0 = parserSupplier.get();
@@ -189,13 +189,13 @@ public class FxJsonUtilsTest {
         inReader.close();
     }
 
-    @Test 
+    @Test
     public void testCreatePartialParser_any() throws IOException {
      // Prepare
         InputStream bufferIn = new ByteArrayInputStream("{id:1} [1,2] true 1234 12.45 \"text\"".getBytes());
         Reader inReader = new InputStreamReader(bufferIn);
         if (DEBUG_wrapParser) inReader = wrapDebugReader(inReader);
-        
+
         Supplier<FxNode> parserSupplier = FxJsonUtils.createPartialParser(inReader);
         { // Perform
             FxNode res0 = parserSupplier.get();
@@ -232,8 +232,8 @@ public class FxJsonUtilsTest {
         }
         inReader.close();
     }
-        
-    @Test 
+
+    @Test
     public void testCreatePartialParser_mixed() throws IOException {
         // Prepare
         InputStream bufferIn = new ByteArrayInputStream("..some text obj1={id:1}!..other text obj2={id:2} ..other".getBytes());
@@ -260,7 +260,8 @@ public class FxJsonUtilsTest {
     private Reader wrapDebugReader(Reader delegate) {
         return new Reader() {
             int count;
-            public void close() throws IOException {
+            @Override
+			public void close() throws IOException {
                 delegate.close();
             }
             @Override
@@ -303,13 +304,13 @@ public class FxJsonUtilsTest {
                 if (resChar == '!') {
                     debug_noop();
                 }
-                System.out.println("read: " + (char) resChar);
+                System.out.println("read: " + resChar);
                 if (count == 6) {
                     debug_noop();
                 }
             }
             private void debug_noop() {
-            }            
+            }
         };
     }
 

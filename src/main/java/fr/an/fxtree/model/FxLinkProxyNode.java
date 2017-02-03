@@ -9,9 +9,9 @@ public abstract class FxLinkProxyNode extends FxTransparentProxyNode {
     public FxLinkProxyNode(FxContainerNode parent, FxChildId childId) {
         super(parent, childId);
     }
-    
+
     // ------------------------------------------------------------------------
-    
+
     @Override
     public void accept(FxTreeVisitor visitor) {
         visitor.visitLink(this);
@@ -26,9 +26,9 @@ public abstract class FxLinkProxyNode extends FxTransparentProxyNode {
     public FxNodeType getNodeType() {
         return FxNodeType.LINK;
     }
-    
+
     public abstract FxNodeOuterPath getTargetRelativePath();
 
     public abstract void setTargetRelativePath(FxNodeOuterPath p);
-    
+
 }

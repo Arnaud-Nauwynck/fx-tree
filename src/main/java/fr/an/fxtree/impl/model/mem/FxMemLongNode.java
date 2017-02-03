@@ -6,24 +6,26 @@ import fr.an.fxtree.model.FxLongNode;
 public class FxMemLongNode extends FxLongNode {
 
     private long value;
-    
+
     // ------------------------------------------------------------------------
-    
+
     protected FxMemLongNode(FxContainerNode parent, FxMemChildId childId, long value) {
         super(parent, childId);
         this.value = value;
     }
 
     // ------------------------------------------------------------------------
-    
-    public long getValue() {
+
+    @Override
+	public long getValue() {
         return value;
     }
 
-    public void setValue(long value) {
+    @Override
+	public void setValue(long value) {
         this.value = value;
     }
 
     // ------------------------------------------------------------------------
-        
+
 }

@@ -8,25 +8,25 @@ import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFunc;
 
 public class FxThrowFunc extends FxNodeFunc {
-        
+
     public static final String NAME = "throw";
-    
+
     // ------------------------------------------------------------------------
 
     public static final FxThrowFunc INSTANCE = new FxThrowFunc();
-    
+
     private FxThrowFunc() {
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         String message = FxNodeValueUtils.getStringOrThrow(srcObj, "message");
 
         throw new FxThrowFuncException(message);
-        
+
     }
 
     public static class FxThrowFuncException extends RuntimeException {
@@ -37,6 +37,6 @@ public class FxThrowFunc extends FxNodeFunc {
         public FxThrowFuncException(String message) {
             super(message);
         }
-        
+
     }
 }

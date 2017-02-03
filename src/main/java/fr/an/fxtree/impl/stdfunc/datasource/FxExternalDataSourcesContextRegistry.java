@@ -11,9 +11,9 @@ import fr.an.fxtree.model.func.FxEvalContext;
 public class FxExternalDataSourcesContextRegistry {
 
     protected static final String EXT_SOURCES_CONTEXT = "ext-sources-context";
-    
+
     protected Map<String,FxExternalDataSource> extDataSources = new HashMap<>();
-    
+
     // ------------------------------------------------------------------------
 
     public FxExternalDataSourcesContextRegistry() {
@@ -22,7 +22,7 @@ public class FxExternalDataSourcesContextRegistry {
     public static FxExternalDataSourcesContextRegistry getSourcesRegistryCtx(FxEvalContext ctx) {
         return (FxExternalDataSourcesContextRegistry) ctx.lookupVariable(EXT_SOURCES_CONTEXT);
     }
-    
+
     public static void putSourcesRegistryCtx(FxEvalContext ctx, FxExternalDataSourcesContextRegistry value) {
         ctx.putVariable(EXT_SOURCES_CONTEXT, value);
     }
@@ -36,12 +36,12 @@ public class FxExternalDataSourcesContextRegistry {
         return res;
     }
 
-    
+
     public static void putExtDataSourceById(FxEvalContext ctx, String sourceId, FxExternalDataSource dataSource) {
         FxExternalDataSourcesContextRegistry registry = getOrCreateSourcesRegistryCtx(ctx);
         registry.put(sourceId, dataSource);
     }
-    
+
     public static FxExternalDataSource getExtDataSourceById(FxEvalContext ctx, String sourceId) {
         FxExternalDataSourcesContextRegistry extSourcesCtx = getSourcesRegistryCtx(ctx);
         if (extSourcesCtx == null) {
@@ -59,7 +59,7 @@ public class FxExternalDataSourcesContextRegistry {
     public FxExternalDataSource get(String sourceId) {
         return extDataSources.get(sourceId);
     }
-    
+
     public void put(String sourceId, FxExternalDataSource source) {
         extDataSources.put(sourceId, source);
     }

@@ -7,10 +7,10 @@ public class FxEvalContext {
 
     private FxEvalContext parentContext;
 
-    private Map<Object,Object> variables = new HashMap<Object,Object>();
+    private Map<Object,Object> variables = new HashMap<>();
 
     private FxNodeFuncRegistry funcRegistry;
-    
+
     // ------------------------------------------------------------------------
 
     public FxEvalContext(FxEvalContext parentContext, FxNodeFuncRegistry funcRegistry) {
@@ -19,7 +19,7 @@ public class FxEvalContext {
     }
 
     // ------------------------------------------------------------------------
-    
+
     public FxEvalContext createChildContext() {
         return new FxEvalContext(this, funcRegistry);
     }
@@ -33,13 +33,13 @@ public class FxEvalContext {
                 res = parentContext.lookupVariable(key);
             }
         }
-        return res;        
+        return res;
     }
-    
+
     public Object getVariableOverride(Object key) {
         return variables.get(key);
     }
-    
+
     public void putVariable(Object key, Object value) {
         variables.put(key, value);
     }

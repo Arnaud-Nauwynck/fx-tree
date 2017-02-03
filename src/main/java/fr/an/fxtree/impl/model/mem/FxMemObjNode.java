@@ -15,15 +15,15 @@ import fr.an.fxtree.model.FxObjNode;
 public class FxMemObjNode extends FxObjNode {
 
     private Map<String,FxNode> _children = new LinkedHashMap<>();
-    
+
     // ------------------------------------------------------------------------
-    
+
     protected FxMemObjNode(FxContainerNode parent, FxMemChildId childId) {
         super(parent, childId);
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public int size() {
         return _children.size();
@@ -44,15 +44,17 @@ public class FxMemObjNode extends FxObjNode {
         return _children.entrySet().iterator();
     }
 
-    public Map<String, FxNode> fieldsHashMapCopy() {
+    @Override
+	public Map<String, FxNode> fieldsHashMapCopy() {
         return new LinkedHashMap<>(_children);
     }
-    
-    @SuppressWarnings("unchecked")
+
+    @Override
+	@SuppressWarnings("unchecked")
     public <T extends FxNode> T get(String name) {
         return (T) _children.get(name);
     }
-    
+
     @Override
     public <T extends FxNode> T put(String name, Class<T> clss) {
         T res = getNodeFactory().newNode(clss);
@@ -66,7 +68,7 @@ public class FxMemObjNode extends FxObjNode {
         node._setParent(this, new FxMemObjNameChildId(name));
         return node;
     }
-    
+
     @Override
     public void remove(FxNode child) {
         if (child.getParent() != this) throw new IllegalArgumentException();
@@ -80,21 +82,21 @@ public class FxMemObjNode extends FxObjNode {
         FxMemObjNameChildId objChildId = (FxMemObjNameChildId) childId;
         return doRemove(objChildId.getName());
     }
-    
+
     @Override
     public FxNode remove(String name) {
         return doRemove(name);
     }
-    
+
     @Override
     public void removeAll() {
-        List<FxNode> removeChildren = new ArrayList<FxNode>(_children.values());
+        List<FxNode> removeChildren = new ArrayList<>(_children.values());
         _children.clear();
         for (FxNode child : removeChildren) {
             child._setParent(null, null);
         }
     }
-    
+
     protected FxNode doRemove(String name) {
         FxNode res = _children.remove(name);
         if (res != null) {
@@ -102,5 +104,5 @@ public class FxMemObjNode extends FxObjNode {
         }
         return res;
     }
-    
+
 }

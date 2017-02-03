@@ -10,27 +10,27 @@ import fr.an.fxtree.model.path.FxNodePath;
 
 public abstract class FxTreePathSet {
 
-    
+
     public boolean match(FxNodePath path) {
         return match(path, 0);
     }
-    
+
     public abstract boolean match(FxNodePath path, int fromIndex);
-    
+
 //    public abstract List<FxTreePathSet> subselect(FxNodePath path);
 
     // ------------------------------------------------------------------------
 
     /**
-     * FxTreePathSet for matching FxRootNode element, then delegate <code>content</code> match to FxTreePathSet 
+     * FxTreePathSet for matching FxRootNode element, then delegate <code>content</code> match to FxTreePathSet
      */
     public static class FxRootTreePathSet extends FxTreePathSet {
-        
+
         private FxTreePathSet contentMatch;
 
         public FxRootTreePathSet() {
         }
-        
+
         public FxRootTreePathSet(FxTreePathSet contentMatch) {
             this.contentMatch = contentMatch;
         }
@@ -40,7 +40,7 @@ public abstract class FxTreePathSet {
             if (fromIndex != 0) return false; // ??
             return path.size() == 0 || (path.size() == 1 && path.get(0) == FxChildPathElement.thisRoot());
         }
-        
+
         public FxTreePathSet getContentMatch() {
             return contentMatch;
         }
@@ -48,16 +48,16 @@ public abstract class FxTreePathSet {
         public void setContentMatch(FxTreePathSet contentMatch) {
             this.contentMatch = contentMatch;
         }
-        
+
     }
-    
+
     // ------------------------------------------------------------------------
 
     /**
-     * FxTreePathSet for matching FxObjNode element, then delegate <code>field</code> match to FxTreePathSet 
+     * FxTreePathSet for matching FxObjNode element, then delegate <code>field</code> match to FxTreePathSet
      */
     public static class FxObjTreePathSet extends FxTreePathSet {
-        
+
         private Map<String,FxTreePathSet> fieldMatches;
         private FxTreePathSet otherFieldMatch;
 
@@ -91,7 +91,7 @@ public abstract class FxTreePathSet {
             boolean res = fieldMatch.match(path, fromIndex+1);
             return res;
         }
-        
+
         public Map<String, FxTreePathSet> getFieldMatches() {
             return fieldMatches;
         }
@@ -120,17 +120,17 @@ public abstract class FxTreePathSet {
         public String toString() {
             return "FxObjTreePathSet [fields=" + fieldMatches.keySet() + "]";
         }
-        
+
     }
-    
+
 
     // ------------------------------------------------------------------------
 
     /**
-     * FxTreePathSet for matching FxArrayNode element, then delegate <code>elements</code> match to FxTreePathSet 
+     * FxTreePathSet for matching FxArrayNode element, then delegate <code>elements</code> match to FxTreePathSet
      */
     public static class FxArrayTreePathSet extends FxTreePathSet {
-        
+
         private Map<Integer,FxTreePathSet> elementMatch;
         private FxTreePathSet otherElementMatch;
 
@@ -164,7 +164,7 @@ public abstract class FxTreePathSet {
             boolean res = indexMatch.match(path, fromIndex+1);
             return res;
         }
-        
+
         public Map<Integer, FxTreePathSet> getElementMatch() {
             return elementMatch;
         }
@@ -193,7 +193,7 @@ public abstract class FxTreePathSet {
         public String toString() {
             return "FxArrayTreePathSet [elements=" + elementMatch.keySet() + "]";
         }
-        
+
     }
-    
+
 }

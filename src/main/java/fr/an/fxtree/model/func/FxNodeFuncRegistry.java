@@ -7,21 +7,21 @@ public class FxNodeFuncRegistry {
 
     private FxNodeFuncRegistry parent;
     private Map<String,FxNodeFunc> funcs;
-    
+
     // ------------------------------------------------------------------------
 
     public FxNodeFuncRegistry(Map<String,FxNodeFunc> funcs) {
         this(null, funcs);
     }
-    
+
     public FxNodeFuncRegistry(FxNodeFuncRegistry parent, Map<String,FxNodeFunc> funcs) {
         this.parent = parent;
-        this.funcs = funcs; 
+        this.funcs = funcs;
     }
 
     public FxNodeFuncRegistry(FxNodeFuncRegistry parent, FxNodeFuncRegistry funcRegistry) {
         this.parent = parent;
-        this.funcs = (funcRegistry != null)? new HashMap<String,FxNodeFunc>(funcRegistry.funcs) : new HashMap<>();
+        this.funcs = (funcRegistry != null)? new HashMap<>(funcRegistry.funcs) : new HashMap<>();
     }
 
     // ------------------------------------------------------------------------
@@ -41,7 +41,7 @@ public class FxNodeFuncRegistry {
         }
         return res;
     }
-    
+
     public static FxNodeFunc lookupFunction(String name, FxNodeFuncRegistry reg, FxNodeFuncRegistry parent) {
         FxNodeFunc res = null;
         if (reg != null) {
@@ -52,5 +52,5 @@ public class FxNodeFuncRegistry {
         }
         return res;
     }
-    
+
 }

@@ -18,31 +18,31 @@ import net.thisptr.jackson.jq.exception.JsonQueryException;
 public class FxJqFunc extends FxNodeFunc {
 
     public static final String NAME = "jq";
-    
+
     // ------------------------------------------------------------------------
 
     public static final FxJqFunc INSTANCE = new FxJqFunc();
-    
+
     private FxJqFunc() {
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         String expr = FxCurrEvalCtxUtil.recurseEvalToString(ctx, srcObj.get("expr"));
         FxNode in = FxCurrEvalCtxUtil.recurseEval(ctx, srcObj.get("in"));
         boolean single = FxCurrEvalCtxUtil.recurseEvalToBooleanOrDefault(ctx, srcObj.get("single"), false);
-        
+
         JsonQuery jsonQuery;
         try {
             jsonQuery = JsonQuery.compile(expr);
         } catch(JsonQueryException ex) {
             throw new RuntimeException("Failed to parse json query '" + expr + "'", ex);
         }
-        
-        
+
+
         JsonNode inNode = Fx2JacksonUtils.fxTreeToJsonNode(in);
         List<JsonNode> tmpres;
         try {
@@ -50,7 +50,7 @@ public class FxJqFunc extends FxNodeFunc {
         } catch(JsonQueryException ex) {
             throw new RuntimeException("Failed to apply json query '" + expr + "' to input ..", ex);
         }
-        
+
         if (!single) {
             FxArrayNode resArray = dest.addArray();
             FxChildWriter resArrayWriter = resArray.insertBuilder();
@@ -64,10 +64,10 @@ public class FxJqFunc extends FxNodeFunc {
             } else {
                 // empty?
             }
-            
+
         }
     }
-    
+
 
 	public static String evalJqExprAsText(String jqExpr, FxNode inputValue) {
 		JsonQuery jsonQuery;
@@ -76,9 +76,9 @@ public class FxJqFunc extends FxNodeFunc {
         } catch(JsonQueryException ex) {
             throw new RuntimeException("Failed to parse jq expr '" + jqExpr + "'", ex);
         }
-        
+
         JsonNode inNode = Fx2JacksonUtils.fxTreeToJsonNode(inputValue);
-        
+
         List<JsonNode> tmpres;
         try {
         	// *** eval JQ expr (on json) ***
@@ -86,7 +86,7 @@ public class FxJqFunc extends FxNodeFunc {
         } catch(JsonQueryException ex) {
             throw new RuntimeException("Failed to apply JQ query '" + jqExpr + "' to input ..", ex);
         }
-        
+
         // expecting single result
         if (tmpres.size() == 1) {
         	FxNode output = Fx2JacksonUtils.jsonNodeToFxTree(new FxMemRootDocument().contentWriter(), tmpres.get(0));

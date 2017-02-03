@@ -13,19 +13,19 @@ import fr.an.fxtree.model.FxPOJONode;
 
 /**
  * Store helper for pending jobs, using File (Yaml/Json) storage
- * 
+ *
  */
 public class FxPendingJobsFileStoreHelper {
-    
+
     public static final String FIELD_startTime = "startTime";
     public static final String FIELD_pendingData = "pendingData";
-    
+
     private final Object lock = new Object();
-    
+
     private Set<String> pendings = new HashSet<>();
 
     private FxKeyNodeFileStore pendingJobsStore;
-    
+
     // ------------------------------------------------------------------------
 
     public FxPendingJobsFileStoreHelper(FxKeyNodeFileStore pendingJobsStore) {
@@ -53,7 +53,7 @@ public class FxPendingJobsFileStoreHelper {
             lock.notifyAll();
         }
     }
-    
+
     public void waitPending(String jobId) {
         synchronized(lock) {
             while(pendings.contains(jobId)) {
@@ -76,15 +76,15 @@ public class FxPendingJobsFileStoreHelper {
         public final String id;
         public final Date startTime;
         public final FxNode pendingData;
-        
+
         public PendingEntry(String id, Date startTime, FxNode pendingData) {
             this.id = id;
             this.startTime = startTime;
             this.pendingData = pendingData;
         }
-        
+
     }
-    
+
     public PendingEntry getPendingValueCopyOrNull(String jobId) {
         synchronized(lock) {
             FxObjNode tmpres = (FxObjNode) pendingJobsStore.getCopy(jobId);
@@ -96,7 +96,7 @@ public class FxPendingJobsFileStoreHelper {
             return new PendingEntry(jobId, startTime, pendingData);
         }
     }
-    
+
     public List<String> listPendings() {
         synchronized(lock) {
             return new ArrayList<>(pendings);
@@ -110,30 +110,30 @@ public class FxPendingJobsFileStoreHelper {
                 FxObjNode pendingNode = new FxMemRootDocument().setContentObj();
                 pendingNode.putPOJO(FIELD_startTime, pending.startTime);
                 FxNodeCopyVisitor.copyTo(pendingNode.putBuilder(FIELD_pendingData), newValue);
-                
+
                 pendingJobsStore.updatePutIfPresent(jobId, pendingNode);
             } // else.. should not occur
         }
     }
 
     // ------------------------------------------------------------------------
-    
+
     protected PendingEntry doWriteAddPendingJobNode(String jobId, FxNode src) {
         FxObjNode pendingNode = new FxMemRootDocument().setContentObj();
         Date startTime = new Date();
         pendingNode.putPOJO(FIELD_startTime, startTime);
         FxNodeCopyVisitor.copyTo(pendingNode.putBuilder(FIELD_pendingData), src);
-        
+
         pendingJobsStore.put(jobId, pendingNode);
         return new PendingEntry(jobId, startTime, src);
     }
-    
+
     protected void doWriteRemovePendingJobNode(String jobId) {
         pendingJobsStore.remove(jobId);
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -144,5 +144,5 @@ public class FxPendingJobsFileStoreHelper {
         sb.append("]");
         return sb.toString();
     }
-    
+
 }

@@ -32,7 +32,7 @@ public final class FxJsonUtils {
 
     private FxJsonUtils() {
     }
-    
+
     private static ObjectMapper jacksonObjectMapper = new ObjectMapper();
     static {
         jacksonObjectMapper.enable(Feature.ALLOW_UNQUOTED_FIELD_NAMES);
@@ -40,10 +40,10 @@ public final class FxJsonUtils {
         jacksonObjectMapper.enable(Feature.ALLOW_UNQUOTED_CONTROL_CHARS);
 
         // jacksonObjectMapper.enable(DeserializationFeature.);
-        
+
         jacksonObjectMapper.enable(SerializationFeature.INDENT_OUTPUT);
     }
-    
+
     public static FxNode readTree(InputStream in) {
         FxMemRootDocument doc = new FxMemRootDocument();
         readTree(doc.contentWriter(), in);
@@ -55,7 +55,7 @@ public final class FxJsonUtils {
         readTree(doc.contentWriter(), in);
         return doc.getContent();
     }
-    
+
     public static FxNode readTree(FxChildWriter dest, InputStream in) {
         JsonNode jacksonNode;
         try {
@@ -86,7 +86,7 @@ public final class FxJsonUtils {
             throw new RuntimeException("Failed to write as json", ex);
         }
     }
-    
+
     public static void writeTree(File dest, FxNode tree) {
         JsonNode jacksonTree = Fx2JacksonUtils.fxTreeToJsonNode(tree);
         try {
@@ -99,18 +99,18 @@ public final class FxJsonUtils {
             throw new RuntimeException("Failed to write as json to file '" + dest + "'", ex);
         }
     }
-    
+
     public static FxNode jsonTextToTree(String jsonText) {
         FxMemRootDocument doc = new FxMemRootDocument();
         jsonTextToTree(doc.contentWriter(), jsonText);
         return doc.getContent();
     }
-    
+
     public static FxNode jsonTextToTree(FxChildWriter dest, String jsonText) {
-        ByteArrayInputStream in = new ByteArrayInputStream(jsonText.getBytes()); 
+        ByteArrayInputStream in = new ByteArrayInputStream(jsonText.getBytes());
         return readTree(dest, in);
     }
-    
+
     public static String treeToJsonText(FxNode tree) {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try {
@@ -123,18 +123,18 @@ public final class FxJsonUtils {
 
     // converter for POJO <-> FxNode, using Jackson valueToTree()/treeToValue() then json<->FxTree
     // ------------------------------------------------------------------------
-    
+
     public static FxNode valueToTree(Object value) {
         FxMemRootDocument doc = new FxMemRootDocument();
         valueToTree(doc.contentWriter(), value);
         return doc.getContent();
     }
-    
+
     public static FxNode valueToTree(FxChildWriter dest, Object value) {
         JsonNode jsonNode = jacksonObjectMapper.valueToTree(value);
         return Fx2JacksonUtils.jsonNodeToFxTree(dest, jsonNode);
     }
-    
+
     public static <T> T treeToValue(Class<T> destClass, FxNode tree) {
         JsonNode jsonNode = Fx2JacksonUtils.fxTreeToJsonNode(tree);
         try {
@@ -143,7 +143,7 @@ public final class FxJsonUtils {
             throw new RuntimeException("Failed to convert tree to value (using jackson ObjectMapper)", ex);
         }
     }
-    
+
     // ------------------------------------------------------------------------
 
     /**
@@ -151,7 +151,7 @@ public final class FxJsonUtils {
      * @return parser (as supplier<FxNode) for parsing next chars until a FxNode is detected
      */
     public static Supplier<FxNode> createPartialParser(Reader reader) {
-        // force wrapping reader as one-by-one char Reader, to avoid read buffering 0...8000 so consuming too much chars! 
+        // force wrapping reader as one-by-one char Reader, to avoid read buffering 0...8000 so consuming too much chars!
         Reader inReader = wrapForceReadOneByOneCharReader(reader);
         JsonParser parser;
         try {
@@ -175,10 +175,11 @@ public final class FxJsonUtils {
         };
         return res;
     }
-    
+
     private static Reader wrapForceReadOneByOneCharReader(Reader delegate) {
         return new Reader() {
-            public void close() throws IOException {
+            @Override
+			public void close() throws IOException {
                 // do nothing!
             }
             @Override
@@ -196,7 +197,7 @@ public final class FxJsonUtils {
             public int read() throws IOException {
                 return delegate.read();
             }
-        };            
+        };
     }
 
 }

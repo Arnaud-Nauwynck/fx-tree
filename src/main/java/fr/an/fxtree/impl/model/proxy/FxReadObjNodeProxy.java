@@ -33,7 +33,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     protected boolean allowGetParent;
 
     // ------------------------------------------------------------------------
-    
+
     public FxReadObjNodeProxy(FxContainerNode proxyParent, boolean allowGetParent, FxObjNode delegate) {
         super(proxyParent, null);
         this.allowGetParent = allowGetParent;
@@ -47,7 +47,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
         if (node == null) return null;
         return FxReadProxyNodeWrappers.wrapROProxy(this, allowGetParent, node);
     }
-    
+
     protected RuntimeException throwWriteDenied() {
         throw FxReadProxyNodeWrappers.throwWriteDenied();
     }
@@ -55,7 +55,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
 
     @Override
     public FxContainerNode getParent() {
-        if (!allowGetParent) FxReadProxyNodeWrappers.throwGetParentDenied(); 
+        if (!allowGetParent) FxReadProxyNodeWrappers.throwGetParentDenied();
         return super.getParent();
     }
 
@@ -69,7 +69,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     public FxNodeType getNodeType() {
         return delegate.getNodeType();
     }
-    
+
     @Override
     public int size() {
         return delegate.size();
@@ -79,7 +79,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     public boolean isEmpty() {
         return delegate.isEmpty();
     }
-        
+
     // @Override
     public Collection<FxNode> children() {
         List<FxNode> res = new ArrayList<>(delegate.size());
@@ -108,18 +108,18 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
             public void remove() {
                 throw throwWriteDenied();
             }
-            
+
         };
     }
 
     // specific for FxObjNode implements/override
     // ------------------------------------------------------------------------
-    
+
     @Override
     public Iterator<Map.Entry<String, FxNode>> fields() {
         Iterator<Map.Entry<String, FxNode>> delegateIterator = delegate.fields();
         return new Iterator<Map.Entry<String, FxNode>>() {
-            LigthweightMapEntry<String,FxNode> reusableMapEntry = new LigthweightMapEntry<String,FxNode>(null, null);
+            LigthweightMapEntry<String,FxNode> reusableMapEntry = new LigthweightMapEntry<>(null, null);
 
             @Override
             public boolean hasNext() {
@@ -140,7 +140,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
             public void remove() {
                 throw throwWriteDenied();
             }
-            
+
         };
     }
 
@@ -264,10 +264,10 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public String toString() {
         return "FxReadObjNodeProxy [delegate=" + delegate + "]";
     }
-    
+
 }

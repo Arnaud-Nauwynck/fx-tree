@@ -1,7 +1,7 @@
 package fr.an.fxtree.model;
 
 /**
- * 
+ *
  */
 public abstract class FxTransparentProxyNode extends FxNode {
 
@@ -10,5 +10,5 @@ public abstract class FxTransparentProxyNode extends FxNode {
     }
 
     public abstract FxNode getTargetNode();
-    
+
 }

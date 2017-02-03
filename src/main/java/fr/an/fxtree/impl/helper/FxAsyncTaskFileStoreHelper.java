@@ -15,44 +15,44 @@ import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 
 /**
- * helper class to store asynchronous tasks results by ids in key-value store,<br/> 
+ * helper class to store asynchronous tasks results by ids in key-value store,<br/>
  * and reload previous result instead of re-evaluating/relaunching task.
- * 
+ *
  * <p>
  * typical scenario:
  * <PRE>
  *                        +----------------------------+
- *    --- eval task1  --> + FxAsyncTaskFileStoreHelper |   ---> Launch Task1 thread/polling thread          
+ *    --- eval task1  --> + FxAsyncTaskFileStoreHelper |   ---> Launch Task1 thread/polling thread
  *                        +----------------------------+
  *       <-- immediate return --
- *          { taskId:.., status: "running", 
- *            startTime:.. 
+ *          { taskId:.., status: "running",
+ *            startTime:..
  *          }
- *           
+ *
  *    ... long after ...
- *                                                     <--- ... finished task1 
+ *                                                     <--- ... finished task1
  *                                                          store  task1 result = {..}
- *    
- *    --- (re)eval task1 -->          
+ *
+ *    --- (re)eval task1 -->
  *      <-- { taskId:.., status:"finished"/"failed",
  *            startTime:.., endTime:..
  *            result: { .. }
  *          }
- *              
+ *
  * </PRE>
- * 
+ *
  *  thread-safety: thread-safe, protected by <code>lock</code> + <code>pendings</code>
  */
 public class FxAsyncTaskFileStoreHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(FxAsyncTaskFileStoreHelper.class);
-    
+
     public static enum TaskStatus {
         RUNNING, FINISHED, FAILED
     }
-    
-    public static class AsyncTaskData {        
-        
+
+    public static class AsyncTaskData {
+
         protected String taskId;
         protected TaskStatus status;
         protected Date startTime;
@@ -60,7 +60,7 @@ public class FxAsyncTaskFileStoreHelper {
         protected FxNode result;
         protected FxNode errorDetails;
         protected FxNode updateDetails;
-        
+
         public String getTaskId() {
             return taskId;
         }
@@ -108,16 +108,16 @@ public class FxAsyncTaskFileStoreHelper {
             return "AsyncTaskData [taskId=" + taskId + ", status=" + status + ", startTime=" + startTime + ", endTime=" + endTime + ", result="
                 + result + ", errorDetails=" + errorDetails + ", updateDetails=" + updateDetails + "]";
         }
-        
-        
+
+
     }
-    
+
     private Object lock = new Object();
-    
+
     private FxKeyNodeFileStore taskResultStore;
-    
+
     private FxPendingJobsFileStoreHelper pendingTaskStore;
-    
+
     // ------------------------------------------------------------------------
 
     public FxAsyncTaskFileStoreHelper(FxKeyNodeFileStore taskResultStore, FxPendingJobsFileStoreHelper pendingTaskStore) {
@@ -131,9 +131,9 @@ public class FxAsyncTaskFileStoreHelper {
     public List<String> getPendingTaskIds() {
         return pendingTaskStore.listPendings();
     }
-    
+
     public List<AsyncTaskData> getPendingTasks() {
-        List<AsyncTaskData> res = new ArrayList<>(); 
+        List<AsyncTaskData> res = new ArrayList<>();
         List<String> ids = pendingTaskStore.listPendings();
         for(String id : ids) {
             PendingEntry pendingTask = pendingTaskStore.getPendingValueCopyOrNull(id);
@@ -158,18 +158,18 @@ public class FxAsyncTaskFileStoreHelper {
         }
         return res;
     }
-    
+
     public static interface FxAsyncTaskCallback {
         public void onTaskUpdate(FxNode resultNode);
         public void onTaskFinishedOK(FxNode resultNode);
         public void onTaskFinishedError(FxNode resultNode, FxNode errorDetails);
    }
-    
+
     @FunctionalInterface
     public static interface FxAsyncTaskLauncher {
         public void launchTask(FxAsyncTaskCallback callback);
     }
-    
+
     public AsyncTaskData reloadResultOrLaunchTask(String taskId, FxAsyncTaskLauncher taskLauncher) {
         AsyncTaskData res;
         synchronized (lock) {
@@ -182,21 +182,21 @@ public class FxAsyncTaskFileStoreHelper {
                     taskData.setStartTime(new Date());
                     taskData.setStatus(TaskStatus.RUNNING);
                     FxNode taskDataNode = taskDataToTree(taskData);
-                    
+
                     // insert immediate.. in case launched task return immediatly
                     pendingTask = pendingTaskStore.addPending(taskId, taskDataNode);
-                    
+
                     InnerAsyncTaskCallback callback = new InnerAsyncTaskCallback(taskId);
-                    
+
                     // *** launch new async task ***
                     taskLauncher.launchTask(callback);
                 }
-                
+
                 PendingEntry pendingTask2 = pendingTaskStore.getPendingValueCopyOrNull(taskId);
                 FxNode taskResultNode2;
                 if (pendingTask2 != null) {
                     taskResultNode2 = pendingTask2.pendingData;
-                } else { 
+                } else {
                     // immediatly finished
                     taskResultNode2 = taskResultStore.getCopy(taskId);
                 }
@@ -212,8 +212,8 @@ public class FxAsyncTaskFileStoreHelper {
     public FxAsyncTaskCallback onRestartServerCreateFxStoreCallackFor(String taskId) {
         return new InnerAsyncTaskCallback(taskId);
     }
-    
-    
+
+
     /**
      * inner callback for updating pendingTask / task result
      */
@@ -224,22 +224,24 @@ public class FxAsyncTaskFileStoreHelper {
             this.taskId = taskId;
         }
 
-        public void onTaskUpdate(FxNode resultNode) {
+        @Override
+		public void onTaskUpdate(FxNode resultNode) {
             synchronized (lock) {
                 PendingEntry pendingTask = pendingTaskStore.getPendingValueCopyOrNull(taskId);
                 if (pendingTask == null) {
                     return; // should not occur?
                 }
-                
+
                 AsyncTaskData taskData = treeToTaskData(pendingTask.pendingData);
                 taskData.result = resultNode;
                 FxNode taskDataNode = taskDataToTree(taskData);
-                
+
                 pendingTaskStore.updatePending(taskId, taskDataNode);
             }
         }
-        
-        public void onTaskFinishedOK(FxNode result) {
+
+        @Override
+		public void onTaskFinishedOK(FxNode result) {
             synchronized (lock) {
                 PendingEntry pendingTask = pendingTaskStore.getPendingValueCopyOrNull(taskId);
                 if (pendingTask == null) {
@@ -251,15 +253,16 @@ public class FxAsyncTaskFileStoreHelper {
                 taskData.setStatus(TaskStatus.FINISHED);
                 taskData.setResult(result);
                 FxNode taskDataNode = taskDataToTree(taskData);
-                
+
                 taskResultStore.put(taskId, taskDataNode);
                 if (pendingTask != null) {
                     pendingTaskStore.removePending(taskId);
                 }
             }
         }
-        
-        public void onTaskFinishedError(FxNode result, FxNode errorDetails) {
+
+        @Override
+		public void onTaskFinishedError(FxNode result, FxNode errorDetails) {
             synchronized (lock) {
                 PendingEntry pendingTask = pendingTaskStore.getPendingValueCopyOrNull(taskId);
                 if (pendingTask == null) {
@@ -280,12 +283,12 @@ public class FxAsyncTaskFileStoreHelper {
             }
         }
     }
-    
+
     protected AsyncTaskData treeToTaskData(FxNode src) {
         // return FxJsonUtils.treeToValue(AsyncTaskData.class, src); .. error No serializer found for class fr.an.fxtree.impl.model.mem.FxMemNodeFactory..
         AsyncTaskData res = new AsyncTaskData();
         FxObjNode src2 = (FxObjNode) src;
-        FxObjValueHelper srcH = new FxObjValueHelper (src2); 
+        FxObjValueHelper srcH = new FxObjValueHelper (src2);
         res.setTaskId(srcH.getString("taskId"));
         res.setStatus(TaskStatus.valueOf(srcH.getString("status")));
         res.setStartTime(srcH.getDateAsLongOrNull("startTime"));
@@ -295,7 +298,7 @@ public class FxAsyncTaskFileStoreHelper {
         res.setUpdateDetails(FxNodeCopyVisitor.cloneMemNode(src2.get("updateDetails")));
         return res;
     }
-    
+
     protected FxNode taskDataToTree(AsyncTaskData src) {
         // return FxJsonUtils.valueToTree(src);
         FxObjNode res = new FxMemRootDocument().setContentObj();
@@ -308,17 +311,17 @@ public class FxAsyncTaskFileStoreHelper {
             res.put("endTime", src.getEndTime().getTime());
         }
         if (src.getResult() != null) {
-            FxNodeCopyVisitor.copyTo(res.putBuilder("result"), src.getResult()); 
+            FxNodeCopyVisitor.copyTo(res.putBuilder("result"), src.getResult());
         }
         if (src.getErrorDetails() != null) {
-            FxNodeCopyVisitor.copyTo(res.putBuilder("errorDetails"), src.getErrorDetails()); 
+            FxNodeCopyVisitor.copyTo(res.putBuilder("errorDetails"), src.getErrorDetails());
         }
         if (src.getUpdateDetails() != null) {
-            FxNodeCopyVisitor.copyTo(res.putBuilder("updateDetails"), src.getUpdateDetails()); 
+            FxNodeCopyVisitor.copyTo(res.putBuilder("updateDetails"), src.getUpdateDetails());
         }
         return res;
     }
-    
+
     protected AsyncTaskData pendingToTaskData(PendingEntry src) {
         if (src == null) {
             return null;

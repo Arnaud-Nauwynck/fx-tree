@@ -11,11 +11,11 @@ import fr.an.fxtree.model.path.FxNodeOuterPath;
 public class FxMemLinkProxyNode extends FxLinkProxyNode {
 
     protected FxNodeOuterPath targetRelativePath;
-    
+
     protected FxNode targetNode;
-    
+
     // ------------------------------------------------------------------------
-    
+
     public FxMemLinkProxyNode(FxContainerNode parent, FxChildId childId) {
         super(parent, childId);
     }
@@ -26,12 +26,14 @@ public class FxMemLinkProxyNode extends FxLinkProxyNode {
     }
 
     // ------------------------------------------------------------------------
-    
-    public FxNodeOuterPath getTargetRelativePath() {
+
+    @Override
+	public FxNodeOuterPath getTargetRelativePath() {
         return targetRelativePath;
     }
 
-    public void setTargetRelativePath(FxNodeOuterPath p) {
+    @Override
+	public void setTargetRelativePath(FxNodeOuterPath p) {
         if (this.targetRelativePath == p) {
             return;
         }
@@ -43,7 +45,7 @@ public class FxMemLinkProxyNode extends FxLinkProxyNode {
     public FxNode getTargetNode() {
         return targetNode;
     }
-   
+
     public void setResolveTargetNodeFromStack(List<FxNode> stack) {
         if (targetNode == null) {
             targetNode = targetRelativePath.selectFromStack(stack);
@@ -54,5 +56,5 @@ public class FxMemLinkProxyNode extends FxLinkProxyNode {
     public String asText() {
         return "Link:" + targetRelativePath;
     }
-    
+
 }

@@ -13,23 +13,23 @@ public class FxReaderUtilsTest {
     public void testSkipWs() throws IOException {
         PushbackReader reader = new PushbackReader(new StringReader("  param1=foo"));
         FxReaderUtils.skipWs(reader);
-        Assert.assertEquals((int) 'p', reader.read());
+        Assert.assertEquals('p', reader.read());
     }
-    
+
     @Test
     public void testReadUntil() throws IOException {
         StringReader reader = new StringReader("param1=foo param2=bar");
         String res = FxReaderUtils.readUntil(reader, '=', true);
         Assert.assertEquals("param1=", res);
     }
-    
+
     @Test
     public void testReadUntil_exclude() throws IOException {
         StringReader reader = new StringReader("param1=foo param2=bar");
         String res = FxReaderUtils.readUntil(reader, '=', false);
         Assert.assertEquals("param1", res);
     }
-    
+
     @Test
     public void testReadExpected() throws IOException {
         PushbackReader reader = new PushbackReader(new StringReader("abcd"));
@@ -41,7 +41,7 @@ public class FxReaderUtilsTest {
             Assert.assertEquals("expecting read 'cZ', got 'cd'...", ex.getMessage());
         }
     }
-    
+
     @Test
     public void testReadIdentifier() throws IOException {
         PushbackReader reader = new PushbackReader(new StringReader("abcd_12=12"));
@@ -49,5 +49,5 @@ public class FxReaderUtilsTest {
         Assert.assertEquals("abcd_12", name);
         FxReaderUtils.readExpected(reader, "=");
     }
-    
+
 }

@@ -18,7 +18,7 @@ public class FxNodePathParserUtils {
 
     public static FxNodePath parse(String text, int pos) {
         List<FxChildPathElement> elts = new ArrayList<>();
-        final int textLen = text.length(); 
+        final int textLen = text.length();
         for(; pos < textLen; ) {
             char ch = text.charAt(pos);
             // read next token
@@ -29,12 +29,12 @@ public class FxNodePathParserUtils {
                 if (nextCloseBracket == -1) {
                     throw throwUnexpectedTextAt(text, pos, "[index]");
                 }
-                String indexStr = text.substring(pos, nextCloseBracket); 
+                String indexStr = text.substring(pos, nextCloseBracket);
                 int arrayIndex = Integer.parseInt(indexStr);
                 elts.add(FxChildPathElement.of(arrayIndex));
                 pos = nextCloseBracket+1;
             } else if (ch == '.') {
-                String fieldName; 
+                String fieldName;
                 ch = text.charAt(++pos);
                 if (ch == '"') {
                     // read escape string...
@@ -67,12 +67,12 @@ public class FxNodePathParserUtils {
             } else {
                 throw throwUnexpectedTextAt(text, pos, "'[index]', '.field' or '$.' ..");
             }
-        }        
+        }
         return FxNodePath.of(elts);
     }
-    
+
     protected static RuntimeException throwUnexpectedTextAt(String text, int pos, String expected) {
-        throw new IllegalArgumentException("unparsable jsonpath '" + text + "'" 
+        throw new IllegalArgumentException("unparsable jsonpath '" + text + "'"
                 + ", at position " + pos + " got '" + text.charAt(pos) + "' expecting " + expected);
     }
 
@@ -82,11 +82,11 @@ public class FxNodePathParserUtils {
             throw throwUnexpectedTextAt(text, pos, "'" + expectedChar + "'");
         }
     }
-    
+
     public static FxNodeOuterPath parseOuterPath(String text) {
         int pos = 0;
         int parentCount;
-        char ch = text.charAt(pos); 
+        char ch = text.charAt(pos);
         final int textLength = text.length();
         if (ch == '^') {
             if (pos+1 == textLength) {
@@ -110,5 +110,5 @@ public class FxNodePathParserUtils {
         FxNodePath remainPath = pos < textLength ? parse(text, pos) : FxNodePath.ofEmpty();
         return FxNodeOuterPath.of(parentCount, remainPath);
     }
-    
+
 }

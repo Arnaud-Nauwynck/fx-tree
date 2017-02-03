@@ -17,7 +17,7 @@ import fr.an.fxtree.model.func.FxNodeFuncRegistry;
 public class FxMemoizedFileStoreFuncHelperTest {
 
     protected FxMemoizedFileStoreFuncHelper sut;
-    
+
     @Before
     public void setup() {
         File dir = new File("target/test");
@@ -37,7 +37,7 @@ public class FxMemoizedFileStoreFuncHelperTest {
         FxPendingJobsFileStoreHelper pendingJobsHelper = new FxPendingJobsFileStoreHelper(pendingStore);
         sut = new FxMemoizedFileStoreFuncHelper(memoizedStore, pendingJobsHelper);
     }
-    
+
     @Test
     public void testEvalSaveOrReloadResult() {
         // Prepare
@@ -45,22 +45,22 @@ public class FxMemoizedFileStoreFuncHelperTest {
         FxEvalContext ctx = new FxEvalContext(null, funcRegistry);
         FxMemRootDocument doc = new FxMemRootDocument();
         FxChildWriter writer = doc.contentWriter();
-        
+
         FxRandomIntFunc randomFunc = FxRandomIntFunc.INSTANCE;
         FxNode src = null; // useless, null supported in randomFunc
-        
+
         // Perform
         sut.evalSaveOrReloadResult("key1", randomFunc, writer, ctx, src);
         // Post-check
         FxNode res0 = doc.getContent();
-        
+
         // Perform - reeval
         sut.evalSaveOrReloadResult("key1", randomFunc, writer, ctx, src);
         // Post-check
         FxNode res1 = doc.getContent();
-        
+
         FxNodeAssert.assertEquals(res0, res1);
-        
+
         randomFunc.eval(writer, ctx, src);
         FxNode res2 = doc.getContent();
         // can be equals... with epsilon probability..
@@ -70,11 +70,11 @@ public class FxMemoizedFileStoreFuncHelperTest {
             randomFunc.eval(writer, ctx, src);
             res2 = doc.getContent();
             res2Int = res2.asInt();
-            
+
             if (res1Int == res2Int) {
                 System.out.println("should not occur!");
             }
         }
-        
+
     }
 }

@@ -9,15 +9,15 @@ import fr.an.fxtree.model.func.FxEvalContext;
 
 public class FxJavaMethodInvokeFuncTest {
 
-    protected static FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper(); 
+    protected static FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper();
 
     @Test
     public void testEvalInvoke() {
         tstHelper.doTestFile("evalInvoke");
     }
-    
+
     public static void testMethod_bool_char_int_long_float_double_dest_node_ctx(
-            boolean boolValue, char charValue, int intValue, long longValue, 
+            boolean boolValue, char charValue, int intValue, long longValue,
             float floatValue, double doubleValue,
             FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode destObj = dest.addObj();
@@ -30,5 +30,5 @@ public class FxJavaMethodInvokeFuncTest {
         destObj.put("ctx-IsSet?", ctx!=null);
         destObj.put("src-IsSet?", src!=null);
     }
-    
+
 }

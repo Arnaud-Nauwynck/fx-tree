@@ -76,17 +76,17 @@ public abstract class FxIntNode extends FxValueNode {
 
     @Override
     public long longValue() {
-        return (long) getValue();
+        return getValue();
     }
 
     @Override
     public float floatValue() {
-        return (float) getValue();
+        return getValue();
     }
 
     @Override
     public double doubleValue() {
-        return (double) getValue();
+        return getValue();
     }
 
     @Override
@@ -109,16 +109,17 @@ public abstract class FxIntNode extends FxValueNode {
         return getValue() != 0;
     }
 
-    public final int asInt() {
+    @Override
+	public final int asInt() {
         return intValue();
     }
-    
+
     @Override
     public final int asInt(int defaultValue) {
         return intValue();
     }
 
-    
+
     // ------------------------------------------------------------------------
 
     @Override

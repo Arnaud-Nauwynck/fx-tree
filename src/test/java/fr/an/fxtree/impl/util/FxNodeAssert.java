@@ -13,7 +13,7 @@ public class FxNodeAssert {
             System.out.println("expecting:" + expectedText);
             System.out.println("actual   :" + resString);
             // TODO ... pretty print as json
-            
+
             Assert.assertEquals(expectedText, resString);
         }
     }

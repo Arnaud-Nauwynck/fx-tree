@@ -19,18 +19,18 @@ import fr.an.fxtree.model.FxObjNode;
 
 /**
  * helper class to store node by (flat) keys in file
- * 
+ *
  *  thread-safety: thread-safe, protected by <code>lock</code>
  */
 public class FxKeyNodeFileStore {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(FxKeyNodeFileStore.class);
-    
+
     private Object lock = new Object();
-    
+
     private File storeFile;
     private FxObjNode contentObj;
-    
+
     // ------------------------------------------------------------------------
 
     public FxKeyNodeFileStore(File storeFile) {
@@ -63,7 +63,7 @@ public class FxKeyNodeFileStore {
             return res;
         }
     }
-    
+
     public boolean containsKey(String key) {
         synchronized (lock) {
             FxNode tmpres = contentObj.get(key);
@@ -77,7 +77,7 @@ public class FxKeyNodeFileStore {
             return contentObj.get(key);
         }
     }
-    
+
     public FxNode getCopy(String key) {
         synchronized (lock) {
             FxNode tmpres = contentObj.get(key);
@@ -123,7 +123,7 @@ public class FxKeyNodeFileStore {
     public void updatePutIfPresent(String key, FxNode nodeToCopy) {
         synchronized (lock) {
             FxNode prev = contentObj.remove(key);
-            if (prev != null) {                
+            if (prev != null) {
                 FxChildWriter writer = contentObj.putBuilder(key);
                 FxNodeCopyVisitor.copyTo(writer, nodeToCopy);
                 flushWrite(key);
@@ -148,15 +148,15 @@ public class FxKeyNodeFileStore {
             FxFileUtils.writeTree(storeFile, contentObj);
         } catch(Exception ex) {
             LOG.warn("Failed to write keyNodeStore to file '" + storeFile + "' (value for key '" + key + "' may be lost on stop/restart) ... ignore, no rethrow", ex);
-        }        
+        }
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public String toString() {
         return "FxKeyNodeFileStore [storeFile=" + storeFile + "]";
     }
 
-    
+
 }

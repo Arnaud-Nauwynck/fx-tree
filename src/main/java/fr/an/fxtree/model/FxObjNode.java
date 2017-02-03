@@ -59,7 +59,7 @@ public abstract class FxObjNode extends FxContainerNode {
     public static interface FieldFunc {
         public void onField(String fieldName, FxNode fieldValue);
     }
-    
+
     public void forEachFields(FieldFunc callback) {
         if (!isEmpty()) {
             for(Iterator<Map.Entry<String, FxNode>> iter = fields(); iter.hasNext(); ) {
@@ -210,7 +210,7 @@ public abstract class FxObjNode extends FxContainerNode {
 
     // internal
     // ------------------------------------------------------------------------
-    
+
     protected static void appendQuoted(StringBuilder sb, String content) {
         sb.append('"');
         CharTypes.appendQuoted(sb, content);
@@ -219,12 +219,12 @@ public abstract class FxObjNode extends FxContainerNode {
 
 
     public static final class ObjChildWriter extends FxChildWriter {
-        
+
         private FxObjNode dest;
         private String baseName;
         private boolean useIncrSuffix;
         private int currIndex;
-        
+
         public ObjChildWriter(FxObjNode dest, String name, boolean useIncrSuffix) {
             this.dest = dest;
             this.baseName = name;
@@ -240,7 +240,7 @@ public abstract class FxObjNode extends FxContainerNode {
                 return res;
             }
         }
-        
+
         private String currChildName() {
             if (!useIncrSuffix) {
                 return baseName;
@@ -248,7 +248,7 @@ public abstract class FxObjNode extends FxContainerNode {
                 return (currIndex == 0)? baseName : baseName + currIndex;
             }
         }
-        
+
         @Override
         public void remove() {
             dest.remove(currChildName());
@@ -258,12 +258,12 @@ public abstract class FxObjNode extends FxContainerNode {
         public FxNode getResultChild() {
             return dest.get(currChildName());
         }
-        
+
         @Override
         public boolean canAddMoveFrom(FxRootDocument otherParentSrc) {
             return dest.getNodeFactory() == otherParentSrc.getNodeFactory();
         }
-        
+
         @Override
         public FxNode addMoveFrom(FxRootDocument otherParentSrc) {
             FxNode contentSrc = otherParentSrc.getContent();
@@ -271,7 +271,7 @@ public abstract class FxObjNode extends FxContainerNode {
             dest.onPut(incrName(), contentSrc);
             return contentSrc;
         }
-        
+
         @Override
         public FxArrayNode addArray() {
             return dest.putArray(incrName());
@@ -337,5 +337,5 @@ public abstract class FxObjNode extends FxContainerNode {
             return dest.putNull(incrName());
         }
     }
-    
+
 }

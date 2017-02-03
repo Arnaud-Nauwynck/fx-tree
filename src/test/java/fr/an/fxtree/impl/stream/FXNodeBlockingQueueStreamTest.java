@@ -17,9 +17,9 @@ import fr.an.fxtree.model.stream.FxNodeOutStream;
 
 public class FXNodeBlockingQueueStreamTest {
 
-    protected static int TEST_QUEUE_SIZE = 10; 
+    protected static int TEST_QUEUE_SIZE = 10;
     protected FXNodeBlockingQueueStream sut = new FXNodeBlockingQueueStream(TEST_QUEUE_SIZE);
-    
+
     @Test
     public void testGetInput_GetOutput_nonBlocking() {
         // Prepare
@@ -74,5 +74,5 @@ public class FXNodeBlockingQueueStreamTest {
         executor.awaitTermination(0, TimeUnit.SECONDS);
         executor.shutdown();
     }
-    
+
 }

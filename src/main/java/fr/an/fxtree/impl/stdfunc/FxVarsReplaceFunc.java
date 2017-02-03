@@ -11,18 +11,18 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 public class FxVarsReplaceFunc extends FxNodeFunc {
 
     protected FxReplaceNodeCopyVisitor replaceCopyVisitor;
-    
+
     // ------------------------------------------------------------------------
-    
+
     public FxVarsReplaceFunc(Map<String, FxNode> varReplacements) {
         replaceCopyVisitor = new FxReplaceNodeCopyVisitor(varReplacements);
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        src.accept(replaceCopyVisitor, dest); 
+        src.accept(replaceCopyVisitor, dest);
     }
-    
+
 }

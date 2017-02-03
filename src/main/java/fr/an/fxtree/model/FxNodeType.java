@@ -1,10 +1,10 @@
 package fr.an.fxtree.model;
 
 public enum FxNodeType {
-    
+
     OBJECT,
     ARRAY,
-    
+
     STRING,
     NUMBER,
     BOOLEAN,
@@ -14,7 +14,7 @@ public enum FxNodeType {
     MISSING,
 
     LINK,
-    
+
     ROOT
 
 }

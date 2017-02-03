@@ -39,7 +39,8 @@ public abstract class FxArrayNode extends FxContainerNode {
 
     public abstract Collection<FxNode> children();
 
-    public abstract Iterator<FxNode> childIterator();
+    @Override
+	public abstract Iterator<FxNode> childIterator();
 
     public abstract <T extends FxNode> T insert(int index, Class<T> clss);
 
@@ -75,7 +76,7 @@ public abstract class FxArrayNode extends FxContainerNode {
     public FxChildWriter insertBuilder() {
         return new InnerArrayChildWriter(0);
     }
-    
+
     public FxArrayNode insertArray(int index) {
         FxArrayNode res = getNodeFactory().newArray();
         return onInsert(index, res);
@@ -192,9 +193,9 @@ public abstract class FxArrayNode extends FxContainerNode {
     public FxNullNode addNull() {
         return insertNull(size());
     }
-    
+
     // ------------------------------------------------------------------------
-    
+
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -235,13 +236,13 @@ public abstract class FxArrayNode extends FxContainerNode {
         sb.append(']');
         return sb.toString();
     }
-    
+
     // internal
     // ------------------------------------------------------------------------
 
     private final class InnerArrayChildWriter extends FxChildWriter {
         private int currIndex;
-        
+
         public InnerArrayChildWriter(int index) {
             this.currIndex = index;
         }
@@ -249,22 +250,22 @@ public abstract class FxArrayNode extends FxContainerNode {
         protected int incrIndex() {
             return currIndex++;
         }
-        
+
         @Override
         public void remove() {
             FxArrayNode.this.remove(currIndex);
         }
-        
+
         @Override
         public FxNode getResultChild() {
             return FxArrayNode.this.get(currIndex-1);
         }
-        
+
         @Override
         public boolean canAddMoveFrom(FxRootDocument otherParentSrc) {
             return getNodeFactory() == otherParentSrc.getNodeFactory();
         }
-        
+
         @Override
         public FxNode addMoveFrom(FxRootDocument otherParentSrc) {
             FxNode contentSrc = otherParentSrc.getContent();
@@ -327,7 +328,7 @@ public abstract class FxArrayNode extends FxContainerNode {
         public FxPOJONode addPOJO(Object value) {
             return insertPOJO(incrIndex(), value);
         }
-        
+
         @Override
         public FxLinkProxyNode addLink(FxNodeOuterPath value) {
             return insertLink(incrIndex(), value);
@@ -338,5 +339,5 @@ public abstract class FxArrayNode extends FxContainerNode {
             return insertNull(incrIndex());
         }
     }
-    
+
 }

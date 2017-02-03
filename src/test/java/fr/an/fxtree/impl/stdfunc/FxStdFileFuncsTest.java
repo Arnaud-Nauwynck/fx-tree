@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class FxStdFileFuncsTest {
 
-    protected static FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper(); 
+    protected static FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper();
 
     @Test
     public void testEvalImportJSonFile() {

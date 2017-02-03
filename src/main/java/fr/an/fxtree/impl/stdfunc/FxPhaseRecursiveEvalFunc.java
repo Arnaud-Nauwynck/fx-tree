@@ -18,18 +18,18 @@ import fr.an.fxtree.model.func.FxNodeFuncRegistry;
  * clone a tree and evaluate recursively all functions for a given phase (~namespace)
  */
 public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
-    
+
     private String phase;
 
     private FxNodeFuncRegistry overrideFuncRegistry;
-    
+
     // ------------------------------------------------------------------------
-    
+
     public FxPhaseRecursiveEvalFunc(String phase, FxNodeFuncRegistry overrideFuncRegistry) {
         this.phase = phase;
         this.overrideFuncRegistry = overrideFuncRegistry;
     }
-    
+
     // ------------------------------------------------------------------------
 
     public static void evalPhases(FxChildWriter dest, List<String> phases, FxEvalContext ctx, FxNode src, FxNodeFuncRegistry funcRegistry) {
@@ -42,10 +42,10 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
             String phase = phases.get(i);
             FxMemRootDocument tmpResDoc = new FxMemRootDocument();
             FxChildWriter tmpResAdder = tmpResDoc.contentWriter();
-            
+
             FxPhaseRecursiveEvalFunc phaseFunc = new FxPhaseRecursiveEvalFunc(phase, funcRegistry);
             phaseFunc.eval(tmpResAdder, ctx, currPhaseRes);
-            
+
             currPhaseRes = tmpResDoc.getContent();
         }
 
@@ -53,40 +53,40 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
         FxPhaseRecursiveEvalFunc lastPhaseFunc = new FxPhaseRecursiveEvalFunc(lastPhase, funcRegistry);
         lastPhaseFunc.eval(dest, ctx, currPhaseRes);
     }
-    
+
     public static FxNode evalPhase(String phase, FxEvalContext ctx, FxNode src, FxNodeFuncRegistry overrideFuncRegistry) {
         if (src == null) {
             return null;
         }
         FxMemRootDocument doc = new FxMemRootDocument();
         FxChildWriter docWriter = doc.contentWriter();
-        
+
         FxPhaseRecursiveEvalFunc phaseFunc = new FxPhaseRecursiveEvalFunc(phase, overrideFuncRegistry);
         phaseFunc.eval(docWriter, ctx, src);
-        
+
         return doc.getContent();
     }
-    
+
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         if (src == null) {
             return;
         }
-        FxEvalContext childCtx = FxCurrEvalCtxUtil.childEvalCtx(ctx, phase, this);        
-        src.accept(new InnerVisitor(childCtx), dest); 
+        FxEvalContext childCtx = FxCurrEvalCtxUtil.childEvalCtx(ctx, phase, this);
+        src.accept(new InnerVisitor(childCtx), dest);
     }
 
-    
+
     private class InnerVisitor extends FxNodeCopyVisitor {
         FxEvalContext ctx;
-        
+
         public InnerVisitor(FxEvalContext ctx) {
             this.ctx = ctx;
         }
 
         /**
          * detect JSon object that are Meta object for fx evaluation
-         * 
+         *
          * proposed syntax:
          * <PRE>
          *    {
@@ -101,18 +101,18 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
         public FxNode visitObj(FxObjNode src, FxChildWriter destNode) {
             FxNode fxEvalFieldValue = src.get(FxConsts.FX_EVAL);
             if (fxEvalFieldValue == null) {
-                return super.visitObj(src, destNode); 
+                return super.visitObj(src, destNode);
             }
-            
+
             String fxEvalExprText = fxEvalFieldValue.textValue();
             // detect if expression text start with "<<namespace>>:" otherwise ignore it
-            if (fxEvalExprText == null 
-                    || ! (fxEvalExprText.startsWith("#" + phase) 
-                            && fxEvalExprText.length() > phase.length()+2 
+            if (fxEvalExprText == null
+                    || ! (fxEvalExprText.startsWith("#" + phase)
+                            && fxEvalExprText.length() > phase.length()+2
                             && fxEvalExprText.charAt(phase.length() + 1) == ':')) {
                 return super.visitObj(src, destNode);
             }
-            
+
             FxNode fxCacheBindedExpr = src.get(FxConsts.FX_BINDED_EXPR);
             if (fxCacheBindedExpr != null && fxCacheBindedExpr.isPojo()) {
                 // already analysed + resolved... simply call it!
@@ -123,9 +123,9 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
                     return expr.eval(destNode);
                 }
             }
-            
+
             int optIndexOpenParenthesis = fxEvalExprText.indexOf('(', phase.length()+2);
-            String funcName = fxEvalExprText.substring(phase.length() + 2, 
+            String funcName = fxEvalExprText.substring(phase.length() + 2,
                 ((optIndexOpenParenthesis == -1)? fxEvalExprText.length() : optIndexOpenParenthesis));
             if (funcName.endsWith(" ")) {
                 funcName = funcName.trim();
@@ -135,17 +135,17 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
             if (func == null) {
                 throw new IllegalArgumentException("function '" + funcName+ "' not found");
             }
-            
-            
+
+
             // step 0... recursive eval function parameters !!!
             // TOADD use eager support for function
-            
+
             // *** step 1: eval current node function ***
             FxMemRootDocument tmpNonRecurseDoc = new FxMemRootDocument();
             FxChildWriter tmpNonRecurseWriter = tmpNonRecurseDoc.contentWriter();
-            
+
             func.eval(tmpNonRecurseWriter, ctx, src);
-            
+
             FxNode tmpres = tmpNonRecurseDoc.getContent();
             if (tmpres == null) {
                 return null;
@@ -153,13 +153,13 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
 
             // step 2: recurse eval same phase (other functions) on return result
             FxNode res = tmpres.accept(this, destNode);
-            
-//            // if no recurse function in "src"... could write directly to output  
+
+//            // if no recurse function in "src"... could write directly to output
 //            func.eval(destNode, ctx, src);
 //            FxNode res = destNode.getResultChild();
-            
+
             return res;
         }
-        
+
     }
 }

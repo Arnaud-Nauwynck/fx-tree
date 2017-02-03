@@ -7,7 +7,7 @@ import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.path.impl.FxNodePathParserUtils;
 
 /**
- * outer path are extended node path, starting by "^", "^1", ... "^n", then followed by a child path ".a.b[2]"  
+ * outer path are extended node path, starting by "^", "^1", ... "^n", then followed by a child path ".a.b[2]"
  */
 public final class FxNodeOuterPath {
 
@@ -15,7 +15,7 @@ public final class FxNodeOuterPath {
     private final FxNodePath thenPath;
 
     // ------------------------------------------------------------------------
-    
+
     public FxNodeOuterPath(int parentCount, FxNodePath thenPath) {
         if (parentCount < 0) throw new IllegalArgumentException();
         if (thenPath == null) throw new IllegalArgumentException();
@@ -32,7 +32,7 @@ public final class FxNodeOuterPath {
     }
 
     // ------------------------------------------------------------------------
-    
+
     public int getParentCount() {
         return parentCount;
     }
@@ -50,14 +50,14 @@ public final class FxNodeOuterPath {
         FxNode parentNode = currStackNode.get(currStackNode.size() - parentCount - 1);
         return thenPath.select(parentNode);
     }
-    
+
     public FxChildWriter selectInsertBuilderFromStack(List<FxNode> currStackNode) {
         FxNode parentNode = currStackNode.get(currStackNode.size() - parentCount - 1);
         return thenPath.selectInsertBuilder(parentNode);
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -70,5 +70,5 @@ public final class FxNodeOuterPath {
         thenPath.toString(sb);
         return sb.toString();
     }
-    
+
 }

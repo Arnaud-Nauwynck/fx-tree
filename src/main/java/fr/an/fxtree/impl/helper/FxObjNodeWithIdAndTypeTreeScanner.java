@@ -11,21 +11,21 @@ import fr.an.fxtree.model.FxObjNode;
  *
  */
 public class FxObjNodeWithIdAndTypeTreeScanner extends FxDefaultTreeVisitor {
-    
+
     @FunctionalInterface
     public static interface IdTypeObjPredicate {
          public boolean test(String id, String type, FxObjNode node);
     }
-    
+
     @FunctionalInterface
     public static interface IdTypeObjConsumer {
          public void accept(String id, String type, FxObjNode node);
     }
 
     private IdTypeObjConsumer consumer;
-    
+
     // ------------------------------------------------------------------------
-    
+
     public FxObjNodeWithIdAndTypeTreeScanner(IdTypeObjConsumer consumer) {
         this.consumer = consumer;
     }
@@ -33,11 +33,11 @@ public class FxObjNodeWithIdAndTypeTreeScanner extends FxDefaultTreeVisitor {
     public static void scanConsumeFxNodesWithIdTypeObj(FxNode tree, IdTypeObjConsumer consumer) {
         tree.accept(new FxObjNodeWithIdAndTypeTreeScanner(consumer));
     }
-    
+
     public static List<FxObjNode> scanFxNodesWithIdTypeObj(FxNode tree) {
         return scanFxNodesWithIdTypeObj(tree, null);
     }
-    
+
     public static List<FxObjNode> scanFxNodesWithIdTypeObj(FxNode tree, IdTypeObjPredicate idTypeObjPredicate) {
         List<FxObjNode> res = new ArrayList<>();
         FxObjNodeWithIdAndTypeTreeScanner visitor = new FxObjNodeWithIdAndTypeTreeScanner((id,t,n) -> {
@@ -48,7 +48,7 @@ public class FxObjNodeWithIdAndTypeTreeScanner extends FxDefaultTreeVisitor {
         tree.accept(visitor);
         return res;
     }
-    
+
     // ------------------------------------------------------------------------
 
     @Override

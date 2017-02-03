@@ -19,7 +19,7 @@ public final class Fx2SnakeYamlUtils {
 
     private Fx2SnakeYamlUtils() {
     }
-    
+
     public static FxNode readTree(FxChildWriter dest, InputStream in) {
         Yaml yaml = new Yaml();
         Object yamlObj = yaml.load(in);
@@ -47,19 +47,19 @@ public final class Fx2SnakeYamlUtils {
             yaml.dump(data, writer);
         }
     }
-    
-    // Conversion in-memory SnakeYaml (Map,List,Values...) -> FxNode 
+
+    // Conversion in-memory SnakeYaml (Map,List,Values...) -> FxNode
     // ------------------------------------------------------------------------
-    
+
     public static FxNode yamlObjToTree(FxChildWriter dest, Object srcObj) {
         return Fx2MemMapListUtils.valueToTree(dest, srcObj);
     }
 
-    // Conversion FxNode -> SnakeYaml (Map,List,Values...)  
+    // Conversion FxNode -> SnakeYaml (Map,List,Values...)
     // ------------------------------------------------------------------------
 
     public static Object buildSnakeYamlTree(FxNode src) {
         return Fx2MemMapListUtils.treeToValue(src);
     }
-    
+
 }

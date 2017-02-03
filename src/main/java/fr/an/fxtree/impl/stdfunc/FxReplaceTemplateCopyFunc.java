@@ -11,13 +11,13 @@ import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFunc;
 
 public class FxReplaceTemplateCopyFunc extends FxNodeFunc {
-    
+
     private FxNode template;
-    
+
     public FxReplaceTemplateCopyFunc(FxNode template) {
         this.template = template;
     }
-    
+
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;

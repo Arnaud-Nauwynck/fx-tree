@@ -10,7 +10,7 @@ import fr.an.fxtree.model.FxObjNode;
 public class FxDefaultStackTreeVisitor extends FxDefaultTreeVisitor {
 
     protected List<FxNode> currentNodeStack = new ArrayList<>();
-    
+
     // ------------------------------------------------------------------------
 
     public FxDefaultStackTreeVisitor() {
@@ -39,5 +39,5 @@ public class FxDefaultStackTreeVisitor extends FxDefaultTreeVisitor {
             currentNodeStack.remove(currentNodeStack.size()-1);
         }
     }
-    
+
 }

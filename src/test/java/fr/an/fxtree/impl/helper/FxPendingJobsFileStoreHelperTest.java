@@ -16,11 +16,11 @@ import fr.an.fxtree.impl.util.FxNodeAssert;
 import fr.an.fxtree.model.FxObjNode;
 
 public class FxPendingJobsFileStoreHelperTest {
-    
+
     protected FxPendingJobsFileStoreHelper sut;
     protected FxKeyNodeFileStore pendingStore;
-    
-    @Before 
+
+    @Before
     public void setup() {
         File dir = new File("target/test");
         if (! dir.exists()) {
@@ -30,38 +30,38 @@ public class FxPendingJobsFileStoreHelperTest {
         pendingStore = new FxKeyNodeFileStore(storeFile);
         sut = new FxPendingJobsFileStoreHelper(pendingStore);
     }
-    
+
     @Test
     public void testAddPending_remove_wait() throws InterruptedException {
         FxObjNode objNode = new FxMemRootDocument().setContentObj();
-        
+
         FxObjNode job1 = objNode.putObj("job1");
         job1.put("id", 123);
         sut.addPending("job1", job1);
-        
+
         Assert.assertTrue(sut.isPending("job1"));
         Assert.assertFalse(sut.isPending("unknown-job"));
-        
+
         List<String> pendings = sut.listPendings();
         Assert.assertEquals(ImmutableList.of("job1"), pendings);
-        
+
         PendingEntry job1Entry = sut.getPendingValueCopyOrNull("job1");
         Assert.assertEquals("job1", job1Entry.id);
         Assert.assertNotNull(job1Entry.startTime);
         FxNodeAssert.assertEquals(job1Entry.pendingData, job1);
-        
+
         FxPendingJobsFileStoreHelper sutReload = new FxPendingJobsFileStoreHelper(new FxKeyNodeFileStore(pendingStore.getStoreFile()));
         Assert.assertEquals(ImmutableList.of("job1"), sutReload.listPendings());
-        
-        AtomicBoolean finishWaitJob1 = new AtomicBoolean(false); 
+
+        AtomicBoolean finishWaitJob1 = new AtomicBoolean(false);
         new Thread(() -> {
             sut.waitPending("job1");
             finishWaitJob1.set(true);
         }).start();
-        
+
         sut.removePending("job1");
         Assert.assertFalse(sut.isPending("job1"));
-        
+
         Thread.sleep(10);
         if (!finishWaitJob1.get()) {
             Thread.sleep(20); // should not occur.. still wait few millis

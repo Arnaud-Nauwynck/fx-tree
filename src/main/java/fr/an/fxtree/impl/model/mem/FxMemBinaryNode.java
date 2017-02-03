@@ -8,21 +8,23 @@ import fr.an.fxtree.model.FxContainerNode;
 public class FxMemBinaryNode extends FxBinaryNode {
 
     private byte[] value;
-    
+
     // ------------------------------------------------------------------------
-    
+
     protected FxMemBinaryNode(FxContainerNode parent, FxMemChildId childId, byte[] value) {
         super(parent, childId);
         this.value = value;
     }
 
     // ------------------------------------------------------------------------
-    
-    public byte[] getValue() {
+
+    @Override
+	public byte[] getValue() {
         return value;
     }
 
-    public void setValue(byte[] value) {
+    @Override
+	public void setValue(byte[] value) {
         this.value = value;
     }
 
@@ -30,5 +32,5 @@ public class FxMemBinaryNode extends FxBinaryNode {
     public int hashCode() {
         return Arrays.hashCode(value);
     }
-    
+
 }

@@ -15,13 +15,13 @@ public class FxPhaseRecursiveEvalFuncTest {
     FxNodeFuncRegistry funcRegistry = FxStdFuncs.stdFuncRegistry();
     protected FxPhaseRecursiveEvalFunc sutPhase0 = new FxPhaseRecursiveEvalFunc("phase0", funcRegistry);
     protected FxPhaseRecursiveEvalFunc sutPhase1 = new FxPhaseRecursiveEvalFunc("phase1", funcRegistry);
-    
+
     protected FxMemRootDocument destPhase0 = new FxMemRootDocument();
     protected FxChildWriter outPhase0 = destPhase0.contentWriter();
 
     protected FxMemRootDocument destPhase1 = new FxMemRootDocument();
     protected FxChildWriter outPhase1 = destPhase1.contentWriter();
-    
+
     @Test
     public void testEval1() {
         doTestEvalFile("eval1");
@@ -31,7 +31,7 @@ public class FxPhaseRecursiveEvalFuncTest {
     public void testEval2() {
         doTestEvalFile("eval2");
     }
-    
+
     private void doTestEvalFile(String evalBaseFilename) {
         // Prepare
         String inputFilename = evalBaseFilename + "-input.json";
@@ -49,5 +49,5 @@ public class FxPhaseRecursiveEvalFuncTest {
         FxNode expected = FxJsonUtilsTest.getJsonTstFile(outputFilename).getContentObj();
         Assert.assertEquals(expected.toString(), resPhase1.toString());
     }
-    
+
 }

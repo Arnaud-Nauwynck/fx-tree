@@ -36,8 +36,8 @@ public final class Fx2MemMapListUtils {
     /** private to force all static */
     private Fx2MemMapListUtils() {
     }
-    
-    // Conversion in-memory Map,List,Values... -> FxNode 
+
+    // Conversion in-memory Map,List,Values... -> FxNode
     // ------------------------------------------------------------------------
 
     public static FxBoolNode valueToTree(boolean value) {
@@ -64,7 +64,7 @@ public final class Fx2MemMapListUtils {
         return (FxTextNode) doc.getContent();
     }
 
-    
+
     @SuppressWarnings("unchecked")
     public static FxNode valueToTree(FxChildWriter dest, Object srcObj) {
         FxNode res;
@@ -78,7 +78,7 @@ public final class Fx2MemMapListUtils {
             FxArrayNode destArray = dest.addArray();
             fillValuesToTree(destArray, (Collection<Object>)srcObj);
             res = destArray;
-            
+
         } else if (srcObj instanceof String) {
             res = dest.add((String) srcObj);
         } else if (srcObj instanceof Boolean) {
@@ -107,7 +107,7 @@ public final class Fx2MemMapListUtils {
             // fail-through (unrecognized type?) => use POJO ..
             res = dest.addPOJO(srcObj);
         }
-        
+
         return res;
     }
 
@@ -123,21 +123,21 @@ public final class Fx2MemMapListUtils {
         for(Map.Entry<Object,Object> e : src.entrySet()) {
             Object srcKey = e.getKey();
             Object srcValue = e.getValue();
-            
+
             String keyText;
             if (srcKey instanceof String) {
                 keyText = (String) srcKey;
             } else {
                 throw FxUtils.notImplYet();
             }
-            
+
             FxChildWriter destValueWriter = dest.putBuilder(keyText);
             // recurse
             valueToTree(destValueWriter, srcValue);
         }
     }
 
-    // Conversion FxNode -> in-memory Map,List,Values...  
+    // Conversion FxNode -> in-memory Map,List,Values...
     // ------------------------------------------------------------------------
 
     public static Object treeToValue(FxNode src) {
@@ -161,7 +161,7 @@ public final class Fx2MemMapListUtils {
         }
         return res;
     }
-        
+
     public static void fillArrayTreeToValues(Collection<Object> dest, FxArrayNode src) {
 //        if (! dest.isEmpty()) {
 //            dest.removeAll();
@@ -227,7 +227,7 @@ public final class Fx2MemMapListUtils {
             }
         }
     }
-    
+
     public static void fillObjTreeToKeyValues(Map<String,Object> dest, FxObjNode src) {
         for(Iterator<Entry<String, FxNode>> iter = src.fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();
@@ -289,7 +289,7 @@ public final class Fx2MemMapListUtils {
                 default:
                 throw new RuntimeException();
             }
-        }    
+        }
     }
 
 }

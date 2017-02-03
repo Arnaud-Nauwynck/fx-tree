@@ -13,13 +13,13 @@ import fr.an.fxtree.model.path.FxNodeOuterPath;
 public abstract class FxRootDocument extends FxContainerNode {
 
     private FxNodeFactoryRegistry nodeFactory;
-    
+
     private FxNode childContent;
-    
-    private Map<String,Object> extraParams = new HashMap<String,Object>();
-    
+
+    private Map<String,Object> extraParams = new HashMap<>();
+
     // ------------------------------------------------------------------------
-    
+
     protected FxRootDocument(FxNodeFactoryRegistry nodeFactory) {
         super(null, null);
         if (nodeFactory == null) throw new IllegalArgumentException();
@@ -31,7 +31,7 @@ public abstract class FxRootDocument extends FxContainerNode {
 
     @Override
     public FxNodeType getNodeType() {
-        return FxNodeType.ROOT; // cf also  (childContent==null)? FxNodeType.NULL : childContent.getNodeType()  
+        return FxNodeType.ROOT; // cf also  (childContent==null)? FxNodeType.NULL : childContent.getNodeType()
     }
 
     @Override
@@ -43,8 +43,9 @@ public abstract class FxRootDocument extends FxContainerNode {
     public <P,R> R accept(FxTreeVisitor2<P,R> visitor, P param) {
         return visitor.visitRoot(this, param);
     }
-    
-    public FxNodeFactoryRegistry getNodeFactory() {
+
+    @Override
+	public FxNodeFactoryRegistry getNodeFactory() {
         return nodeFactory;
     }
 
@@ -95,11 +96,11 @@ public abstract class FxRootDocument extends FxContainerNode {
         this.childContent = null;
         return res;
     }
-    
+
     public FxChildWriter contentWriter() {
         return new RootChildWriter();
     }
-    
+
     public FxObjNode setContentObj() {
         FxObjNode res = nodeFactory.newObj();
         setContent(res);
@@ -117,7 +118,7 @@ public abstract class FxRootDocument extends FxContainerNode {
         setContent(res);
         return res;
     }
-    
+
     public void setContent(FxNode node) {
         if (node == childContent) return;
         addContent(node);
@@ -133,7 +134,7 @@ public abstract class FxRootDocument extends FxContainerNode {
         }
         return node;
     }
-    
+
     public Object getExtraParam(String key) {
         return extraParams.get(key);
     }
@@ -146,7 +147,7 @@ public abstract class FxRootDocument extends FxContainerNode {
     // ------------------------------------------------------------------------
 
     private final class RootChildWriter extends FxChildWriter {
-        
+
         public RootChildWriter() {
         }
 
@@ -154,7 +155,7 @@ public abstract class FxRootDocument extends FxContainerNode {
         public void remove() {
             setContent(null);
         }
-        
+
         @Override
         public FxNode getResultChild() {
             return getContent();
@@ -164,7 +165,7 @@ public abstract class FxRootDocument extends FxContainerNode {
         public boolean canAddMoveFrom(FxRootDocument otherParentSrc) {
             return nodeFactory == otherParentSrc.nodeFactory;
         }
-        
+
         @Override
         public FxNode addMoveFrom(FxRootDocument otherParentSrc) {
             FxNode contentSrc = otherParentSrc.getContent();
@@ -172,7 +173,7 @@ public abstract class FxRootDocument extends FxContainerNode {
             addContent(contentSrc);
             return contentSrc;
         }
-        
+
         @Override
         public FxArrayNode addArray() {
             return setContentArray();

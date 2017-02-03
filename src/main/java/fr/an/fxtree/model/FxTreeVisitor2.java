@@ -5,9 +5,9 @@ public abstract class FxTreeVisitor2<P,R> {
     public abstract R visitRoot(FxRootDocument node, P param);
 
     public abstract R visitObj(FxObjNode node, P param);
-    
+
     public abstract R visitArray(FxArrayNode node, P param);
-    
+
     public abstract R visitTextValue(FxTextNode node, P param);
     public abstract R visitDoubleValue(FxDoubleNode node, P param);
     public abstract R visitIntValue(FxIntNode node, P param);

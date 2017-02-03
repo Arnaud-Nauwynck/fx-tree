@@ -18,7 +18,7 @@ import fr.an.fxtree.model.FxNode;
  * Yaml<->FxTree converter utility
  */
 public final class FxYamlUtils {
-    
+
     /** privat eto force all static */
     private FxYamlUtils() {
     }
@@ -48,16 +48,16 @@ public final class FxYamlUtils {
         yamlTextToTree(doc.contentWriter(), yamlText);
         return doc.getContent();
     }
-    
+
     public static FxNode yamlTextToTree(FxChildWriter dest, String yamlText) {
-        ByteArrayInputStream in = new ByteArrayInputStream(yamlText.getBytes()); 
+        ByteArrayInputStream in = new ByteArrayInputStream(yamlText.getBytes());
         return Fx2SnakeYamlUtils.readTree(dest, in);
     }
-    
+
     public static void writeTree(OutputStream dest, FxNode tree) throws IOException {
         Fx2SnakeYamlUtils.writeTree(dest, tree);
     }
-    
+
     public static String treeToYamlText(FxNode tree) {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         try {
@@ -67,7 +67,7 @@ public final class FxYamlUtils {
         }
         return bout.toString();
     }
-    
+
     public static void writeTree(File dest, FxNode tree) {
         try (OutputStream output = new BufferedOutputStream(new FileOutputStream(dest))) {
             writeTree(output, tree);

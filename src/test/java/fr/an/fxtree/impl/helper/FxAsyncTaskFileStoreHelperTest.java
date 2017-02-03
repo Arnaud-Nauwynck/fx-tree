@@ -21,7 +21,7 @@ import fr.an.fxtree.model.FxObjNode;
 public class FxAsyncTaskFileStoreHelperTest {
 
     protected FxAsyncTaskFileStoreHelper sut;
-    
+
     @Before
     public void setup() {
         File dir = new File("target/test");
@@ -41,7 +41,7 @@ public class FxAsyncTaskFileStoreHelperTest {
         FxPendingJobsFileStoreHelper pendingTaskStore = new FxPendingJobsFileStoreHelper(pendingJobsStore);
         sut = new FxAsyncTaskFileStoreHelper(taskResultStore, pendingTaskStore);
     }
-    
+
     @Test
     public void testReloadResultOrLaunchTask() {
         // Prepare
@@ -53,7 +53,7 @@ public class FxAsyncTaskFileStoreHelperTest {
             FxObjNode taskRes = new FxMemRootDocument().setContentObj();
             taskRes.put("taskTmpData", taskData);
             callback.onTaskUpdate(taskRes);
-            
+
             threadExecutor.execute(() -> runSlowTask(callback, taskData, finishFlag, launchCount));
         };
         // Perform
@@ -80,7 +80,7 @@ public class FxAsyncTaskFileStoreHelperTest {
         System.out.println("res0:" + res0);
         System.out.println("res1:" + res1);
         System.out.println("res2:" + res2);
-        // => 
+        // =>
         //res0:{"startTime":Tue Apr 05 01:02:52 CEST 2016,"status":"running","result":{"taskTmpData":123}}
         //res1:{"startTime":Tue Apr 05 01:02:52 CEST 2016,"status":"running","result":{"taskTmpData":123}}
         //res2:{"startTime":Tue Apr 05 01:02:52 CEST 2016,"endTime":Tue Apr 05 01:02:53 CEST 2016,"status":"finished","result":{"taskFinishedData":"some-data"}}
@@ -90,7 +90,7 @@ public class FxAsyncTaskFileStoreHelperTest {
         Assert.assertNotNull(startTime);
         FxObjNode res0Result = (FxObjNode) res0.getResult();
         Assert.assertEquals(123, res0Result.get("taskTmpData").asInt());
-        
+
         // Assert.assertEquals(res0, res1); // same pending ... but task not relaunched twice!
 
         Assert.assertEquals(TaskStatus.FINISHED, res2.getStatus());
@@ -99,7 +99,7 @@ public class FxAsyncTaskFileStoreHelperTest {
         FxObjNode res2Result = (FxObjNode) res2.getResult();
         Assert.assertEquals("some-data", res2Result.get("taskFinishedData").asText());
     }
-    
+
     protected void runSlowTask(FxAsyncTaskCallback callback, int taskData, AtomicBoolean finishFlag, AtomicInteger launchCount) {
         launchCount.incrementAndGet();
         try {
@@ -109,7 +109,7 @@ public class FxAsyncTaskFileStoreHelperTest {
         FxObjNode taskRes = new FxMemRootDocument().setContentObj();
         taskRes.put("taskFinishedData", "some-data");
         callback.onTaskFinishedOK(taskRes);
-        
+
         finishFlag.set(true);
     }
 }

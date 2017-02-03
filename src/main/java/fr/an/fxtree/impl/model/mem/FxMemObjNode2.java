@@ -17,15 +17,15 @@ import fr.an.fxtree.model.FxObjNode;
 public class FxMemObjNode2 extends FxObjNode {
 
     private Flat3Map/*<String,FxNode>*/ _children = new Flat3Map/*<>*/();
-    
+
     // ------------------------------------------------------------------------
-    
+
     protected FxMemObjNode2(FxContainerNode parent, FxMemChildId childId) {
         super(parent, childId);
     }
 
     // ------------------------------------------------------------------------
-    
+
     @Override
     public int size() {
         return _children.size();
@@ -51,12 +51,13 @@ public class FxMemObjNode2 extends FxObjNode {
 //    public Map<String, FxNode> fieldsHashMapCopy() {
 //        return new LinkedHashMap<>(_children);
 //    }
-    
-    @SuppressWarnings("unchecked")
+
+    @Override
+	@SuppressWarnings("unchecked")
     public <T extends FxNode> T get(String name) {
         return (T) _children.get(name);
     }
-    
+
     @Override
     public <T extends FxNode> T put(String name, Class<T> clss) {
         T res = getNodeFactory().newNode(clss);
@@ -70,7 +71,7 @@ public class FxMemObjNode2 extends FxObjNode {
         node._setParent(this, new FxMemObjNameChildId(name));
         return node;
     }
-    
+
     @Override
     public void remove(FxNode child) {
         if (child.getParent() != this) throw new IllegalArgumentException();
@@ -84,15 +85,15 @@ public class FxMemObjNode2 extends FxObjNode {
         FxMemObjNameChildId objChildId = (FxMemObjNameChildId) childId;
         return doRemove(objChildId.getName());
     }
-    
+
     @Override
     public FxNode remove(String name) {
         return doRemove(name);
     }
-    
+
     @Override
     public void removeAll() {
-        List<FxNode> removeChildren = new ArrayList<FxNode>(_children.size());
+        List<FxNode> removeChildren = new ArrayList<>(_children.size());
         for(Iterator<FxNode> iter = childIterator(); iter.hasNext(); ) {
             removeChildren.add(iter.next());
         }
@@ -101,7 +102,7 @@ public class FxMemObjNode2 extends FxObjNode {
             child._setParent(null, null);
         }
     }
-    
+
     protected FxNode doRemove(String name) {
         FxNode res = (FxNode) _children.remove(name);
         if (res != null) {
@@ -109,5 +110,5 @@ public class FxMemObjNode2 extends FxObjNode {
         }
         return res;
     }
-    
+
 }

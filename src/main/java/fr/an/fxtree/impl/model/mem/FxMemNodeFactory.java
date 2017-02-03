@@ -18,7 +18,7 @@ import fr.an.fxtree.model.path.FxNodeOuterPath;
 public class FxMemNodeFactory extends FxNodeFactoryRegistry {
 
     public static FxMemNodeFactory DEFAULT = new FxMemNodeFactory();
-    
+
     // ------------------------------------------------------------------------
 
     public FxMemNodeFactory() {
@@ -26,14 +26,15 @@ public class FxMemNodeFactory extends FxNodeFactoryRegistry {
 
     // ------------------------------------------------------------------------
 
-    public <T extends FxNode> T newNode(Class<T> clss) {
+    @Override
+	public <T extends FxNode> T newNode(Class<T> clss) {
         try {
             return clss.newInstance();
         } catch (InstantiationException | IllegalAccessException ex) {
             throw new RuntimeException("Failed to create instance for " + clss, ex);
         }
     }
-    
+
     @Override
     public FxArrayNode newArray() {
         return new FxMemArrayNode(null, null);
@@ -41,19 +42,19 @@ public class FxMemNodeFactory extends FxNodeFactoryRegistry {
 
     @Override
     public FxObjNode newObj() {
-        return new FxMemObjNode(null, null); 
+        return new FxMemObjNode(null, null);
     }
-    
+
     @Override
     public FxTextNode newText() {
         return new FxMemTextNode(null, null, null);
     }
-    
+
     @Override
     public FxDoubleNode newDouble() {
         return new FxMemDoubleNode(null, null, 0.0);
     }
-    
+
     @Override
     public FxIntNode newInt() {
         return new FxMemIntNode(null, null, 0);

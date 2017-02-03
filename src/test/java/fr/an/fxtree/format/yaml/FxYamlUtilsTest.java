@@ -22,7 +22,7 @@ public class FxYamlUtilsTest {
     @Test
     public void testReadTree() {
         // Prepare
-        FxMemRootDocument doc = new FxMemRootDocument(); 
+        FxMemRootDocument doc = new FxMemRootDocument();
         File inputFile = new File("src/test/data/yaml/file1.yaml");
         FxChildWriter contentWriter = doc.contentWriter();
         // Perform
@@ -30,7 +30,7 @@ public class FxYamlUtilsTest {
         FxNode content = doc.getContent();
         // Post-check
         Assert.assertNotNull(content);
-        FxObjNode r = (FxObjNode) content; 
+        FxObjNode r = (FxObjNode) content;
         Assert.assertEquals(true, FxNodeValueUtils.nodeToBoolean(r.get("fieldBoolTrue")));
         Assert.assertEquals(false, FxNodeValueUtils.nodeToBoolean(r.get("fieldBoolfalse")));
         Assert.assertEquals(1, FxNodeValueUtils.nodeToInt(r.get("fieldInt")));
@@ -43,7 +43,7 @@ public class FxYamlUtilsTest {
         Assert.assertEquals(2, FxNodeValueUtils.nodeToInt(rFieldObj.get("b")));
         FxObjNode rFieldObjObj = FxNodeValueUtils.nodeToObj(rFieldObj.get("fieldObjObj"));
         Assert.assertNotNull(rFieldObjObj);
-        Assert.assertEquals(1, FxNodeValueUtils.nodeToInt(rFieldObjObj.get("c")));        
+        Assert.assertEquals(1, FxNodeValueUtils.nodeToInt(rFieldObjObj.get("c")));
         FxArrayNode rFieldArray = FxNodeValueUtils.nodeToArray(r.get("fieldArray"));
         Assert.assertEquals(3, rFieldArray.size());
         Assert.assertEquals(true, FxNodeValueUtils.nodeToBoolean(rFieldArray.get(0)));
@@ -55,11 +55,11 @@ public class FxYamlUtilsTest {
         Assert.assertEquals(0, emptyObj.size());
         Assert.assertEquals("", FxNodeValueUtils.nodeToString(r.get("emptyString")));
     }
-    
+
     @Test
     public void testReadTree_inputStream() throws Exception {
         // Prepare
-        FxMemRootDocument doc = new FxMemRootDocument(); 
+        FxMemRootDocument doc = new FxMemRootDocument();
         File inputFile = new File("src/test/data/yaml/file1.yaml");
         FxChildWriter contentWriter = doc.contentWriter();
         InputStream in = new FileInputStream(inputFile);
@@ -68,16 +68,16 @@ public class FxYamlUtilsTest {
         // Post-check
         FxNode content = doc.getContent();
         Assert.assertNotNull(content);
-        
+
         // Perform
         FxNode content2 = FxYamlUtils.readTree(in);
         Assert.assertNotNull(content2);
     }
-    
+
     @Test
     public void testYamlTextToTree() throws Exception {
         // Prepare
-        FxMemRootDocument doc = new FxMemRootDocument(); 
+        FxMemRootDocument doc = new FxMemRootDocument();
         File inputFile = new File("src/test/data/yaml/file1.yaml");
         byte[] fileContent = FileUtils.readFileToByteArray(inputFile);
         FxChildWriter contentWriter = doc.contentWriter();
@@ -90,7 +90,7 @@ public class FxYamlUtilsTest {
         String contentText = content.toString();
         Assert.assertEquals(check.toString(), contentText);
     }
-    
+
     @Test
     public void testTreeToYamlText() throws Exception {
         // Prepare
@@ -101,7 +101,7 @@ public class FxYamlUtilsTest {
         // Post-check
         Assert.assertNotNull(res);
         Assert.assertEquals("fieldBoolfalse: false\n" +
-            "fieldArray2: [true, 1, Hello]\n" + 
+            "fieldArray2: [true, 1, Hello]\n" +
             "fieldLong: 1234567890\n" +
             "fieldDouble: 1.2345678E-10\n" +
             "fieldInt: 1\n" +
@@ -116,7 +116,7 @@ public class FxYamlUtilsTest {
             "  b: 2\n" +
             "  fieldObjObj: {c: 1}\n", res);
     }
-    
+
     @Test
     public void testWriteTree() {
      // Prepare
@@ -130,7 +130,7 @@ public class FxYamlUtilsTest {
         // Post-check
         tmpFile.delete();
     }
-    
+
     @Test
     public void testWriteTree_outputstream() throws Exception {
      // Prepare

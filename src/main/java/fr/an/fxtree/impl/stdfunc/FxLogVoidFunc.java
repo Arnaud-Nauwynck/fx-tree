@@ -10,15 +10,15 @@ import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.func.FxNodeFunc;
 
 public class FxLogVoidFunc extends FxNodeFunc {
-    
+
     public static final String NAME = "log";
-    
+
     private Logger logger;
-    
+
     // ------------------------------------------------------------------------
 
     public static final FxLogVoidFunc INSTANCE = new FxLogVoidFunc();
-    
+
     private FxLogVoidFunc() {
         this(LoggerFactory.getLogger(FxLogVoidFunc.class));
     }
@@ -26,16 +26,16 @@ public class FxLogVoidFunc extends FxNodeFunc {
     private FxLogVoidFunc(Logger logger) {
         this.logger = logger;
     }
-    
+
     // ------------------------------------------------------------------------
-    
+
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
         String message = FxCurrEvalCtxUtil.recurseEvalToString(ctx, srcObj.get("message"));
         String level =  FxCurrEvalCtxUtil.recurseEvalToStringOrDefault(ctx, srcObj.get("level"), "info");
         level = level.toLowerCase();
-        
+
         switch (level) {
         case "trace":
             logger.trace(message);

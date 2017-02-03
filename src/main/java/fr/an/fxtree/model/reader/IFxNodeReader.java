@@ -55,7 +55,7 @@ public interface IFxNodeReader {
     public boolean isBoolean();
 
     public boolean isNull();
-    
+
     public boolean isBinary();
 
     public boolean canConvertToInt();

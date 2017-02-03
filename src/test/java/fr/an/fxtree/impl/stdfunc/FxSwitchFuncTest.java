@@ -4,7 +4,7 @@ import org.junit.Test;
 
 public class FxSwitchFuncTest {
 
-    protected static FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper(); 
+    protected static FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper();
 
     @Test
     public void testEvalSwitch() {

@@ -11,9 +11,9 @@ public class FxStdFuncs {
 
     /** private to force all static */
     private FxStdFuncs() {}
-    
-    public static FxNodeFuncRegistry stdFuncRegistry() { 
-        Map<String, FxNodeFunc> funcs = new HashMap<String,FxNodeFunc>();
+
+    public static FxNodeFuncRegistry stdFuncRegistry() {
+        Map<String, FxNodeFunc> funcs = new HashMap<>();
         FxNodeFuncRegistry funcRegistry = new FxNodeFuncRegistry(funcs);
 
         funcs.put(FxForeachFunc.NAME, FxForeachFunc.INSTANCE);
@@ -24,11 +24,11 @@ public class FxStdFuncs {
         funcs.put(FxThrowFunc.NAME, FxThrowFunc.INSTANCE);
         funcs.put(FxTryCatchFunc.NAME, FxTryCatchFunc.INSTANCE);
         funcs.put(FxJqFunc.NAME, FxJqFunc.INSTANCE);
-        
+
         funcs.put(FxJavaMethodInvokeFunc.NAME, FxJavaMethodInvokeFunc.INSTANCE);
         funcs.put(FxLogVoidFunc.NAME, FxLogVoidFunc.INSTANCE);
         funcs.put(FxRandomIntFunc.NAME, FxRandomIntFunc.INSTANCE);
-        
+
         funcs.put(FxUserPhasesProcessFunc.NAME, new FxUserPhasesProcessFunc(funcRegistry)); // chicken and egg dilemna..
 
         FxStdMathFuncs.registerBuiltinFuncs(funcs);
@@ -36,7 +36,7 @@ public class FxStdFuncs {
         FxStdCtxFuncs.registerBuiltinFuncs(funcs);
         FxStdTreeFuncs.registerBuiltinFuncs(funcs);
         funcs.put(FxExternalDataByIdFunc.NAME, FxExternalDataByIdFunc.INSTANCE);
-        
+
         return funcRegistry;
     }
 }

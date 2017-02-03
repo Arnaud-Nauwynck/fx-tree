@@ -10,12 +10,12 @@ import fr.an.fxtree.model.stream.FxNodeStreamEvent;
 
 /**
  * Blocking queue with fixed size capacity for FxNodeStreamEvent
- * 
+ *
  * <PRE>
  *    FxNodeOutStream  +---------------------------+  FxNodeInStream
  *             o-------| FXNodeBlockingQueueStream |------o
  *                     +---------------------------+
- *     -open->                                         -read-  
+ *     -open->                                         -read-
  *                                                     \-----> openData
  *     -data->
  *     -data->                                         -read-
@@ -31,17 +31,17 @@ import fr.an.fxtree.model.stream.FxNodeStreamEvent;
  */
 public class FXNodeBlockingQueueStream {
 
-    private ArrayBlockingQueue<FxNodeStreamEvent> eventQueue; 
-    
+    private ArrayBlockingQueue<FxNodeStreamEvent> eventQueue;
+
     private FxNodeInStream output = new InnerOutput();
     private FxNodeOutStream input = new InnerInput();
-    
+
     // ------------------------------------------------------------------------
 
     public FXNodeBlockingQueueStream(int capacity) {
         this.eventQueue = new ArrayBlockingQueue<>(capacity);
     }
-    
+
     // ------------------------------------------------------------------------
 
     public FxNodeInStream getOutput() {
@@ -75,7 +75,7 @@ public class FXNodeBlockingQueueStream {
         public void onCloseError(FxNode closeErrorData, Throwable ex) {
             put(new FxNodeStreamEvent.FxCloseErrorStreamEvent(closeErrorData, ex));
         }
-        
+
         protected void put(FxNodeStreamEvent event) {
             try {
                 eventQueue.put(event);
@@ -84,13 +84,13 @@ public class FXNodeBlockingQueueStream {
             }
         }
     }
-    
+
     // ------------------------------------------------------------------------
 
     protected class InnerOutput extends FxNodeInStream {
 
         FxNodeStreamEvent curr;
-        
+
         @Override
         public FxNodeStreamToken read() {
             this.curr = null;
@@ -116,7 +116,7 @@ public class FXNodeBlockingQueueStream {
             }
             return (curr != null)? curr.getEventType() : null;
         }
-        
+
         @Override
         public FxNode getOpenData() {
             return ((FxNodeStreamEvent.FxOpenStreamEvent) curr).getOpenData();
@@ -141,7 +141,7 @@ public class FXNodeBlockingQueueStream {
         public Throwable getCloseErrorException() {
             return ((FxNodeStreamEvent.FxCloseErrorStreamEvent) curr).getException();
         }
-        
+
     }
 
 }

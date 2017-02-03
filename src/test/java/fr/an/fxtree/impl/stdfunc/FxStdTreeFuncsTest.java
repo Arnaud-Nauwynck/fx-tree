@@ -4,13 +4,13 @@ import org.junit.Test;
 
 public class FxStdTreeFuncsTest {
 
-    protected static FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper(); 
+    protected static FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper();
 
     @Test
     public void testEval_TreeCopy() {
         tstHelper.doTestFile("eval-TreeCopy");
     }
-    
+
     @Test
     public void testEval_TreeMerge() {
         tstHelper.doTestFile("eval-TreeMerge");

@@ -9,12 +9,12 @@ public abstract class FxChildWriter {
 
     public abstract void remove();
     public abstract FxNode getResultChild();
-    
+
     public abstract boolean canAddMoveFrom(FxRootDocument otherParentSrc);
     public abstract FxNode addMoveFrom(FxRootDocument otherParentSrc);
-    
+
     // public FxChildId getChildId(); ??
-    
+
     public abstract FxArrayNode addArray();
 
     public abstract FxObjNode addObj();
@@ -43,5 +43,5 @@ public abstract class FxChildWriter {
     public abstract FxLinkProxyNode addLink(FxNodeOuterPath value);
 
     public abstract FxNullNode addNull();
-    
+
 }

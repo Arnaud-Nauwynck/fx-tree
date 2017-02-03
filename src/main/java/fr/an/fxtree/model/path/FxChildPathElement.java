@@ -23,7 +23,7 @@ public abstract class FxChildPathElement {
     public static FxThisRootPathElement thisRoot() {
         return FxThisRootPathElement.INSTANCE;
     }
-    
+
     public static FxObjFieldPathElt of(String field) {
         return FxObjFieldPathElt.of(field);
     }
@@ -32,27 +32,27 @@ public abstract class FxChildPathElement {
         return FxArrayIndexPathElt.of(index);
     }
 
-    
+
     public abstract FxNode select(FxNode baseSrc, FxNode src);
-    
-    
+
+
     // ------------------------------------------------------------------------
-    
+
     /**
-     * <PRE>$.</PRE>  json child path element = base "=root" json node 
+     * <PRE>$.</PRE>  json child path element = base "=root" json node
      */
     public static final class FxThisRootPathElement extends FxChildPathElement {
-        
+
         public static final FxThisRootPathElement INSTANCE = new FxThisRootPathElement();
-        
+
         private FxThisRootPathElement() {
         }
-        
+
         @Override
         public FxNode select(FxNode baseSrc, FxNode src) {
             return baseSrc;
         }
-        
+
         @Override
         public int hashCode() {
             return 123;
@@ -68,32 +68,32 @@ public abstract class FxChildPathElement {
                 return false;
             return true;
         }
- 
+
         @Override
         public String toString() {
             return "$.";
         }
-                
+
     }
-    
+
     // ------------------------------------------------------------------------
 
     /**
-     * <PRE>.fieldname</PRE>  json child path element = field element by name of json object 
+     * <PRE>.fieldname</PRE>  json child path element = field element by name of json object
      */
     public static final class FxObjFieldPathElt extends FxChildPathElement {
-        
+
         private final String fieldname;
 
         private FxObjFieldPathElt(String fieldname) {
             if (fieldname == null) throw new IllegalArgumentException();
             this.fieldname = fieldname;
         }
-        
+
         public static FxObjFieldPathElt of(String fieldname) {
             return new FxObjFieldPathElt(fieldname);
         }
-        
+
         public String getFieldname() {
             return fieldname;
         }
@@ -105,7 +105,7 @@ public abstract class FxChildPathElement {
             }
             return ((FxObjNode) src).get(fieldname);
         }
-        
+
         @Override
         public int hashCode() {
             return 123;
@@ -125,39 +125,39 @@ public abstract class FxChildPathElement {
             }
             return true;
         }
- 
+
         @Override
         public String toString() {
             return "." + fieldname;
         }
     }
-    
+
 
     // ------------------------------------------------------------------------
 
     /**
      * <PRE>[index]</PRE>  json array index path element = element by index of json array
-     * Notice: negative number are supported, to start from end of array.  [-1] is the last element. 
+     * Notice: negative number are supported, to start from end of array.  [-1] is the last element.
      */
     public static final class FxArrayIndexPathElt extends FxChildPathElement {
         private static final int CACHE_MAX = 20;
         private static final FxArrayIndexPathElt[] CACHE;
         private static final FxArrayIndexPathElt CACHE_MINUS1;
         static {
-            FxArrayIndexPathElt[] tmpcache = new FxArrayIndexPathElt[CACHE_MAX]; 
+            FxArrayIndexPathElt[] tmpcache = new FxArrayIndexPathElt[CACHE_MAX];
             for (int i = 0; i < CACHE_MAX; i++) {
                 tmpcache[i] = new FxArrayIndexPathElt(i);
             }
             CACHE = tmpcache;
             CACHE_MINUS1 = new FxArrayIndexPathElt(-1);
         }
-                
+
         private final int index;
 
         private FxArrayIndexPathElt(int index) {
             this.index = index;
         }
-        
+
         public static FxArrayIndexPathElt of(int index) {
             if (index >= 0) {
                 return (index < CACHE_MAX)? CACHE[index] : new FxArrayIndexPathElt(index);
@@ -165,7 +165,7 @@ public abstract class FxChildPathElement {
                 return (index == -1)? CACHE_MINUS1 : new FxArrayIndexPathElt(index);
             }
         }
-        
+
         public int getIndex() {
             return index;
         }
@@ -184,7 +184,7 @@ public abstract class FxChildPathElement {
                 return array.get(i);
             }
         }
-        
+
         @Override
         public int hashCode() {
             return 123;
@@ -204,7 +204,7 @@ public abstract class FxChildPathElement {
             }
             return true;
         }
- 
+
         @Override
         public String toString() {
             return "[" + index + "]";

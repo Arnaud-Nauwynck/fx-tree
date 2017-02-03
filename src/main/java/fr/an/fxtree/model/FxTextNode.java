@@ -262,5 +262,5 @@ public abstract class FxTextNode extends FxValueNode {
     protected void _reportBase64EOF() throws JsonParseException {
         throw new JsonParseException(null, "Unexpected end-of-String when base64 content");
     }
-    
+
 }

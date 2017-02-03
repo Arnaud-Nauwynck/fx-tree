@@ -23,16 +23,16 @@ public class FxEvalFuncTstHelper {
 
     public FxEvalFuncTstHelper() {
         funcRegistry = FxStdFuncs.stdFuncRegistry();
-        
+
         phase0Func = new FxPhaseRecursiveEvalFunc("phase0", funcRegistry);
         destPhase0 = new FxMemRootDocument();
         outPhase0 = destPhase0.contentWriter();
-        
+
         phase1Func = new FxPhaseRecursiveEvalFunc("phase1", funcRegistry);
         destPhase1 = new FxMemRootDocument();
         outPhase1 = destPhase1.contentWriter();
     }
-    
+
     public FxNodeFuncRegistry getFuncRegistry() {
         return funcRegistry;
     }
@@ -40,45 +40,45 @@ public class FxEvalFuncTstHelper {
     public void doTestFile(String evalBaseFilename) {
         doTestFile_Phase01(evalBaseFilename, false);
     }
-    
+
     public void doTestFile_Phase01(String evalBaseFilename) {
         doTestFile_Phase01(evalBaseFilename, true);
     }
-    
+
     public void doTestFile_Phase01(String evalBaseFilename, boolean phase1) {
         String inputFilename = evalBaseFilename + "-input.json";
         String outputFilename = evalBaseFilename + "-expected.json";
-        
+
         // Perform
         FxNode res = doEvalTstFile_phase01(inputFilename, phase1);
-        
+
         // Post-check
         FxNode expected = FxJsonUtilsTest.getJsonTstFile(outputFilename).getContentObj();
-        
+
         String expectedText = expected.toString();
         String resString = res.toString();
         if (! expectedText.equals(resString)) {
             System.out.println("expecting:" + expectedText);
             System.out.println("actual   :" + resString);
             // TODO ... pretty print as json
-            
-            
+
+
             Assert.assertEquals(expectedText, resString);
         }
     }
-    
+
     public FxNode doEvalTstFile_phase01(String inputFilename, boolean phase1) {
         // Prepare
         FxNode src = FxJsonUtilsTest.getJsonTstFile(inputFilename).getContentObj();
         FxNode res = src;
-        
+
         {
             FxEvalContext ctx0 = new FxEvalContext(null, funcRegistry);
             prepareEvalContext(ctx0, false);
             phase0Func.eval(outPhase0, ctx0, res);
             res = destPhase0.getContent();
         }
-        
+
         if (phase1) {
             FxEvalContext ctx1 = new FxEvalContext(null, funcRegistry);
             prepareEvalContext(ctx1, true);

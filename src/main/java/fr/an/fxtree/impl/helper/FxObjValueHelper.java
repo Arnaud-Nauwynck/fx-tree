@@ -12,7 +12,7 @@ import fr.an.fxtree.model.path.FxNodeOuterPath;
 import fr.an.fxtree.model.path.FxNodePath;
 
 /**
- * helper class, wrapping a FxObjNode, for extracting fields nodes from FxObjNode, 
+ * helper class, wrapping a FxObjNode, for extracting fields nodes from FxObjNode,
  * and extracting/converting/type-checking values
  *
  *  see also FxNodeValueUtils
@@ -20,9 +20,9 @@ import fr.an.fxtree.model.path.FxNodePath;
 public class FxObjValueHelper {
 
     protected FxObjNode parent;
-    
+
     // ------------------------------------------------------------------------
-    
+
     public FxObjValueHelper(FxObjNode parent) {
         this.parent = parent;
     }
@@ -52,7 +52,7 @@ public class FxObjValueHelper {
     public String getAsTextOrDefault(String fieldName, String defaultValue) {
         return FxNodeValueUtils.getAsTextOrDefault(parent, fieldName, defaultValue);
     }
-    
+
     public FxObjNode getObjOrThrow(String fieldName) {
         return FxNodeValueUtils.getObjOrThrow(parent, fieldName);
     }
@@ -128,7 +128,7 @@ public class FxObjValueHelper {
     public Date getDateAsLongOrNull(String fieldName) {
        return FxNodeValueUtils.getDateAsLongOrNull(parent, fieldName);
     }
-    
+
     public double getDoubleOrDefault(String fieldName, double defaultValue) {
         return FxNodeValueUtils.getDoubleOrDefault(parent, fieldName, defaultValue);
     }
@@ -204,5 +204,5 @@ public class FxObjValueHelper {
     public Map<Object, FxNode> tryIndexEltsByIds(FxArrayNode array) {
         return FxNodeValueUtils.tryIndexEltsByIds(array);
     }
-    
+
 }

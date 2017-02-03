@@ -7,13 +7,13 @@ public abstract class FxMemChildId extends FxChildId {
     // ------------------------------------------------------------------------
 
     public static class FxMemObjNameChildId extends FxMemChildId {
-        
+
         public final String name;
 
         public FxMemObjNameChildId(String name) {
             this.name = name;
         }
-        
+
         public String getName() {
             return name;
         }
@@ -48,22 +48,22 @@ public abstract class FxMemChildId extends FxChildId {
         public String toString() {
             return name;
         }
-        
+
     }
-    
+
     // ------------------------------------------------------------------------
-    
+
     public static class FxMemArrayInsertChildId extends FxMemChildId {
 
         public final int childId;
-        
+
         private int currIndex;
-        
+
         public FxMemArrayInsertChildId(int childId, int currIndex) {
             this.childId = childId;
             this.currIndex = currIndex;
         }
-        
+
         public int getChildId() {
             return childId;
         }
@@ -99,6 +99,6 @@ public abstract class FxMemChildId extends FxChildId {
         public String toString() {
             return Integer.toString(currIndex) + "#" + childId;
         }
-        
+
     }
 }

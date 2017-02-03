@@ -13,7 +13,7 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
     private FxObjectMapper fxObjectMapper = new FxObjectMapper();
 
     private Supplier<T> exprFactory;
-    
+
     // ------------------------------------------------------------------------
 
     public BindableExprFxNodeFunc(Class<T> exprClass, Supplier<T> exprFactory) {
@@ -36,10 +36,10 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
             // TODO?? compile + attach on array, property, text, .. using parent + suffix
             bind = compileBind(src);
         }
-        
+
         bind.eval(dest);
     }
-    
+
     @SuppressWarnings("unchecked")
     public T getBindOn(FxObjNode src) {
         FxPOJONode bindExprNode = src.get(FxConsts.FX_BINDED_EXPR);
@@ -52,7 +52,7 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
 
     public T compileBind(FxNode src) {
         T res = exprFactory.get();
-        res.setSrc(src); 
+        res.setSrc(src);
         // also extract params...
         if (src instanceof FxObjNode) {
             FxObjNode srcObj = (FxObjNode) src;
@@ -60,11 +60,11 @@ public class BindableExprFxNodeFunc<T extends FxBindedNodeFuncExpr> extends FxNo
             if (paramsObj != null) {
                 // inject deserialized params into <code>res</code> binded expr
                 fxObjectMapper.readUpdate(srcObj, res);
-                // TODO resolve path if any                
+                // TODO resolve path if any
             }
         }
-        
+
         return res;
     }
-       
+
 }

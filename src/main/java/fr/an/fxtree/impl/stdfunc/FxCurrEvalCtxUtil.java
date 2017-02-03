@@ -17,7 +17,7 @@ public final class FxCurrEvalCtxUtil {
     private static final String PROP_CURR_PHASE_NAME = "currPhaseName";
     private static final String PROP_CURR_PHASE_EVAL_FUNC = "currPhaseEvalFunc";
 
-    public static FxEvalContext childEvalCtx(FxEvalContext ctx, String phaseName, FxNodeFunc evalFunc) { 
+    public static FxEvalContext childEvalCtx(FxEvalContext ctx, String phaseName, FxNodeFunc evalFunc) {
         FxEvalContext childCtx = ctx.createChildContext();
         childCtx.putVariable(PROP_CURR_PHASE_NAME, phaseName);
         childCtx.putVariable(PROP_CURR_PHASE_EVAL_FUNC, evalFunc);
@@ -41,18 +41,18 @@ public final class FxCurrEvalCtxUtil {
             FxNodeCopyVisitor.copyTo(dest, src);
         }
     }
-    
+
     public static FxNode recurseEval(FxEvalContext ctx, FxNode src) {
         FxPhaseRecursiveEvalFunc currFunc = (FxPhaseRecursiveEvalFunc) ctx.lookupVariable(PROP_CURR_PHASE_EVAL_FUNC);
         if (currFunc != null) {
-            FxMemRootDocument tmpDoc = new FxMemRootDocument(); 
+            FxMemRootDocument tmpDoc = new FxMemRootDocument();
             recurseEvalTo(tmpDoc.contentWriter(), ctx, src);
             return tmpDoc.getContent();
         } else {
             return src;
         }
     }
-        
+
     public static boolean recurseEvalToBoolean(FxEvalContext ctx, FxNode src) {
         FxNode tmpres = recurseEval(ctx, src);
         return FxNodeValueUtils.nodeToBoolean(tmpres);
@@ -68,7 +68,7 @@ public final class FxCurrEvalCtxUtil {
         }
         return FxNodeValueUtils.nodeToBoolean(tmpres);
     }
-    
+
     public static String recurseEvalToString(FxEvalContext ctx, FxNode src) {
         FxNode tmpres = recurseEval(ctx, src);
         return FxNodeValueUtils.nodeToString(tmpres);
@@ -132,7 +132,7 @@ public final class FxCurrEvalCtxUtil {
         FxNode tmpres = recurseEval(ctx, src);
         return FxNodeValueUtils.nodeToLong(tmpres);
     }
-    
+
     public static FxObjNode recurseEvalToObj(FxEvalContext ctx, FxNode src) {
         FxNode tmpres = recurseEval(ctx, src);
         return FxNodeValueUtils.nodeToObj(tmpres);
@@ -153,5 +153,5 @@ public final class FxCurrEvalCtxUtil {
         return FxNodeValueUtils.nodeToOuterPath(tmpres);
     }
 
-    
+
 }
