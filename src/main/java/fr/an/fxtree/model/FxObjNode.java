@@ -231,6 +231,11 @@ public abstract class FxObjNode extends FxContainerNode {
             this.useIncrSuffix = useIncrSuffix;
         }
 
+        // used only to change field to add
+        public ObjChildWriter sibblingChildAdder(String fieldName) {
+        	return new ObjChildWriter(dest, fieldName, false);
+        }
+        
         private String incrName() {
             if (!useIncrSuffix) {
                 return baseName;

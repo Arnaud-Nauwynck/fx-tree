@@ -1,0 +1,9 @@
+{
+"test1": [
+	  "elt0", "elt1",
+	  { "@fx-eval": "#phase0:tree.inlineArrayElements",
+	  	"elements": [ "elt2", "elt3" ] 
+	  },
+	  "elt4", "elt5" 
+	]
+}

@@ -26,4 +26,14 @@ public class FxStdTreeFuncsTest {
         tstHelper.doTestFile("eval-performCopyDecls");
     }
 
+    @Test
+    public void testEval_inlineArrayElements() {
+        tstHelper.doTestFile("eval-inlineArrayElements");
+    }
+    
+    @Test
+    public void testEval_inlineObjectFields() {
+        tstHelper.doTestFile("eval-inlineObjectFields");
+    }
+    
 }

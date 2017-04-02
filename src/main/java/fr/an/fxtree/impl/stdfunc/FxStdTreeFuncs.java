@@ -1,11 +1,13 @@
 package fr.an.fxtree.impl.stdfunc;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyDefaultsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeCopyMergeVisitor;
-import fr.an.fxtree.impl.helper.FxNodePerformCopyDeclsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
+import fr.an.fxtree.impl.helper.FxNodePerformCopyDeclsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
@@ -25,7 +27,8 @@ public final class FxStdTreeFuncs {
         dest.put(FxOuterCopyDeclsPerformFunc.NAME, FxOuterCopyDeclsPerformFunc.INSTANCE);
         dest.put(FxMergeTreeFunc.NAME, FxMergeTreeFunc.INSTANCE);
         dest.put(FxMergeDefaultsTreeFunc.NAME, FxMergeDefaultsTreeFunc.INSTANCE);
-
+        dest.put(FxArrayElementsInlineFunc.NAME, FxArrayElementsInlineFunc.INSTANCE);
+        dest.put(FxObjectFieldsInlineFunc.NAME, FxObjectFieldsInlineFunc.INSTANCE);
     }
 
     /**
@@ -336,6 +339,89 @@ public final class FxStdTreeFuncs {
 
                 fromNode.accept(mergeVisitor, destNode);
             }
+        }
+    }
+    
+    /**
+     * <PRE>
+[
+  "elt0", "elt1",
+  { "@fx-eval": "#phase0:tree.inlineArrayElements",
+  	"elements": [ "elt2", "elt3" ] 
+  },
+  "elt4", "elt5" 
+]
+     * </PRE>
+     * =>
+     * <PRE>
+[
+  "elt0", "elt1",
+  "elt2", "elt3", 
+  "elt4", "elt5" 
+]
+     * </PRE>
+     */
+    public static class FxArrayElementsInlineFunc extends FxNodeFunc implements IInlineMarkerFunc {
+        public static final String NAME = "tree.inlineArrayElements";
+        public static final FxArrayElementsInlineFunc INSTANCE = new FxArrayElementsInlineFunc();
+
+        @Override
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        	FxObjNode srcObj = (FxObjNode) src;
+            FxArrayNode elementsArray = FxCurrEvalCtxUtil.recurseEvalToArray(ctx, srcObj.get("elements"));
+            
+            // copy results wrapped in array(!) but result are inlined in caller given marker IInlineMarkerFunc
+            FxArrayNode resArray = dest.addArray();
+            FxChildWriter destArrayAdder = resArray.insertBuilder();
+        	final int elementsArrayLen = elementsArray.size();
+            for (int i = 0; i < elementsArrayLen; i++) {
+                FxNode element = elementsArray.get(i);
+                FxNodeCopyVisitor.copyTo(destArrayAdder, element);
+            }
+        }
+    }
+    
+    
+    /**
+     * <PRE>
+{
+"test1": 
+	{
+	  "field0" : "value0", "field1": "value1",
+	  "dummmy-inline-fields": { "@fx-eval": "#phase0:tree.inlineFields",
+	  	"elements": { "field2": "value2", "field3": "value3" } 
+	  },
+	  "field4": "value4", "field5": "value5" 
+	}
+}
+     * </PRE>
+     * =>
+     * <PRE>
+{
+  "field0" : "value0, "field1": "value1",
+  "field2": "value2", "field3": "value3",
+  "field4": "value4", "field5": "value5"
+}
+     * </PRE>
+     */
+    public static class FxObjectFieldsInlineFunc extends FxNodeFunc implements IInlineMarkerFunc {
+        public static final String NAME = "tree.inlineFields";
+        public static final FxObjectFieldsInlineFunc INSTANCE = new FxObjectFieldsInlineFunc();
+
+        @Override
+        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
+        	FxObjNode srcObj = (FxObjNode) src;
+            FxObjNode elementsObj = FxCurrEvalCtxUtil.recurseEvalToObj(ctx, srcObj.get("elements"));
+            
+            // copy results wrapped in obj(!) but result are inlined in caller given marker IInlineMarkerFunc
+            FxObjNode destObj = dest.addObj();            
+            for(Iterator<Map.Entry<String, FxNode>> iter = elementsObj.fields(); iter.hasNext(); ) {
+                Entry<String, FxNode> e = iter.next();
+    			String fieldName = e.getKey();
+    			FxNode fieldValue = e.getValue();
+    			FxChildWriter childAdder = destObj.putBuilder(fieldName);
+    			FxNodeCopyVisitor.copyTo(childAdder, fieldValue);
+    		}
         }
     }
 }

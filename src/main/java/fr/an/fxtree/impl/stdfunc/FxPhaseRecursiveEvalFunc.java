@@ -1,12 +1,17 @@
 package fr.an.fxtree.impl.stdfunc;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
+import fr.an.fxtree.model.FxObjNode.ObjChildWriter;
 import fr.an.fxtree.model.FxPOJONode;
 import fr.an.fxtree.model.func.FxBindedNodeFuncExpr;
 import fr.an.fxtree.model.func.FxConsts;
@@ -136,10 +141,6 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
                 throw new IllegalArgumentException("function '" + funcName+ "' not found");
             }
 
-
-            // step 0... recursive eval function parameters !!!
-            // TOADD use eager support for function
-
             // *** step 1: eval current node function ***
             FxMemRootDocument tmpNonRecurseDoc = new FxMemRootDocument();
             FxChildWriter tmpNonRecurseWriter = tmpNonRecurseDoc.contentWriter();
@@ -150,13 +151,41 @@ public class FxPhaseRecursiveEvalFunc extends FxNodeFunc {
             if (tmpres == null) {
                 return null;
             }
-
-            // step 2: recurse eval same phase (other functions) on return result
-            FxNode res = tmpres.accept(this, destNode);
-
-//            // if no recurse function in "src"... could write directly to output
-//            func.eval(destNode, ctx, src);
-//            FxNode res = destNode.getResultChild();
+            
+            FxNode res;
+            if (!(func instanceof IInlineMarkerFunc)) {
+            	res = tmpres.accept(this, destNode);
+            } else {
+            	// inline Array element or Object elements...
+            	if (tmpres instanceof FxArrayNode) {
+            		final FxArrayNode resElts = (FxArrayNode) tmpres;
+//            		if (! (destNode instanceof InnerArrayChildWriter)) {
+//            			throw new IllegalStateException("can not inline array '[value1, value2]' in non array node");
+//            		}
+            		final int resEltsLen = resElts.size();
+            		for (int i = 0; i < resEltsLen; i++) {
+            			FxNode resElt = resElts.get(i);
+            			resElt.accept(this, destNode);
+            		}
+            		res = destNode.getResultChild(); //?
+            	} else if (tmpres instanceof FxObjNode) {
+            		final FxObjNode resElts = (FxObjNode) tmpres;
+            		if (! (destNode instanceof ObjChildWriter)) {
+            			throw new IllegalStateException("can not inline object '{field:value,..}' in non object node");
+            		}
+            		ObjChildWriter currChildAdder = (ObjChildWriter) destNode; 
+            		for(Iterator<Map.Entry<String, FxNode>> iter = resElts.fields(); iter.hasNext(); ) {
+                        Entry<String, FxNode> e = iter.next();
+            			String fieldName = e.getKey();
+            			FxNode fieldValue = e.getValue();
+            			ObjChildWriter sibblingChildAdder = currChildAdder.sibblingChildAdder(fieldName);
+            			fieldValue.accept(this, sibblingChildAdder);
+            		}
+            		res = destNode.getResultChild(); //?
+            	} else {
+            		throw new IllegalStateException("expecting array or object to inline");
+            	}
+            }
 
             return res;
         }
