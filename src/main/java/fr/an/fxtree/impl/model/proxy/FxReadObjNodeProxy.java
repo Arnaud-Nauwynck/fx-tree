@@ -145,7 +145,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     }
 
     @Override
-    public Map<String, FxNode> fieldsHashMapCopy() {
+    public Map<String, FxNode> fieldsCopy() {
         Map<String, FxNode> res = new HashMap<>(delegate.size());
         for(Iterator<Map.Entry<String,FxNode>> iter = delegate.fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();

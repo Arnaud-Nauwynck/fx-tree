@@ -42,7 +42,7 @@ public abstract class FxObjNode extends FxContainerNode {
 
     public abstract Iterator<Map.Entry<String, FxNode>> fields();
 
-    public Map<String, FxNode> fieldsHashMapCopy() {
+    public Map<String, FxNode> fieldsCopy() {
         Map<String, FxNode> res = new LinkedHashMap<>();
         for(Iterator<Map.Entry<String, FxNode>> iter = fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();
@@ -52,7 +52,7 @@ public abstract class FxObjNode extends FxContainerNode {
     }
 
     public Iterator<Map.Entry<String, FxNode>> fieldsIterCopy(boolean useCopy) {
-        return (useCopy)? fieldsHashMapCopy().entrySet().iterator() : fields();
+        return (useCopy)? fieldsCopy().entrySet().iterator() : fields();
     }
 
     @FunctionalInterface
@@ -181,12 +181,12 @@ public abstract class FxObjNode extends FxContainerNode {
     }
 
     protected boolean _childrenEqual(FxObjNode other) {
-        return fieldsHashMapCopy().equals(other.fieldsHashMapCopy());
+        return fieldsCopy().equals(other.fieldsCopy());
     }
 
     @Override
     public int hashCode() {
-        return fieldsHashMapCopy().hashCode();
+        return fieldsCopy().hashCode();
     }
 
     @Override

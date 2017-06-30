@@ -23,7 +23,7 @@ public class FxReplaceTemplateCopyFunc extends FxNodeFunc {
         FxObjNode srcObj = (FxObjNode) src;
         FxObjNode params = (FxObjNode) srcObj.get("params");
         if (params != null) {
-            Map<String, FxNode> varReplacements = params.fieldsHashMapCopy();
+            Map<String, FxNode> varReplacements = params.fieldsCopy();
             FxReplaceNodeCopyVisitor.copyWithReplaceTo(dest, template, varReplacements);
         } else {
             FxNodeCopyVisitor.copyTo(dest, template);

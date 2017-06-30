@@ -45,7 +45,7 @@ public class FxMemObjNode extends FxObjNode {
     }
 
     @Override
-	public Map<String, FxNode> fieldsHashMapCopy() {
+	public Map<String, FxNode> fieldsCopy() {
         return new LinkedHashMap<>(_children);
     }
 
