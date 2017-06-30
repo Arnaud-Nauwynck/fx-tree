@@ -1,0 +1,30 @@
+{
+  "eval_tree_merge": {
+    "@fx-eval": "#phase0:tree.merge",
+    src: {
+      a: { 
+        field1: 123,
+        field2: 234,
+        subObj3: { 
+          field2_1: 345,
+          field2_2: 456 
+        }
+      }
+    },
+    merge: {
+      b: {
+        field1: 123
+      },
+      a: {
+    	field1: 123456,
+    	field3: 345,
+    	subObj3: {
+    	  field2_3: 678
+    	}    	   
+      },
+      c: {
+        field1: 123
+      }
+    }
+  }
+}

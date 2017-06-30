@@ -25,8 +25,9 @@ public final class FxStdTreeFuncs {
     public static void registerBuiltinFuncs(Map<String, FxNodeFunc> dest) {
         dest.put(FxCopyTreeFunc.NAME, FxCopyTreeFunc.INSTANCE);
         dest.put(FxOuterCopyDeclsPerformFunc.NAME, FxOuterCopyDeclsPerformFunc.INSTANCE);
-        dest.put(FxMergeTreeFunc.NAME, FxMergeTreeFunc.INSTANCE);
+        dest.put(FxMergePathsTreeFunc.NAME, FxMergePathsTreeFunc.INSTANCE);
         dest.put(FxMergeDefaultsTreeFunc.NAME, FxMergeDefaultsTreeFunc.INSTANCE);
+        dest.put(FxMergeFunc.NAME, FxMergeFunc.INSTANCE);
         dest.put(FxArrayElementsInlineFunc.NAME, FxArrayElementsInlineFunc.INSTANCE);
         dest.put(FxObjectFieldsInlineFunc.NAME, FxObjectFieldsInlineFunc.INSTANCE);
     }
@@ -199,9 +200,9 @@ public final class FxStdTreeFuncs {
      * </PRE
      *
      */
-    public static class FxMergeTreeFunc extends FxNodeFunc {
-        public static final String NAME = "tree.merge";
-        public static final FxMergeTreeFunc INSTANCE = new FxMergeTreeFunc();
+    public static class FxMergePathsTreeFunc extends FxNodeFunc {
+        public static final String NAME = "tree.mergePaths";
+        public static final FxMergePathsTreeFunc INSTANCE = new FxMergePathsTreeFunc();
 
         @Override
         public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {

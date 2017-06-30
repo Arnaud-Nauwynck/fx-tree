@@ -13,7 +13,7 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 
 public class FxMergeFunc extends FxNodeFunc {
 
-    public static final String NAME = "merge";
+    public static final String NAME = "tree.merge";
 
     // ------------------------------------------------------------------------
 
@@ -27,7 +27,6 @@ public class FxMergeFunc extends FxNodeFunc {
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
     	FxObjValueHelper srcH = new FxObjValueHelper((FxObjNode) src);
-    	// srcH.getArrayOrNull("params");
     	FxObjNode baseNode = srcH.getObjOrThrow("src");
     	FxObjNode mergeNode = srcH.getObjOrThrow("merge");
 
