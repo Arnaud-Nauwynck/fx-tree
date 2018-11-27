@@ -24,7 +24,7 @@ public class FxNodeAsToken extends FxTreeVisitor2<Void, JsonToken>{
     public static JsonToken asToken(FxNode node) {
         return node.accept(INSTANCE, null);
     }
-
+    
     @Override
     public JsonToken visitRoot(FxRootDocument node, Void param) {
         if (node.getContent() == null) return JsonToken.VALUE_NULL;
@@ -80,11 +80,11 @@ public class FxNodeAsToken extends FxTreeVisitor2<Void, JsonToken>{
     public JsonToken visitLink(FxLinkProxyNode node, Void param) {
         return JsonToken.START_OBJECT; // ?? => use syntax like { "@link" : "^.a.b[2]" }
     }
-
+    
     @Override
     public JsonToken visitNullValue(FxNullNode node, Void param) {
         return JsonToken.VALUE_NULL;
     }
-
-
+    
+    
 }

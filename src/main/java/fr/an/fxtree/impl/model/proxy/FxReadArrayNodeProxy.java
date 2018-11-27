@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxArrayNode;
-import fr.an.fxtree.model.FxChildId;
 import fr.an.fxtree.model.FxContainerNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.reader.IFxArrayNodeReader;
@@ -16,11 +16,11 @@ public class FxReadArrayNodeProxy extends FxArrayNode implements IFxArrayNodeRea
 
     protected FxArrayNode delegate;
     protected boolean allowGetParent;
-
+    
     // ------------------------------------------------------------------------
-
-    protected FxReadArrayNodeProxy(FxContainerNode proxyParent, boolean allowGetParent, FxArrayNode delegate) {
-        super(proxyParent, null);
+    
+    protected FxReadArrayNodeProxy(FxContainerNode proxyParent, FxSourceLoc sourceLoc, boolean allowGetParent, FxArrayNode delegate) {
+        super(proxyParent, null, sourceLoc);
         this.allowGetParent = allowGetParent;
         this.delegate = delegate;
     }
@@ -32,7 +32,7 @@ public class FxReadArrayNodeProxy extends FxArrayNode implements IFxArrayNodeRea
         if (node == null) return null;
         return FxReadProxyNodeWrappers.wrapROProxy(this, allowGetParent, node);
     }
-
+    
     protected RuntimeException throwWriteDenied() {
         throw FxReadProxyNodeWrappers.throwWriteDenied();
     }
@@ -46,7 +46,7 @@ public class FxReadArrayNodeProxy extends FxArrayNode implements IFxArrayNodeRea
     public boolean isEmpty() {
         return delegate.isEmpty();
     }
-
+        
     @Override
     public Collection<FxNode> children() {
         List<FxNode> res = new ArrayList<>(delegate.size());
@@ -75,13 +75,13 @@ public class FxReadArrayNodeProxy extends FxArrayNode implements IFxArrayNodeRea
             public void remove() {
                 throw throwWriteDenied();
             }
-
+            
         };
     }
 
     // specific for FxArrayNode implements/override
     // ------------------------------------------------------------------------
-
+    
     @Override
     public FxNode get(int index) {
         return wrapChild(delegate.get(index));
@@ -91,32 +91,17 @@ public class FxReadArrayNodeProxy extends FxArrayNode implements IFxArrayNodeRea
     // ------------------------------------------------------------------------
 
     @Override
-    public <T extends FxNode> T insert(int index, Class<T> clss) {
+    protected <T extends FxNode> T onInsert(int index, T node) {
         throw throwWriteDenied();
     }
-
-    @Override
-	protected <T extends FxNode> T onInsert(int index, T node) {
-        throw throwWriteDenied();
-    }
-
-    @Override
-    public void remove(FxNode child) {
-        throw throwWriteDenied();
-    }
-
-    @Override
-    public FxNode remove(FxChildId childId) {
-        throw throwWriteDenied();
-    }
-
+    
     @Override
     public FxNode remove(int index) {
         throw throwWriteDenied();
     }
 
     @Override
-	public void removeAll() {
+    public void removeAll() {
         throw throwWriteDenied();
     }
 

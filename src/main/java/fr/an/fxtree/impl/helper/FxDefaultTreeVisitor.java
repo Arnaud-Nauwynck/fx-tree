@@ -20,7 +20,7 @@ import fr.an.fxtree.model.FxTreeVisitor;
 
 /**
  * default implementation to recurse on FxNode child elements
- *
+ * 
  */
 public class FxDefaultTreeVisitor extends FxTreeVisitor {
 
@@ -106,7 +106,7 @@ public class FxDefaultTreeVisitor extends FxTreeVisitor {
     public void visitPOJOValue(FxPOJONode node) {
 
     }
-
+    
     @Override
     public void visitLink(FxLinkProxyNode node) {
         FxNode targetNode = node.getTargetNode();
@@ -114,7 +114,7 @@ public class FxDefaultTreeVisitor extends FxTreeVisitor {
             targetNode.accept(this);
         }
     }
-
+    
     @Override
     public void visitNullValue(FxNullNode node) {
 

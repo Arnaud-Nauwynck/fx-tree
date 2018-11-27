@@ -19,14 +19,14 @@ import fr.an.fxtree.model.stream.FxNodeInStream.FxNodeStreamToken;
 public abstract class FxNodeStreamEvent {
 
     public abstract FxNodeStreamToken getEventType();
-
+    
     /** visitor design pattern */
     public abstract void accept(FxNodeOutStream out);
-
+    
     // ------------------------------------------------------------------------
 
     public static class FxOpenStreamEvent extends FxNodeStreamEvent {
-
+        
         private final FxNode openData;
 
         public FxOpenStreamEvent(FxNode openData) {
@@ -46,7 +46,7 @@ public abstract class FxNodeStreamEvent {
         public FxNode getOpenData() {
             return openData;
         }
-
+        
     }
 
     public static class FxItemStreamEvent extends FxNodeStreamEvent {
@@ -69,11 +69,11 @@ public abstract class FxNodeStreamEvent {
         public FxNode getItem() {
             return item;
         }
-
+        
     }
 
     public static class FxCloseStreamEvent extends FxNodeStreamEvent {
-
+        
         private final FxNode closeData;
 
         public FxCloseStreamEvent(FxNode closeData) {
@@ -93,7 +93,7 @@ public abstract class FxNodeStreamEvent {
         public FxNode getCloseData() {
             return closeData;
         }
-
+        
     }
 
     public static class FxCloseErrorStreamEvent extends FxNodeStreamEvent {
@@ -123,7 +123,7 @@ public abstract class FxNodeStreamEvent {
         public Throwable getException() {
             return exception;
         }
-
+        
     }
 
 }

@@ -3,16 +3,21 @@ package fr.an.fxtree.model;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
+
 public abstract class FxNode {
 
     private FxContainerNode parent;
     private FxChildId childId;
 
+    private FxSourceLoc sourceLoc;
+    
     // ------------------------------------------------------------------------
 
-    protected FxNode(FxContainerNode parent, FxChildId childId) {
+    protected FxNode(FxContainerNode parent, FxChildId childId, FxSourceLoc sourceLoc) {
         this.parent = parent;
         this.childId = childId;
+        this.sourceLoc = sourceLoc;
     }
 
     // ------------------------------------------------------------------------
@@ -27,6 +32,14 @@ public abstract class FxNode {
 
     public FxChildId getChildId() {
         return childId;
+    }
+    
+    public FxSourceLoc getSourceLoc() {
+        return sourceLoc;
+    }
+
+    public void setSourceLoc(FxSourceLoc sourceLoc) {
+        this.sourceLoc = sourceLoc;
     }
 
     /* protected */ public void _setParent(FxContainerNode parent, FxChildId childId) {

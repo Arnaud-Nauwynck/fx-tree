@@ -6,22 +6,22 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import fr.an.fxtree.model.FxChildId;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxContainerNode;
 import fr.an.fxtree.model.FxNode;
 
-/**
- * Dummy class MIXIN !!!!
+/** 
+ * Dummy class MIXIN !!!! 
  * real mixin does not exist in java ..7,8,9,10...
- * so code is Copy&Paste in 2 sub-classes: FxReadArrayNodeProxy and FxReadObjNodeProxy
+ * so code is Copy&Paste in 2 sub-classes: FxReadArrayNodeProxy and FxReadObjNodeProxy 
  */
 public abstract class _FxReadContainerNodeProxyMixin extends FxContainerNode {
 
     protected FxContainerNode delegate;
     protected boolean allowGetParent;
-
-    public _FxReadContainerNodeProxyMixin(FxContainerNode proxyParent, boolean allowGetParent, FxContainerNode delegate) {
-        super(proxyParent, null);
+    
+    public _FxReadContainerNodeProxyMixin(FxContainerNode proxyParent, FxSourceLoc sourceLoc, boolean allowGetParent, FxContainerNode delegate) {
+        super(proxyParent, null, sourceLoc);
         this.delegate = delegate;
         this.allowGetParent = allowGetParent;
     }
@@ -30,11 +30,11 @@ public abstract class _FxReadContainerNodeProxyMixin extends FxContainerNode {
         if (node == null) return null;
         return FxReadProxyNodeWrappers.wrapROProxy(this, allowGetParent, node);
     }
-
+    
     protected RuntimeException throwWriteDenied() {
         throw FxReadProxyNodeWrappers.throwWriteDenied();
     }
-
+    
     @Override
     public int size() {
         return delegate.size();
@@ -73,18 +73,8 @@ public abstract class _FxReadContainerNodeProxyMixin extends FxContainerNode {
             public void remove() {
                 throw throwWriteDenied();
             }
-
+            
         };
     }
-
-    @Override
-    public void remove(FxNode chld) {
-        throw throwWriteDenied();
-    }
-
-    @Override
-    public FxNode remove(FxChildId childId) {
-        throw throwWriteDenied();
-    }
-
+    
 }

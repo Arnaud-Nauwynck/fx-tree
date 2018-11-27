@@ -10,7 +10,7 @@ public class FxFixedCompoundFunc extends FxNodeFunc {
 
     private final FxNodeFunc first;
     private final FxNodeFunc then;
-
+    
     // ------------------------------------------------------------------------
 
     public FxFixedCompoundFunc(FxNodeFunc first, FxNodeFunc then) {
@@ -24,21 +24,21 @@ public class FxFixedCompoundFunc extends FxNodeFunc {
     }
 
     // ------------------------------------------------------------------------
-
+    
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        FxMemRootDocument tmpDoc = new FxMemRootDocument();
+        FxMemRootDocument tmpDoc = new FxMemRootDocument(src.getSourceLoc());
         FxChildWriter tmpAdder = tmpDoc.contentWriter();
-
+        
         first.eval(tmpAdder, ctx, src);
-
+        
         FxNode tmpres = tmpDoc.getContent();
         if (tmpres == null) {
             return; // useless? "then" function should accept "null"
         }
-
+        
         then.eval(dest, ctx, tmpres);
     }
-
-
+    
+    
 }

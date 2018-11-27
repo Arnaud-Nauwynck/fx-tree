@@ -1,136 +1,79 @@
 package fr.an.fxtree.model;
 
-import java.util.Map;
-
-import com.google.common.collect.ImmutableMap;
-
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.path.FxNodeOuterPath;
 
 public abstract class FxNodeFactoryRegistry {
+    
+    public abstract FxArrayNode newArray(FxSourceLoc loc);
+    
+    public abstract FxObjNode newObj(FxSourceLoc loc);
+    
+    public abstract FxTextNode newText(FxSourceLoc loc);
 
-    public abstract <T extends FxNode> T newNode(Class<T> clss);
-
-    // helper methods
-    // ------------------------------------------------------------------------
-
-    public FxArrayNode newArray() {
-        return newNode(FxArrayNode.class);
-    }
-
-    public FxObjNode newObj() {
-        return newNode(FxObjNode.class);
-    }
-
-    public FxTextNode newText() {
-        return newNode(FxTextNode.class);
-    }
-
-    public FxTextNode newText(String value) {
-        FxTextNode res = newText();
+    public FxTextNode newText(String value, FxSourceLoc loc) {
+        FxTextNode res = newText(loc);
         res.setValue(value);
         return res;
     }
 
-    public FxDoubleNode newDouble() {
-        return newNode(FxDoubleNode.class);
+    public abstract FxDoubleNode newDouble(FxSourceLoc loc);
+    
+    public FxDoubleNode newDouble(double value, FxSourceLoc loc) {
+        FxDoubleNode res = newDouble(loc);
+        res.setValue(value);
+        return res;
     }
+    
+    public abstract FxIntNode newInt(FxSourceLoc loc);
 
-    public FxDoubleNode newDouble(double value) {
-        FxDoubleNode res = newDouble();
+    public FxIntNode newInt(int value, FxSourceLoc loc) {
+        FxIntNode res = newInt(loc);
         res.setValue(value);
         return res;
     }
 
-    public FxIntNode newInt() {
-        return newNode(FxIntNode.class);
-    }
+    public abstract FxLongNode newLong(FxSourceLoc loc);
 
-    public FxIntNode newInt(int value) {
-        FxIntNode res = newInt();
+    public FxLongNode newLong(long value, FxSourceLoc loc) {
+        FxLongNode res = newLong(loc);
         res.setValue(value);
         return res;
     }
 
-    public FxLongNode newLong() {
-        return newNode(FxLongNode.class);
+    public abstract FxBoolNode newBool(FxSourceLoc loc);
+
+    public FxBoolNode newBool(boolean value, FxSourceLoc loc) {
+        FxBoolNode res = newBool(loc);
+        res.setValue(value);
+        return res; 
     }
 
-    public FxLongNode newLong(long value) {
-        FxLongNode res = newLong();
+    public abstract FxBinaryNode newBinary(FxSourceLoc loc);
+
+    public FxBinaryNode newBinary(byte[] value, FxSourceLoc loc) {
+        FxBinaryNode res = newBinary(loc);
+        res.setValue(value);
+        return res; 
+    }
+
+    public abstract FxPOJONode newPOJO(FxSourceLoc loc);
+
+    public FxPOJONode newPOJO(Object value, FxSourceLoc loc) {
+        FxPOJONode res = newPOJO(loc);
         res.setValue(value);
         return res;
     }
 
-    public FxBoolNode newBool() {
-        return newNode(FxBoolNode.class);
-    }
+    // TODO deprecated
+    public abstract FxLinkProxyNode newLink(FxSourceLoc loc);
 
-    public FxBoolNode newBool(boolean value) {
-        FxBoolNode res = newBool();
-        res.setValue(value);
-        return res;
-    }
-
-    public FxBinaryNode newBinary() {
-        return newNode(FxBinaryNode.class);
-    }
-
-    public FxBinaryNode newBinary(byte[] value) {
-        FxBinaryNode res = newBinary();
-        res.setValue(value);
-        return res;
-    }
-
-    public FxPOJONode newPOJO() {
-        return newNode(FxPOJONode.class);
-    }
-
-    public FxPOJONode newPOJO(Object value) {
-        FxPOJONode res = newPOJO();
-        res.setValue(value);
-        return res;
-    }
-
-    public FxLinkProxyNode newLink() {
-        FxLinkProxyNode res = newNode(FxLinkProxyNode.class);
-        return res;
-    }
-
-    public FxLinkProxyNode newLink(FxNodeOuterPath value) {
-        FxLinkProxyNode res = newLink();
+    public FxLinkProxyNode newLink(FxNodeOuterPath value, FxSourceLoc loc) {
+        FxLinkProxyNode res = newLink(loc);
         res.setTargetRelativePath(value);
         return res;
     }
-
-
-    public FxNullNode newNull() {
-        return newNode(FxNullNode.class);
-    }
-
-    // ------------------------------------------------------------------------
-
-    public static class DefaultFxNodeFactoryRegistry extends FxNodeFactoryRegistry {
-
-        private Map<Class<?>,FxNodeFactory<?>> class2factory;
-
-        public DefaultFxNodeFactoryRegistry(Map<Class<?>,FxNodeFactory<?>> class2factory) {
-            this.class2factory = ImmutableMap.copyOf(class2factory);
-        }
-
-        public <T extends FxNode> void register(Class<T> clss, FxNodeFactory<T> factory) {
-            this.class2factory = ImmutableMap.<Class<?>,FxNodeFactory<?>>builder()
-                    .putAll(class2factory).put(clss, factory).build();
-        }
-
-        @Override
-		public <T extends FxNode> T newNode(Class<T> clss) {
-            @SuppressWarnings("unchecked")
-            FxNodeFactory<T> factory = (FxNodeFactory<T>) class2factory.get(clss);
-            if (factory == null) {
-                throw new IllegalArgumentException("Factory not registered for class: " + clss);
-            }
-            return factory.newNode();
-        }
-
-    }
+    
+    public abstract FxNullNode newNull(FxSourceLoc loc);
+ 
 }

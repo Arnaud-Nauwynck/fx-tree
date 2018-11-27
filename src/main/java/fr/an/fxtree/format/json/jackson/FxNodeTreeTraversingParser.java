@@ -51,7 +51,7 @@ public class FxNodeTreeTraversingParser extends ParserMinimalBase {
     protected boolean _closed;
 
     // ------------------------------------------------------------------------
-
+    
     public FxNodeTreeTraversingParser(FxNode n) {
         this(n, null);
     }
@@ -83,7 +83,7 @@ public class FxNodeTreeTraversingParser extends ParserMinimalBase {
     public boolean isClosed() {
         return _closed;
     }
-
+    
     // ------------------------------------------------------------------------
 
     @Override
@@ -102,7 +102,7 @@ public class FxNodeTreeTraversingParser extends ParserMinimalBase {
     }
 
     // ------------------------------------------------------------------------
-
+    
     @Override
     public JsonToken nextToken() throws IOException, JsonParseException {
         if (_nextToken != null) {
@@ -157,7 +157,7 @@ public class FxNodeTreeTraversingParser extends ParserMinimalBase {
         return this;
     }
 
-
+    
     // ------------------------------------------------------------------------
 
     @Override
@@ -189,7 +189,7 @@ public class FxNodeTreeTraversingParser extends ParserMinimalBase {
 
     // access to textual content
     // ------------------------------------------------------------------------
-
+    
     @Override
     public String getText() {
         if (_closed) {

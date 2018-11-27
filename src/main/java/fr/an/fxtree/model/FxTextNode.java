@@ -10,12 +10,14 @@ import com.fasterxml.jackson.core.io.CharTypes;
 import com.fasterxml.jackson.core.io.NumberInput;
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
+
 public abstract class FxTextNode extends FxValueNode {
 
     // ------------------------------------------------------------------------
 
-    protected FxTextNode(FxContainerNode parent, FxChildId childId) {
-        super(parent, childId);
+    protected FxTextNode(FxContainerNode parent, FxChildId childId, FxSourceLoc sourceLoc) {
+        super(parent, childId, sourceLoc);
     }
 
     // ------------------------------------------------------------------------
@@ -262,5 +264,5 @@ public abstract class FxTextNode extends FxValueNode {
     protected void _reportBase64EOF() throws JsonParseException {
         throw new JsonParseException(null, "Unexpected end-of-String when base64 content");
     }
-
+    
 }

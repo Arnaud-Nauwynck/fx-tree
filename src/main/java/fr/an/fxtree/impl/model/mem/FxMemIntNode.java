@@ -6,23 +6,21 @@ import fr.an.fxtree.model.FxIntNode;
 public class FxMemIntNode extends FxIntNode {
 
     private int value;
-
+    
     // ------------------------------------------------------------------------
-
-    protected FxMemIntNode(FxContainerNode parent, FxMemChildId childId, int value) {
-        super(parent, childId);
+    
+    protected FxMemIntNode(FxContainerNode parent, FxMemChildId childId, FxSourceLoc sourceLoc, int value) {
+        super(parent, childId, sourceLoc);
         this.value = value;
     }
 
     // ------------------------------------------------------------------------
-
-    @Override
-	public int getValue() {
+    
+    public int getValue() {
         return value;
     }
 
-    @Override
-	public void setValue(int value) {
+    public void setValue(int value) {
         this.value = value;
     }
 

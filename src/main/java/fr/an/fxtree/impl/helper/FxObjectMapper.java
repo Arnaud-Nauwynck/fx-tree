@@ -21,7 +21,7 @@ public class FxObjectMapper {
     // ------------------------------------------------------------------------
 
     public void readUpdate(FxObjNode srcObj, Object res) {
-        JsonParser paramsAsJacksonParser = new FxNodeTreeTraversingParser(srcObj);
+        JsonParser paramsAsJacksonParser = new FxNodeTreeTraversingParser(srcObj); 
         ObjectReader readerForUpdating = jacksonObjectMapper.readerForUpdating(res);
         try {
             readerForUpdating.readValue(paramsAsJacksonParser);
@@ -29,5 +29,5 @@ public class FxObjectMapper {
             throw new RuntimeException("Failed to read", ex);
         }
     }
-
+    
 }

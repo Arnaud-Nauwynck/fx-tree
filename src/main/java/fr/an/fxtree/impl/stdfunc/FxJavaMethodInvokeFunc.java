@@ -19,18 +19,18 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 public class FxJavaMethodInvokeFunc extends FxNodeFunc {
 
     public static final String NAME = "invoke";
-
-    private static final WeakHashMap<String,Method> cacheMethodByFQN = new WeakHashMap<>();
-
+    
+    private static final WeakHashMap<String,Method> cacheMethodByFQN = new WeakHashMap<String,Method>();
+    
     // ------------------------------------------------------------------------
 
     public static final FxJavaMethodInvokeFunc INSTANCE = new FxJavaMethodInvokeFunc();
-
+    
     private FxJavaMethodInvokeFunc() {
     }
 
     // ------------------------------------------------------------------------
-
+    
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
@@ -39,7 +39,7 @@ public class FxJavaMethodInvokeFunc extends FxNodeFunc {
         final Method method = resolvePublicStaticMethodByFQN(fqn);
         final Parameter[] methodParameters = method.getParameters();
         final int methodParametersCount = methodParameters.length;
-
+        
         Object[] paramValues = new Object[methodParametersCount];
         if (methodParametersCount == 0) {
             paramValues = new Object[0];
@@ -61,7 +61,7 @@ public class FxJavaMethodInvokeFunc extends FxNodeFunc {
                         paramValues[i] = FxNodeValueUtils.nodeToValueForType(paramNode, type, ctx);
                     }
                 } else {
-                    throw new IllegalArgumentException("expecting 'params' as array[" + methodParametersCount + "], got " + paramsNode.getNodeType());
+                    throw new IllegalArgumentException("expecting 'params' as array[" + methodParametersCount + "], got " + paramsNode.getNodeType()); 
                 }
             }
             if (paramValuesCount < methodParametersCount) {
@@ -101,7 +101,7 @@ public class FxJavaMethodInvokeFunc extends FxNodeFunc {
                 if (paramValuesCount < methodParametersCount) {
                     throw new IllegalArgumentException("missing method params");
                 }
-            }
+            }            
         }
 
         Object tmpres;
@@ -111,14 +111,14 @@ public class FxJavaMethodInvokeFunc extends FxNodeFunc {
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             throw new RuntimeException("Failed to invoke method " + fqn, ex);
         }
-
+        
         if (tmpres != null) {
             // TOADD .. may write output?
         }
     }
 
     // ------------------------------------------------------------------------
-
+    
     protected Method resolvePublicStaticMethodByFQN(String fqn) {
         Method res = cacheMethodByFQN.get(fqn);
         if (res != null) {
@@ -130,7 +130,7 @@ public class FxJavaMethodInvokeFunc extends FxNodeFunc {
         }
         String className = fqn.substring(0, indexDot);
         String methodName = fqn.substring(indexDot + 1, fqn.length());
-
+        
         Class<?> clss;
         try {
             clss = Class.forName(className);
@@ -173,12 +173,12 @@ public class FxJavaMethodInvokeFunc extends FxNodeFunc {
         }
         return res;
     }
-
+    
     // ------------------------------------------------------------------------
-
+    
     @Override
     public String toString() {
         return "FxFunc:invoke";
     }
-
+    
 }

@@ -13,11 +13,11 @@ import fr.an.fxtree.model.FxObjNode;
  *
  */
 public class FxObjNodeWithTypeTreeScanner extends FxDefaultTreeVisitor {
-
+    
     private BiConsumer<String,FxObjNode> consumer;
-
+    
     // ------------------------------------------------------------------------
-
+    
     public FxObjNodeWithTypeTreeScanner(BiConsumer<String, FxObjNode> consumer) {
         this.consumer = consumer;
     }
@@ -25,7 +25,7 @@ public class FxObjNodeWithTypeTreeScanner extends FxDefaultTreeVisitor {
     public static List<FxObjNode> scanFxObjNodesWithType(FxNode tree) {
         return scanFxObjNodesWithType(tree, x -> true);
     }
-
+    
     public static List<FxObjNode> scanFxObjNodesWithType(FxNode tree, Predicate<String> typePredicate) {
         List<FxObjNode> res = new ArrayList<>();
         FxObjNodeWithTypeTreeScanner visitor = new FxObjNodeWithTypeTreeScanner((t,n) -> {
@@ -36,7 +36,7 @@ public class FxObjNodeWithTypeTreeScanner extends FxDefaultTreeVisitor {
         tree.accept(visitor);
         return res;
     }
-
+    
     // ------------------------------------------------------------------------
 
     @Override

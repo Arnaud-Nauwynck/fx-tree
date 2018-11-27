@@ -7,17 +7,19 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.fasterxml.jackson.core.io.CharTypes;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.path.FxNodeOuterPath;
 
 public abstract class FxObjNode extends FxContainerNode {
 
     // ------------------------------------------------------------------------
 
-    protected FxObjNode(FxContainerNode parent, FxChildId childId) {
-        super(parent, childId);
+    protected FxObjNode(FxContainerNode parent, FxChildId childId, FxSourceLoc sourceLoc) {
+        super(parent, childId, sourceLoc);
     }
 
     // ------------------------------------------------------------------------
@@ -69,14 +71,17 @@ public abstract class FxObjNode extends FxContainerNode {
         }
     }
 
-    public abstract <T extends FxNode> T put(String name, Class<T> clss);
-
     protected abstract <T extends FxNode> T onPut(String name, T node);
 
-    public abstract <T extends FxNode> T get(String name);
+    protected <T extends FxNode> T putNode(String name, T node, FxSourceLoc loc) {
+        if (loc == null) {
+            loc = getSourceLoc();
+        }
+        node.setSourceLoc(loc);
+        return onPut(name, node);
+    }
 
-    @Override
-    public abstract void remove(FxNode child);
+    public abstract <T extends FxNode> T get(String name);
 
     public abstract FxNode remove(String name);
 
@@ -99,68 +104,68 @@ public abstract class FxObjNode extends FxContainerNode {
         return new ObjChildWriter(this, name, useIncrSuffix);
     }
 
-    public FxArrayNode putArray(String name) {
-        FxArrayNode res = getNodeFactory().newArray();
+    public FxArrayNode putArray(String name, FxSourceLoc loc) {
+        FxArrayNode res = getNodeFactory().newArray(loc);
         return onPut(name, res);
     }
 
-    public FxObjNode putObj(String name) {
-        FxObjNode res = getNodeFactory().newObj();
+    public FxObjNode putObj(String name, FxSourceLoc loc) {
+        FxObjNode res = getNodeFactory().newObj(loc);
         return onPut(name, res);
     }
 
-    public FxTextNode put(String name, String value) {
-        FxTextNode res = getNodeFactory().newText(value);
+    public FxTextNode put(String name, String value, FxSourceLoc loc) {
+        FxTextNode res = getNodeFactory().newText(value, loc);
         return onPut(name, res);
     }
 
-    public FxDoubleNode put(String name, double value) {
-        FxDoubleNode res = getNodeFactory().newDouble(value);
+    public FxDoubleNode put(String name, double value, FxSourceLoc loc) {
+        FxDoubleNode res = getNodeFactory().newDouble(value, loc);
         return onPut(name, res);
     }
 
-    public FxIntNode put(String name, int value) {
-        FxIntNode res = getNodeFactory().newInt(value);
+    public FxIntNode put(String name, int value, FxSourceLoc loc) {
+        FxIntNode res = getNodeFactory().newInt(value, loc);
         return onPut(name, res);
     }
 
-    public FxLongNode put(String name, long value) {
-        FxLongNode res = getNodeFactory().newLong(value);
+    public FxLongNode put(String name, long value, FxSourceLoc loc) {
+        FxLongNode res = getNodeFactory().newLong(value, loc);
         return onPut(name, res);
     }
 
-    public FxBoolNode put(String name, boolean value) {
-        FxBoolNode res = getNodeFactory().newBool(value);
+    public FxBoolNode put(String name, boolean value, FxSourceLoc loc) {
+        FxBoolNode res = getNodeFactory().newBool(value, loc);
         return onPut(name, res);
     }
 
-    public FxBinaryNode put(String name, byte[] value) {
-        FxBinaryNode res = getNodeFactory().newBinary(value);
+    public FxBinaryNode put(String name, byte[] value, FxSourceLoc loc) {
+        FxBinaryNode res = getNodeFactory().newBinary(value, loc);
         return onPut(name, res);
     }
 
-    public FxPOJONode put(String name, BigInteger value) {
-        FxPOJONode res = getNodeFactory().newPOJO(value); // TODO use POJO?
+    public FxPOJONode put(String name, BigInteger value, FxSourceLoc loc) {
+        FxPOJONode res = getNodeFactory().newPOJO(value, loc); // TODO use POJO?
         return onPut(name, res);
     }
 
-    public FxPOJONode put(String name, BigDecimal value) {
-        FxPOJONode res = getNodeFactory().newPOJO(value); // TODO use POJO?
+    public FxPOJONode put(String name, BigDecimal value, FxSourceLoc loc) {
+        FxPOJONode res = getNodeFactory().newPOJO(value, loc); // TODO use POJO?
         return onPut(name, res);
     }
 
-    public FxPOJONode putPOJO(String name, Object value) {
-        FxPOJONode res = getNodeFactory().newPOJO(value);
+    public FxPOJONode putPOJO(String name, Object value, FxSourceLoc loc) {
+        FxPOJONode res = getNodeFactory().newPOJO(value, loc);
         return onPut(name, res);
     }
 
-    public FxLinkProxyNode putLink(String name, FxNodeOuterPath value) {
-        FxLinkProxyNode res = getNodeFactory().newLink(value);
+    public FxLinkProxyNode putLink(String name, FxNodeOuterPath value, FxSourceLoc loc) {
+        FxLinkProxyNode res = getNodeFactory().newLink(value, loc);
         return onPut(name, res);
     }
 
-    public FxNullNode putNull(String name) {
-        FxNullNode res = getNodeFactory().newNull();
+    public FxNullNode putNull(String name, FxSourceLoc loc) {
+        FxNullNode res = getNodeFactory().newNull(loc);
         return onPut(name, res);
     }
 
@@ -210,7 +215,7 @@ public abstract class FxObjNode extends FxContainerNode {
 
     // internal
     // ------------------------------------------------------------------------
-
+    
     protected static void appendQuoted(StringBuilder sb, String content) {
         sb.append('"');
         CharTypes.appendQuoted(sb, content);
@@ -219,23 +224,23 @@ public abstract class FxObjNode extends FxContainerNode {
 
 
     public static final class ObjChildWriter extends FxChildWriter {
-
+        
         private FxObjNode dest;
         private String baseName;
         private boolean useIncrSuffix;
         private int currIndex;
-
+        
         public ObjChildWriter(FxObjNode dest, String name, boolean useIncrSuffix) {
             this.dest = dest;
             this.baseName = name;
             this.useIncrSuffix = useIncrSuffix;
         }
 
-        // used only to change field to add
-        public ObjChildWriter sibblingChildAdder(String fieldName) {
-        	return new ObjChildWriter(dest, fieldName, false);
+        @Override
+        protected FxSourceLoc insertLoc() {
+            return dest.getSourceLoc();
         }
-        
+
         private String incrName() {
             if (!useIncrSuffix) {
                 return baseName;
@@ -245,7 +250,7 @@ public abstract class FxObjNode extends FxContainerNode {
                 return res;
             }
         }
-
+        
         private String currChildName() {
             if (!useIncrSuffix) {
                 return baseName;
@@ -253,7 +258,7 @@ public abstract class FxObjNode extends FxContainerNode {
                 return (currIndex == 0)? baseName : baseName + currIndex;
             }
         }
-
+        
         @Override
         public void remove() {
             dest.remove(currChildName());
@@ -263,84 +268,71 @@ public abstract class FxObjNode extends FxContainerNode {
         public FxNode getResultChild() {
             return dest.get(currChildName());
         }
-
+        
         @Override
-        public boolean canAddMoveFrom(FxRootDocument otherParentSrc) {
-            return dest.getNodeFactory() == otherParentSrc.getNodeFactory();
+        public FxArrayNode addArray(FxSourceLoc loc) {
+            return dest.putArray(incrName(), loc);
         }
 
         @Override
-        public FxNode addMoveFrom(FxRootDocument otherParentSrc) {
-            FxNode contentSrc = otherParentSrc.getContent();
-            otherParentSrc.remove(contentSrc);
-            dest.onPut(incrName(), contentSrc);
-            return contentSrc;
+        public FxObjNode addObj(FxSourceLoc loc) {
+            return dest.putObj(incrName(), loc);
         }
 
         @Override
-        public FxArrayNode addArray() {
-            return dest.putArray(incrName());
+        public FxTextNode add(String value, FxSourceLoc loc) {
+            return dest.put(incrName(), value, loc);
         }
 
         @Override
-        public FxObjNode addObj() {
-            return dest.putObj(incrName());
+        public FxDoubleNode add(double value, FxSourceLoc loc) {
+            return dest.put(incrName(), value, loc);
         }
 
         @Override
-        public FxTextNode add(String value) {
-            return dest.put(incrName(), value);
+        public FxIntNode add(int value, FxSourceLoc loc) {
+            return dest.put(incrName(), value, loc);
         }
 
         @Override
-        public FxDoubleNode add(double value) {
-            return dest.put(incrName(), value);
+        public FxLongNode add(long value, FxSourceLoc loc) {
+            return dest.put(incrName(), value, loc);
         }
 
         @Override
-        public FxIntNode add(int value) {
-            return dest.put(incrName(), value);
+        public FxBoolNode add(boolean value, FxSourceLoc loc) {
+            return dest.put(incrName(), value, loc);
         }
 
         @Override
-        public FxLongNode add(long value) {
-            return dest.put(incrName(), value);
+        public FxBinaryNode add(byte[] value, FxSourceLoc loc) {
+            return dest.put(incrName(), value, loc);
         }
 
         @Override
-        public FxBoolNode add(boolean value) {
-            return dest.put(incrName(), value);
+        public FxPOJONode add(BigInteger value, FxSourceLoc loc) {
+            return dest.put(incrName(), value, loc);
         }
 
         @Override
-        public FxBinaryNode add(byte[] value) {
-            return dest.put(incrName(), value);
+        public FxPOJONode add(BigDecimal value, FxSourceLoc loc) {
+            return dest.put(incrName(), value, loc);
         }
 
         @Override
-        public FxPOJONode add(BigInteger value) {
-            return dest.put(incrName(), value);
+        public FxPOJONode addPOJO(Object value, FxSourceLoc loc) {
+            return dest.putPOJO(incrName(), value, loc);
         }
 
         @Override
-        public FxPOJONode add(BigDecimal value) {
-            return dest.put(incrName(), value);
+        public FxLinkProxyNode addLink(FxNodeOuterPath value, FxSourceLoc loc) {
+            return dest.putLink(incrName(), value, loc);
         }
 
         @Override
-        public FxPOJONode addPOJO(Object value) {
-            return dest.putPOJO(incrName(), value);
-        }
-
-        @Override
-        public FxLinkProxyNode addLink(FxNodeOuterPath value) {
-            return dest.putLink(incrName(), value);
-        }
-
-        @Override
-        public FxNullNode addNull() {
-            return dest.putNull(incrName());
+        public FxNullNode addNull(FxSourceLoc loc) {
+            return dest.putNull(incrName(), loc);
         }
     }
-
+    
 }

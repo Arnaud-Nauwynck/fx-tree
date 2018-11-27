@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.impl.util.LigthweightMapEntry;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxBinaryNode;
@@ -33,9 +34,9 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     protected boolean allowGetParent;
 
     // ------------------------------------------------------------------------
-
-    public FxReadObjNodeProxy(FxContainerNode proxyParent, boolean allowGetParent, FxObjNode delegate) {
-        super(proxyParent, null);
+    
+    public FxReadObjNodeProxy(FxContainerNode proxyParent, FxSourceLoc sourceLoc, boolean allowGetParent, FxObjNode delegate) {
+        super(proxyParent, null, sourceLoc);
         this.allowGetParent = allowGetParent;
         this.delegate = delegate;
     }
@@ -47,7 +48,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
         if (node == null) return null;
         return FxReadProxyNodeWrappers.wrapROProxy(this, allowGetParent, node);
     }
-
+    
     protected RuntimeException throwWriteDenied() {
         throw FxReadProxyNodeWrappers.throwWriteDenied();
     }
@@ -55,7 +56,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
 
     @Override
     public FxContainerNode getParent() {
-        if (!allowGetParent) FxReadProxyNodeWrappers.throwGetParentDenied();
+        if (!allowGetParent) FxReadProxyNodeWrappers.throwGetParentDenied(); 
         return super.getParent();
     }
 
@@ -69,7 +70,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     public FxNodeType getNodeType() {
         return delegate.getNodeType();
     }
-
+    
     @Override
     public int size() {
         return delegate.size();
@@ -79,7 +80,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     public boolean isEmpty() {
         return delegate.isEmpty();
     }
-
+        
     // @Override
     public Collection<FxNode> children() {
         List<FxNode> res = new ArrayList<>(delegate.size());
@@ -108,18 +109,18 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
             public void remove() {
                 throw throwWriteDenied();
             }
-
+            
         };
     }
 
     // specific for FxObjNode implements/override
     // ------------------------------------------------------------------------
-
+    
     @Override
     public Iterator<Map.Entry<String, FxNode>> fields() {
         Iterator<Map.Entry<String, FxNode>> delegateIterator = delegate.fields();
         return new Iterator<Map.Entry<String, FxNode>>() {
-            LigthweightMapEntry<String,FxNode> reusableMapEntry = new LigthweightMapEntry<>(null, null);
+            LigthweightMapEntry<String,FxNode> reusableMapEntry = new LigthweightMapEntry<String,FxNode>(null, null);
 
             @Override
             public boolean hasNext() {
@@ -169,17 +170,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     }
 
     @Override
-    public <T extends FxNode> T put(String name, Class<T> clss) {
-        throw throwWriteDenied();
-    }
-
-    @Override
     protected <T extends FxNode> T onPut(String name, T node) {
-        throw throwWriteDenied();
-    }
-
-    @Override
-    public void remove(FxNode child) {
         throw throwWriteDenied();
     }
 
@@ -204,70 +195,65 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     }
 
     @Override
-    public FxArrayNode putArray(String name) {
+    public FxArrayNode putArray(String name, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxObjNode putObj(String name) {
+    public FxObjNode putObj(String name, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxTextNode put(String name, String value) {
+    public FxTextNode put(String name, String value, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxDoubleNode put(String name, double value) {
+    public FxDoubleNode put(String name, double value, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxIntNode put(String name, int value) {
+    public FxIntNode put(String name, int value, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxBoolNode put(String name, boolean value) {
+    public FxBoolNode put(String name, boolean value, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxBinaryNode put(String name, byte[] value) {
+    public FxBinaryNode put(String name, byte[] value, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxPOJONode put(String name, BigInteger value) {
+    public FxPOJONode put(String name, BigInteger value, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxPOJONode put(String name, BigDecimal value) {
+    public FxPOJONode put(String name, BigDecimal value, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxPOJONode putPOJO(String name, Object value) {
+    public FxPOJONode putPOJO(String name, Object value, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     @Override
-    public FxNullNode putNull(String name) {
-        throw throwWriteDenied();
-    }
-
-    @Override
-    public FxNode remove(FxChildId childId) {
+    public FxNullNode putNull(String name, FxSourceLoc loc) {
         throw throwWriteDenied();
     }
 
     // ------------------------------------------------------------------------
-
+    
     @Override
     public String toString() {
         return "FxReadObjNodeProxy [delegate=" + delegate + "]";
     }
-
+    
 }

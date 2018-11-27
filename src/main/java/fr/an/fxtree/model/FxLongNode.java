@@ -5,12 +5,14 @@ import java.math.BigInteger;
 
 import com.fasterxml.jackson.core.io.NumberOutput;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
+
 public abstract class FxLongNode extends FxValueNode {
 
     // ------------------------------------------------------------------------
 
-    protected FxLongNode(FxContainerNode parent, FxChildId childId) {
-        super(parent, childId);
+    protected FxLongNode(FxContainerNode parent, FxChildId childId, FxSourceLoc sourceLoc) {
+        super(parent, childId, sourceLoc);
     }
 
     // ------------------------------------------------------------------------

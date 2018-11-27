@@ -1,13 +1,11 @@
 package fr.an.fxtree.impl.stdfunc;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyDefaultsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeCopyMergeVisitor;
-import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.helper.FxNodePerformCopyDeclsVisitor;
+import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
@@ -71,31 +69,31 @@ public final class FxStdTreeFuncs {
 
             FxNode copyFromNode = fromPath.select(body);
             if (copyFromNode == null) {
-                throw new IllegalArgumentException("can not copy node, fromPath '" + fromPath + "' not found in body");
+                throw new IllegalArgumentException("can not copy node, fromPath '" + fromPath + "' not found in body"); 
             }
-
+                        
             FxChildWriter toPathWriter = toPath.selectInsertBuilder(destBody);
             FxNodeCopyVisitor.copyTo(toPathWriter, copyFromNode);
         }
     }
-
-
+    
+    
     /**
      * FxFunction to scan and execute "outer copies declarations" from extended paths to path
-     *
+     * 
      * This is a way to keep pure functions acting on child content, but still allow copies outside : going to parent ancestors, then re-descending in child
-     * On a file system, such extended paths would be noted "../../a/b"
-     * proposed extended path syntaxes: "^2.a.b"
-     *
+     * On a file system, such extended paths would be noted "../../a/b" 
+     * proposed extended path syntaxes: "^2.a.b" 
+     * 
      * Example usage:
      *<PRE>
-     * {
+     * {                                         
      *  "@fx-eval": "#phase0:tree.performOuterCopyDecls"
-     *  body: {
+     *  body: {
      *     a1: {
      *      b1: {
      *       c1: 123
-     *      }
+     *      }      
      *      "#phase0:@fx-decl-outercopy": {
      *        fromExtPath: ".b1",
      *        toExtPath: "^.a2.b2"
@@ -106,27 +104,27 @@ public final class FxStdTreeFuncs {
      *     }
      *  }
      * }
-     *</PRE>
+     *</PRE> 
      *
      */
     public static class FxOuterCopyDeclsPerformFunc extends FxNodeFunc {
         public static final String NAME = "tree.performOuterCopyDecls";
         public static final FxOuterCopyDeclsPerformFunc INSTANCE = new FxOuterCopyDeclsPerformFunc();
-
+        
         @Override
         public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
             FxNode body = srcObj.get("body");
-
+            
             String declMarkerFieldname = "#" + FxCurrEvalCtxUtil.currPhaseName(ctx) + ":@fx-decl-outercopy";
-
+            
             FxNode destBody = FxNodeCopyVisitor.copyTo(dest, body);
-
+            
             FxNodePerformCopyDeclsVisitor.recursivePerformCopyDeclsOn(destBody, ctx, declMarkerFieldname);
         }
     }
-
-
+    
+    
     /**
      * FxFunction to merge 2 (or more) trees from child paths to another child path
      * Example usage:
@@ -140,20 +138,20 @@ public final class FxStdTreeFuncs {
     body: {
       other_before: 1,
       a1: {
-        a2: {
+        a2: { 
           a2Field1: 123,
-          a2Field2: 234,
-          sharedField1: "a-sharedField1",
-          sharedField2: 123
-        }
+          a2Field2: 234, 
+          sharedField1: "a-sharedField1", 
+          sharedField2: 123  
+        }  
       },
       b1: {
-        b2: {
+        b2: {  
           b2Field1: 123,
-          b2Field2: 234,
-          sharedField1: "b-sharedField1",
-          sharedField2: 234
-        }
+          b2Field2: 234, 
+          sharedField1: "b-sharedField1", 
+          sharedField2: 234  
+        }  
       },
       res1: {
         res2: {}
@@ -163,32 +161,32 @@ public final class FxStdTreeFuncs {
   }
 }
      </PRE>
-     * =>
+     * => 
      * <PRE>
 {
   "eval_tree_merge": {
     other_before: 1,
     a1: {
-      a2: {
+      a2: { 
         a2Field1: 123,
-        a2Field2: 234,
-        sharedField1: "a-sharedField1",
-        sharedField2: 123
-      }
+        a2Field2: 234, 
+        sharedField1: "a-sharedField1", 
+        sharedField2: 123  
+      }  
     },
     b1: {
-      b2: {
+      b2: {  
         b2Field1: 123,
-        b2Field2: 234,
-        sharedField1: "b-sharedField1",
-        sharedField2: 234
-      }
+        b2Field2: 234, 
+        sharedField1: "b-sharedField1", 
+        sharedField2: 234  
+      }  
     },
     res1: {
       res2: {
         a2Field1: 123,
-        a2Field2: 234,
-        sharedField1: "b-sharedField1",
+        a2Field2: 234, 
+        sharedField1: "b-sharedField1", 
         sharedField2: 234,
         b2Field1: 123,
         b2Field2: 234
@@ -211,18 +209,18 @@ public final class FxStdTreeFuncs {
             FxArrayNode fromPathsArray = FxCurrEvalCtxUtil.recurseEvalToArray(ctx, srcObj.get("fromPaths"));
             FxNodePath toPath = FxCurrEvalCtxUtil.recurseEvalToPath(ctx, srcObj.get("toPath"));
             boolean ignoreNotFound = FxCurrEvalCtxUtil.recurseEvalToBooleanOrDefault(ctx, srcObj.get("ignoreFromPathsNotfound"), false);
-
+            
             FxNode destBody = FxNodeCopyVisitor.copyTo(dest, body);
 
             FxNode destNode = toPath.select(destBody);
 
-            FxNodeCopyMergeVisitor mergeVisitor = FxNodeCopyMergeVisitor.instance(true, false);
+            FxNodeCopyMergeVisitor mergeVisitor = FxNodeCopyMergeVisitor.instance(true, false); 
 
             final int fromPathsLen = fromPathsArray.size();
             for (int i = 0; i < fromPathsLen; i++) {
                 FxNode fromPathNode = fromPathsArray.get(i);
                 FxNodePath fromPath = FxNodeValueUtils.nodeToPath(fromPathNode);
-
+                
                 FxNode fromNode = fromPath.select(body);
                 if (fromNode == null) {
                     if (ignoreNotFound) {
@@ -231,14 +229,14 @@ public final class FxStdTreeFuncs {
                         continue;
                     }
                 }
-
+    
                 fromNode.accept(mergeVisitor, destNode);
             }
         }
     }
-
-
-
+    
+    
+    
     /**
      * FxFunction to merge add defaults from child path to another child path
      * Example usage:
@@ -246,26 +244,26 @@ public final class FxStdTreeFuncs {
 {
   "eval_tree_mergeDefaults": {
     "@fx-eval": "#phase0:tree.mergeDefaults",
-    fromPaths: [ ".defaults.a" ],
+    fromPaths: [ ".defaults.a" ], 
     ignoreFromPathsNotfound: false,
     toPath: ".res1.res2",
     body: {
       other_before: 1,
       defaults: {
-        a: {
+        a: { 
           field1: 123,
           field2: 234,
-          subObj3: {
+          subObj3: { 
             field2_1: 345,
-            field2_2: 456
+            field2_2: 456 
           }
         }
       },
       res1: {
         res2: {
           field1: 1,
-          subObj3: {
-            field2_1: 3
+          subObj3: { 
+            field2_1: 3 
           }
         }
       },
@@ -274,25 +272,25 @@ public final class FxStdTreeFuncs {
   }
 }
      </PRE>
-     * =>
+     * => 
      * <PRE>
 {
   "eval_tree_mergeDefaults": {
     other_before: 1,
     defaults: {
-      a: {
+      a: { 
         field1: 123,
         field2: 234,
-        subObj3: {
+        subObj3: { 
           field2_1: 345,
-          field2_2: 456,
+          field2_2: 456, 
         }
       }
     },
     res1: {
       res2: {
         field1: 1,
-        subObj3: {
+        subObj3: { 
           field2_1: 3,
           field2_2: 456
         },
@@ -309,7 +307,7 @@ public final class FxStdTreeFuncs {
     public static class FxMergeDefaultsTreeFunc extends FxNodeFunc {
         public static final String NAME = "tree.mergeDefaults";
         public static final FxMergeDefaultsTreeFunc INSTANCE = new FxMergeDefaultsTreeFunc();
-
+        
         @Override
         public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
             FxObjNode srcObj = (FxObjNode) src;
@@ -317,18 +315,18 @@ public final class FxStdTreeFuncs {
             FxArrayNode fromPathsArray = FxCurrEvalCtxUtil.recurseEvalToArray(ctx, srcObj.get("fromPaths"));
             FxNodePath toPath = FxCurrEvalCtxUtil.recurseEvalToPath(ctx, srcObj.get("toPath"));
             boolean ignoreNotFound = FxCurrEvalCtxUtil.recurseEvalToBooleanOrDefault(ctx, srcObj.get("ignoreFromPathsNotfound"), false);
-
+            
             FxNode destBody = FxNodeCopyVisitor.copyTo(dest, body);
 
             FxNode destNode = toPath.select(destBody);
 
-            FxNodeCopyDefaultsVisitor mergeVisitor = FxNodeCopyDefaultsVisitor.INSTANCE;
+            FxNodeCopyDefaultsVisitor mergeVisitor = FxNodeCopyDefaultsVisitor.INSTANCE; 
 
             final int fromPathsLen = fromPathsArray.size();
             for (int i = 0; i < fromPathsLen; i++) {
                 FxNode fromPathNode = fromPathsArray.get(i);
                 FxNodePath fromPath = FxNodeValueUtils.nodeToPath(fromPathNode);
-
+                
                 FxNode fromNode = fromPath.select(body);
                 if (fromNode == null) {
                     if (ignoreNotFound) {
@@ -337,92 +335,9 @@ public final class FxStdTreeFuncs {
                         continue;
                     }
                 }
-
+    
                 fromNode.accept(mergeVisitor, destNode);
             }
-        }
-    }
-    
-    /**
-     * <PRE>
-[
-  "elt0", "elt1",
-  { "@fx-eval": "#phase0:tree.inlineArrayElements",
-  	"elements": [ "elt2", "elt3" ] 
-  },
-  "elt4", "elt5" 
-]
-     * </PRE>
-     * =>
-     * <PRE>
-[
-  "elt0", "elt1",
-  "elt2", "elt3", 
-  "elt4", "elt5" 
-]
-     * </PRE>
-     */
-    public static class FxArrayElementsInlineFunc extends FxNodeFunc implements IInlineMarkerFunc {
-        public static final String NAME = "tree.inlineArrayElements";
-        public static final FxArrayElementsInlineFunc INSTANCE = new FxArrayElementsInlineFunc();
-
-        @Override
-        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        	FxObjNode srcObj = (FxObjNode) src;
-            FxArrayNode elementsArray = FxCurrEvalCtxUtil.recurseEvalToArray(ctx, srcObj.get("elements"));
-            
-            // copy results wrapped in array(!) but result are inlined in caller given marker IInlineMarkerFunc
-            FxArrayNode resArray = dest.addArray();
-            FxChildWriter destArrayAdder = resArray.insertBuilder();
-        	final int elementsArrayLen = elementsArray.size();
-            for (int i = 0; i < elementsArrayLen; i++) {
-                FxNode element = elementsArray.get(i);
-                FxNodeCopyVisitor.copyTo(destArrayAdder, element);
-            }
-        }
-    }
-    
-    
-    /**
-     * <PRE>
-{
-"test1": 
-	{
-	  "field0" : "value0", "field1": "value1",
-	  "dummmy-inline-fields": { "@fx-eval": "#phase0:tree.inlineFields",
-	  	"elements": { "field2": "value2", "field3": "value3" } 
-	  },
-	  "field4": "value4", "field5": "value5" 
-	}
-}
-     * </PRE>
-     * =>
-     * <PRE>
-{
-  "field0" : "value0, "field1": "value1",
-  "field2": "value2", "field3": "value3",
-  "field4": "value4", "field5": "value5"
-}
-     * </PRE>
-     */
-    public static class FxObjectFieldsInlineFunc extends FxNodeFunc implements IInlineMarkerFunc {
-        public static final String NAME = "tree.inlineFields";
-        public static final FxObjectFieldsInlineFunc INSTANCE = new FxObjectFieldsInlineFunc();
-
-        @Override
-        public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        	FxObjNode srcObj = (FxObjNode) src;
-            FxObjNode elementsObj = FxCurrEvalCtxUtil.recurseEvalToObj(ctx, srcObj.get("elements"));
-            
-            // copy results wrapped in obj(!) but result are inlined in caller given marker IInlineMarkerFunc
-            FxObjNode destObj = dest.addObj();            
-            for(Iterator<Map.Entry<String, FxNode>> iter = elementsObj.fields(); iter.hasNext(); ) {
-                Entry<String, FxNode> e = iter.next();
-    			String fieldName = e.getKey();
-    			FxNode fieldValue = e.getValue();
-    			FxChildWriter childAdder = destObj.putBuilder(fieldName);
-    			FxNodeCopyVisitor.copyTo(childAdder, fieldValue);
-    		}
         }
     }
 }

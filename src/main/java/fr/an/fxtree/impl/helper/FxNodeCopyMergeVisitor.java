@@ -26,16 +26,16 @@ public class FxNodeCopyMergeVisitor extends FxTreeVisitor2<FxNode,FxNode> {
     public static final FxNodeCopyMergeVisitor INSTANCE_ALLOWMOVECOPY = new FxNodeCopyMergeVisitor(true, false);
     public static final FxNodeCopyMergeVisitor INSTANCE_SKIPMISMATCH = new FxNodeCopyMergeVisitor(false, true);
     public static final FxNodeCopyMergeVisitor INSTANCE_ALLOWMOVECOPY_SKIPMISMATCH = new FxNodeCopyMergeVisitor(true, true);
-
+    
     private final boolean allowMoveCopy;
     private final boolean allowSkipTypeMismatch;
-
+    
     // ------------------------------------------------------------------------
 
     public FxNodeCopyMergeVisitor() {
         this(false, false);
     }
-
+    
     public FxNodeCopyMergeVisitor(boolean allowMoveCopy, boolean allowSkipTypeMismatch) {
         this.allowMoveCopy = allowMoveCopy;
         this.allowSkipTypeMismatch = allowSkipTypeMismatch;
@@ -52,12 +52,12 @@ public class FxNodeCopyMergeVisitor extends FxTreeVisitor2<FxNode,FxNode> {
     }
 
     public static FxNodeCopyMergeVisitor instance(boolean allowMoveCopy, boolean allowSkipTypeMismatch) {
-        FxNodeCopyMergeVisitor res = allowMoveCopy?
+        FxNodeCopyMergeVisitor res = allowMoveCopy? 
             (allowSkipTypeMismatch? INSTANCE_ALLOWMOVECOPY : INSTANCE_ALLOWMOVECOPY_SKIPMISMATCH)
             :  (allowSkipTypeMismatch? INSTANCE_SKIPMISMATCH : INSTANCE);
         return res;
     }
-
+    
     // ------------------------------------------------------------------------
 
     protected void skipMergeTypeMismatch(FxNode src, FxNode dest) {
@@ -65,9 +65,9 @@ public class FxNodeCopyMergeVisitor extends FxTreeVisitor2<FxNode,FxNode> {
             throw new IllegalArgumentException("can not merge " + dest.getNodeType() + " <- " + src.getNodeType());
         }
     }
+    
 
-
-
+    
     @Override
     public FxNode visitRoot(FxRootDocument src, FxNode dest) {
         throw new UnsupportedOperationException();
@@ -81,7 +81,7 @@ public class FxNodeCopyMergeVisitor extends FxTreeVisitor2<FxNode,FxNode> {
                 Entry<String, FxNode> srcFieldEntry = iter.next();
                 String fieldname = srcFieldEntry.getKey();
                 FxNode srcValue = srcFieldEntry.getValue();
-
+                
                 FxNode destValueNode = destObj.get(fieldname);
                 if (destValueNode == null) {
                     FxChildWriter destChildWriter = destObj.putBuilder(fieldname);
@@ -133,7 +133,7 @@ public class FxNodeCopyMergeVisitor extends FxTreeVisitor2<FxNode,FxNode> {
         } else {
             // can not object<-array, object<-value ...ignore or rethrow
             skipMergeTypeMismatch(src, dest);
-        }
+        }            
         return dest;
     }
 
@@ -213,7 +213,7 @@ public class FxNodeCopyMergeVisitor extends FxTreeVisitor2<FxNode,FxNode> {
         }
         return dest;
     }
-
+    
     @Override
     public FxNode visitLink(FxLinkProxyNode node, FxNode dest) {
         // do nothing?
@@ -229,5 +229,5 @@ public class FxNodeCopyMergeVisitor extends FxTreeVisitor2<FxNode,FxNode> {
         }
         return dest;
     }
-
+    
 }

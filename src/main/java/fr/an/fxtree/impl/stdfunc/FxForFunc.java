@@ -5,6 +5,7 @@ import java.util.Map;
 
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxIntNode;
@@ -16,43 +17,44 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 public class FxForFunc extends FxNodeFunc {
 
     public static final String NAME = "for";
-
+    
     // ------------------------------------------------------------------------
 
     public static final FxForFunc INSTANCE = new FxForFunc();
-
+    
     private FxForFunc() {
     }
 
     // ------------------------------------------------------------------------
-
+    
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
-
+        
         int startIndex = FxCurrEvalCtxUtil.recurseEvalToIntOrDefault(ctx, srcObj.get("start"), 0);
         int incr = FxCurrEvalCtxUtil.recurseEvalToIntOrDefault(ctx, srcObj.get("incr"), 1);
         int endIndex = FxCurrEvalCtxUtil.recurseEvalToIntOrThrow(ctx, srcObj.get("end"));
-
+        
         String iterIndexName = FxNodeValueUtils.getOrDefault(srcObj, "indexName", "index");
         FxNode templateNode = srcObj.get("template");
 
         if (incr == 0 || (incr > 0 && endIndex < startIndex) || (incr < 0 && endIndex > startIndex)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(); 
         }
         if (templateNode == null) {
             return;
         }
-
-        FxArrayNode res = dest.addArray();
+        
+        FxArrayNode res = dest.addArray(src.getSourceLoc());
         FxChildWriter resChildAdder = res.insertBuilder();
 
-        FxMemRootDocument tmpDoc = new FxMemRootDocument();
-        FxObjNode tmpObj = tmpDoc.setContentObj();
-        FxIntNode tmpIndexNode = tmpObj.put(iterIndexName, 0);
-
+        FxSourceLoc loc = FxSourceLoc.newFrom(NAME, src.getSourceLoc());
+        FxMemRootDocument tmpDoc = new FxMemRootDocument(loc);
+        FxObjNode tmpObj = tmpDoc.setContentObj(loc);
+        FxIntNode tmpIndexNode = tmpObj.put(iterIndexName, 0, loc);
+        
         FxEvalContext childCtx = ctx.createChildContext();
-        Map<String,FxNode> replVars = new HashMap<>();
+        Map<String,FxNode> replVars = new HashMap<String,FxNode>();
         replVars.put(iterIndexName, tmpIndexNode);
 
         FxVarsReplaceFunc replaceVarsFunc = new FxVarsReplaceFunc(replVars);
@@ -61,9 +63,9 @@ public class FxForFunc extends FxNodeFunc {
             tmpIndexNode.setValue(index);
             // set iter value,index in child context
             childCtx.putVariable(iterIndexName, index);
-
+            
             replaceVarsFunc.eval(resChildAdder, childCtx, templateNode);
         }
     }
-
+    
 }

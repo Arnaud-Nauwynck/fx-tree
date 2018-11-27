@@ -28,6 +28,7 @@ import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxBinaryNode;
 import fr.an.fxtree.model.FxBoolNode;
@@ -45,71 +46,71 @@ public final class Fx2JacksonUtils {
     private Fx2JacksonUtils() {
     }
 
-    public static FxNode jsonNodeToFxTree(JsonNode src) {
+    public static FxNode jsonNodeToFxTree(JsonNode src, FxSourceLoc loc) {
         if (src == null) {
             return null;
         }
-        FxMemRootDocument doc = new FxMemRootDocument();
-        jsonNodeToFxTree(doc.contentWriter(), src);
+        FxMemRootDocument doc = new FxMemRootDocument(loc);
+        jsonNodeToFxTree(doc.contentWriter(), src, loc);
         return doc.getContent();
     }
 
-    public static void jsonNodesToFxTrees(FxChildWriter dest, Collection<JsonNode> src) {
+    public static void jsonNodesToFxTrees(FxChildWriter dest, Collection<JsonNode> src, FxSourceLoc source) {
         if (src != null && !src.isEmpty()) {
             for(JsonNode e : src) {
-                jsonNodeToFxTree(dest, e);
+                jsonNodeToFxTree(dest, e, source);
             }
         }
     }
-
-    public static FxNode jsonNodeToFxTree(FxChildWriter dest, JsonNode src) {
+    
+    public static FxNode jsonNodeToFxTree(FxChildWriter dest, JsonNode src, FxSourceLoc loc) {
         switch (src.getNodeType()) {
         case OBJECT:
-            FxObjNode destObj = dest.addObj();
-            fillJsonObjToFxObj(destObj, (ObjectNode) src);
+            FxObjNode destObj = dest.addObj(loc);
+            fillJsonObjToFxObj(destObj, (ObjectNode) src, loc);
             return destObj;
         case ARRAY:
-            FxArrayNode destArray = dest.addArray();
-            fillJsonArrayToFxArray(destArray, (ArrayNode) src);
+            FxArrayNode destArray = dest.addArray(loc);
+            fillJsonArrayToFxArray(destArray, (ArrayNode) src, loc);
             return destArray;
         case BINARY:
-            return dest.add(((BinaryNode) src).binaryValue());
+            return dest.add(((BinaryNode) src).binaryValue(), loc);
         case BOOLEAN:
-            return dest.add(((BooleanNode) src).booleanValue());
+            return dest.add(((BooleanNode) src).booleanValue(), loc);
         case MISSING:
             //?? use null
             return null;
         case NULL:
-            return dest.addNull();
+            return dest.addNull(loc);
         case NUMBER:
             NumericNode srcNumber = (NumericNode) src;
             JsonParser.NumberType numberType = src.numberType();
             switch(numberType) {
             case INT:
-               return dest.add(srcNumber.intValue());
+               return dest.add(srcNumber.intValue(), loc);
             case LONG:
-                return dest.add(srcNumber.longValue());
+                return dest.add(srcNumber.longValue(), loc);
             case BIG_INTEGER:
-                return dest.addPOJO(srcNumber.bigIntegerValue()); // use POJO for jackson BigInteger
+                return dest.addPOJO(srcNumber.bigIntegerValue(), loc); // use POJO for jackson BigInteger
             case FLOAT:
-                return dest.add(srcNumber.floatValue()); // use Double for Jackson Float
+                return dest.add(srcNumber.floatValue(), loc); // use Double for Jackson Float
             case DOUBLE:
-                return dest.add(srcNumber.doubleValue());
+                return dest.add(srcNumber.doubleValue(), loc);
             case BIG_DECIMAL:
-                return dest.addPOJO(srcNumber.decimalValue()); // use POJO for jackson BigDecimal
+                return dest.addPOJO(srcNumber.decimalValue(), loc); // use POJO for jackson BigDecimal
             default:
                 throw new RuntimeException();
             }
         case POJO:
-            return dest.addPOJO(((POJONode) src).getPojo());
+            return dest.addPOJO(((POJONode) src).getPojo(), loc);
         case STRING:
-            return dest.add(((TextNode) src).textValue());
+            return dest.add(((TextNode) src).textValue(), loc);
         default:
             throw new RuntimeException();
         }
     }
-
-    public static void fillJsonArrayToFxArray(FxArrayNode dest, ArrayNode src) {
+    
+    public static void fillJsonArrayToFxArray(FxArrayNode dest, ArrayNode src, FxSourceLoc loc) {
         if (! dest.isEmpty()) {
             dest.removeAll();
         }
@@ -118,63 +119,63 @@ public final class Fx2JacksonUtils {
             JsonNode srcElt = src.get(i);
             switch (srcElt.getNodeType()) {
             case ARRAY:
-                FxArrayNode eltArray = dest.addArray();
-                fillJsonArrayToFxArray(eltArray, (ArrayNode) srcElt);
+                FxArrayNode eltArray = dest.addArray(loc);
+                fillJsonArrayToFxArray(eltArray, (ArrayNode) srcElt, loc);
                 break;
             case OBJECT:
-                FxObjNode eltObj = dest.addObj();
-                fillJsonObjToFxObj(eltObj, (ObjectNode) srcElt);
+                FxObjNode eltObj = dest.addObj(loc);
+                fillJsonObjToFxObj(eltObj, (ObjectNode) srcElt, loc);
                 break;
             case BINARY:
-                dest.add(((BinaryNode) srcElt).binaryValue());
+                dest.add(((BinaryNode) srcElt).binaryValue(), loc);
                 break;
             case BOOLEAN:
-                dest.add(((BooleanNode) srcElt).booleanValue());
+                dest.add(((BooleanNode) srcElt).booleanValue(), loc);
                 break;
             case MISSING:
                 //?? skip / use null
                 break;
             case NULL:
-                dest.addNull();
+                dest.addNull(loc);
                 break;
             case NUMBER:
                 NumericNode srcNumber = (NumericNode) srcElt;
                 JsonParser.NumberType numberType = srcElt.numberType();
                 switch(numberType) {
                 case INT:
-                    dest.add(srcNumber.intValue());
+                    dest.add(srcNumber.intValue(), loc);
                     break;
                 case LONG:
-                   dest.add(srcNumber.longValue());
+                   dest.add(srcNumber.longValue(), loc);
                     break;
                 case BIG_INTEGER:
-                    dest.addPOJO(srcNumber.bigIntegerValue()); // use POJO for jackson BigInteger
+                    dest.addPOJO(srcNumber.bigIntegerValue(), loc); // use POJO for jackson BigInteger
                     break;
                 case FLOAT:
-                    dest.add(srcNumber.floatValue()); // use Double for Jackson Float
+                    dest.add(srcNumber.floatValue(), loc); // use Double for Jackson Float
                     break;
                 case DOUBLE:
-                    dest.add(srcNumber.doubleValue());
+                    dest.add(srcNumber.doubleValue(), loc);
                     break;
                 case BIG_DECIMAL:
-                    dest.addPOJO(srcNumber.decimalValue()); // use POJO for jackson BigDecimal
+                    dest.addPOJO(srcNumber.decimalValue(), loc); // use POJO for jackson BigDecimal
                     break;
                 }
                 break;
             case POJO:
-                dest.addPOJO(((POJONode) srcElt).getPojo());
+                dest.addPOJO(((POJONode) srcElt).getPojo(), loc);
                 break;
             case STRING:
-                dest.add(((TextNode) srcElt).textValue());
+                dest.add(((TextNode) srcElt).textValue(), loc);
                 break;
             default:
             throw new RuntimeException();
             }
         }
     }
-
-
-    public static void fillJsonObjToFxObj(FxObjNode dest, ObjectNode src) {
+    
+    
+    public static void fillJsonObjToFxObj(FxObjNode dest, ObjectNode src, FxSourceLoc loc) {
         if (! dest.isEmpty()) {
             dest.removeAll();
         }
@@ -184,54 +185,54 @@ public final class Fx2JacksonUtils {
             JsonNode srcElt = e.getValue();
             switch (srcElt.getNodeType()) {
             case ARRAY:
-                FxArrayNode eltArray = dest.putArray(field);
-                fillJsonArrayToFxArray(eltArray, (ArrayNode) srcElt);
+                FxArrayNode eltArray = dest.putArray(field, loc);
+                fillJsonArrayToFxArray(eltArray, (ArrayNode) srcElt, loc);
                 break;
             case OBJECT:
-                FxObjNode eltObj = dest.putObj(field);
-                fillJsonObjToFxObj(eltObj, (ObjectNode) srcElt);
+                FxObjNode eltObj = dest.putObj(field, loc);
+                fillJsonObjToFxObj(eltObj, (ObjectNode) srcElt, loc);
                 break;
             case BINARY:
-                dest.put(field, ((BinaryNode) srcElt).binaryValue());
+                dest.put(field, ((BinaryNode) srcElt).binaryValue(), loc);
                 break;
             case BOOLEAN:
-                dest.put(field, ((BooleanNode) srcElt).booleanValue());
+                dest.put(field, ((BooleanNode) srcElt).booleanValue(), loc);
                 break;
             case MISSING:
                 //?? skip / use null
                 break;
             case NULL:
-                dest.putNull(field);
+                dest.putNull(field, loc);
                 break;
             case NUMBER:
                 NumericNode srcNumber = (NumericNode) srcElt;
                 JsonParser.NumberType numberType = srcElt.numberType();
                 switch(numberType) {
                case INT:
-                    dest.put(field, srcNumber.intValue());
+                    dest.put(field, srcNumber.intValue(), loc);
                     break;
                 case LONG:
-                    dest.put(field, srcNumber.longValue());
+                    dest.put(field, srcNumber.longValue(), loc);
                     break;
                 case BIG_INTEGER:
-                    dest.putPOJO(field, srcNumber.bigIntegerValue()); // use POJO for jackson BigInteger
+                    dest.putPOJO(field, srcNumber.bigIntegerValue(), loc); // use POJO for jackson BigInteger
                     break;
                 case FLOAT:
-                    dest.put(field, srcNumber.floatValue()); // use Double for Jackson Float
+                    dest.put(field, srcNumber.floatValue(), loc); // use Double for Jackson Float
                     break;
                 case DOUBLE:
-                    dest.put(field, srcNumber.doubleValue());
+                    dest.put(field, srcNumber.doubleValue(), loc);
                     break;
                 case BIG_DECIMAL:
-                    dest.putPOJO(field, srcNumber.decimalValue()); // use POJO for jackson BigDecimal
+                    dest.putPOJO(field, srcNumber.decimalValue(), loc); // use POJO for jackson BigDecimal
                     break;
                 }
                 break;
             case POJO:
-                dest.putPOJO(field, ((POJONode) srcElt).getPojo());
+                dest.putPOJO(field, ((POJONode) srcElt).getPojo(), loc);
                 break;
             case STRING:
-                dest.put(field, ((TextNode) srcElt).textValue());
+                dest.put(field, ((TextNode) srcElt).textValue(), loc);
                 break;
             default:
             throw new RuntimeException();
@@ -245,7 +246,7 @@ public final class Fx2JacksonUtils {
     public static JsonNode fxTreeToJsonNode(FxNode src) {
         return fxTreeToJsonNode(src, JsonNodeFactory.instance);
     }
-
+    
     public static JsonNode fxTreeToJsonNode(FxNode src, JsonNodeFactory jsonNodeFactory) {
         if (src == null) {
             return null;
@@ -297,7 +298,7 @@ public final class Fx2JacksonUtils {
                 case BIG_DECIMAL:
                     res = DecimalNode.valueOf(srcNumber.decimalValue());
                     break;
-                default:
+                default:                
                     throw new UnsupportedOperationException();
                 }
                 break;
@@ -307,12 +308,12 @@ public final class Fx2JacksonUtils {
            case STRING:
                 res = TextNode.valueOf(((FxTextNode) src).textValue());
                 break;
-            default:
+            default:                
                 throw new UnsupportedOperationException();
         }
         return res;
     }
-
+        
     public static void fillFxArrayToJsonArray(ArrayNode dest, FxArrayNode src) {
 //        if (! dest.isEmpty()) {
 //            dest.removeAl();
@@ -376,7 +377,7 @@ public final class Fx2JacksonUtils {
             }
         }
     }
-
+    
     public static void fillFxObjToJsonObj(ObjectNode dest, FxObjNode src) {
         for(Iterator<Entry<String, FxNode>> iter = src.fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();
@@ -437,60 +438,59 @@ public final class Fx2JacksonUtils {
                 throw new RuntimeException();
             }
         }
-    }
+    }    
 
     // ------------------------------------------------------------------------
 
     public static NumberType numberType2Jackson(FxNumberType value) {
         if (value == null) return null;
         switch(value) {
-        case INT: return NumberType.INT;
-        case LONG: return NumberType.LONG;
-        case BIG_INTEGER: return NumberType.BIG_INTEGER;
-        case FLOAT: return NumberType.FLOAT;
-        case DOUBLE: return NumberType.DOUBLE;
+        case INT: return NumberType.INT; 
+        case LONG: return NumberType.LONG; 
+        case BIG_INTEGER: return NumberType.BIG_INTEGER; 
+        case FLOAT: return NumberType.FLOAT; 
+        case DOUBLE: return NumberType.DOUBLE; 
         case BIG_DECIMAL: return NumberType.BIG_DECIMAL;
         default: return null;
         }
     }
 
-
     /** helper for jsonNodeToFxTree on map */
-    public static <K> Map<K,FxNode> jsonNodesToFxTrees(Map<K,JsonNode> src) {
+    public static <K> Map<K,FxNode> jsonNodesToFxTrees(Map<K,JsonNode> src, FxSourceLoc source) {
         Map<K,FxNode> res = new LinkedHashMap<>();
-        jsonNodesToFxTrees(res, src);
+        jsonNodesToFxTrees(res, src, source);
         return res;
     }
 
     /** helper for jsonNodeToFxTree on map */
-    public static <K> void jsonNodesToFxTrees(Map<K,FxNode> res, Map<K,JsonNode> src) {
+    public static <K> void jsonNodesToFxTrees(Map<K,FxNode> res, Map<K,JsonNode> src, FxSourceLoc source) {
         if (src != null && !src.isEmpty()) {
             for(Map.Entry<K,JsonNode> e : src.entrySet()) {
-                FxNode resValue = jsonNodeToFxTree(e.getValue());
+                FxNode resValue = jsonNodeToFxTree(e.getValue(), source);
                 res.put(e.getKey(), resValue);
             }
         }
     }
 
     /** helper for jsonNodeToFxTree on List */
-    public static List<FxNode> jsonNodesToFxTrees(Collection<JsonNode> src) {
+    public static List<FxNode> jsonNodesToFxTrees(Collection<JsonNode> src, FxSourceLoc source) {
         List<FxNode> res = new ArrayList<>();
-        jsonNodesToFxTrees(res, src);
+        jsonNodesToFxTrees(res, src, source);
         return res;
     }
 
     /** helper for jsonNodeToFxTree on List */
-    public static void jsonNodesToFxTrees(Collection<FxNode> res, Collection<JsonNode> src) {
+    public static void jsonNodesToFxTrees(Collection<FxNode> res, Collection<JsonNode> src, FxSourceLoc source) {
         if (src != null && !src.isEmpty()) {
             for(JsonNode e : src) {
-                FxNode resValue = jsonNodeToFxTree(e);
+                FxNode resValue = jsonNodeToFxTree(e, source);
                 res.add(resValue);
             }
         }
     }
-
+    
     // ------------------------------------------------------------------------
-
+    
     /** helper for jsonNodeToFxTree on map */
     public static <K> Map<K,JsonNode> fxTreesToJsonNodes(Map<K,FxNode> src) {
         Map<K,JsonNode> res = new LinkedHashMap<>();
@@ -524,5 +524,5 @@ public final class Fx2JacksonUtils {
             }
         }
     }
-
+    
 }

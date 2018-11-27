@@ -3,12 +3,12 @@ package fr.an.fxtree.impl.util;
 import java.util.Map;
 
 public class LigthweightMapEntry<K,V> implements Map.Entry<K,V> {
-
+    
     protected K key;
     protected V value;
 
     // ------------------------------------------------------------------------
-
+    
     public LigthweightMapEntry(K key, V value) {
         this.key = key;
         this.value = value;
@@ -16,16 +16,14 @@ public class LigthweightMapEntry<K,V> implements Map.Entry<K,V> {
 
     // ------------------------------------------------------------------------
 
-    @Override
-	public K getKey() {
+    public K getKey() {
         return key;
     }
-
-    @Override
-	public V getValue() {
+    
+    public V getValue() {
         return value;
     }
-
+    
     @Override
     public V setValue(V value) {
         throw new UnsupportedOperationException();
@@ -40,9 +38,9 @@ public class LigthweightMapEntry<K,V> implements Map.Entry<K,V> {
         this.key = key;
         this.value = value;
     }
-
+    
     // ------------------------------------------------------------------------
-
+    
     @Override
     public int hashCode() {
         throw new UnsupportedOperationException();
@@ -52,5 +50,5 @@ public class LigthweightMapEntry<K,V> implements Map.Entry<K,V> {
     public boolean equals(Object obj) {
         throw new UnsupportedOperationException();
     }
-
+    
 }

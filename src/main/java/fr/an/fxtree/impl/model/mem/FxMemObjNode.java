@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import fr.an.fxtree.impl.model.mem.FxMemChildId.FxMemObjNameChildId;
-import fr.an.fxtree.model.FxChildId;
 import fr.an.fxtree.model.FxContainerNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
@@ -15,15 +14,15 @@ import fr.an.fxtree.model.FxObjNode;
 public class FxMemObjNode extends FxObjNode {
 
     private Map<String,FxNode> _children = new LinkedHashMap<>();
-
+    
     // ------------------------------------------------------------------------
-
-    protected FxMemObjNode(FxContainerNode parent, FxMemChildId childId) {
-        super(parent, childId);
+    
+    protected FxMemObjNode(FxContainerNode parent, FxMemChildId childId, FxSourceLoc sourceLoc) {
+        super(parent, childId, sourceLoc);
     }
 
     // ------------------------------------------------------------------------
-
+    
     @Override
     public int size() {
         return _children.size();
@@ -104,5 +103,5 @@ public class FxMemObjNode extends FxObjNode {
         }
         return res;
     }
-
+    
 }

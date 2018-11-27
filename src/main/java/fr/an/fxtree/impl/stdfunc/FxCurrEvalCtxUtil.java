@@ -1,5 +1,9 @@
 package fr.an.fxtree.impl.stdfunc;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
@@ -17,10 +21,10 @@ public final class FxCurrEvalCtxUtil {
     private static final String PROP_CURR_PHASE_NAME = "currPhaseName";
     private static final String PROP_CURR_PHASE_EVAL_FUNC = "currPhaseEvalFunc";
 
-    public static FxEvalContext childEvalCtx(FxEvalContext ctx, String phaseName, FxNodeFunc evalFunc) {
+    public static FxEvalContext childEvalCtx(FxEvalContext ctx, String phaseName, FxNodeFunc evalFunc) { 
         FxEvalContext childCtx = ctx.createChildContext();
         childCtx.putVariable(PROP_CURR_PHASE_NAME, phaseName);
-        childCtx.putVariable(PROP_CURR_PHASE_EVAL_FUNC, evalFunc);
+        setCurrEvalFunc(childCtx, evalFunc);
         return childCtx;
     }
 
@@ -29,11 +33,16 @@ public final class FxCurrEvalCtxUtil {
     }
 
     public static FxNodeFunc currPhaseEvalFunc(FxEvalContext ctx) {
-        return (FxPhaseRecursiveEvalFunc) ctx.lookupVariable(PROP_CURR_PHASE_EVAL_FUNC);
+        return (FxNodeFunc) ctx.lookupVariable(PROP_CURR_PHASE_EVAL_FUNC);
     }
 
+    public static void setCurrEvalFunc(FxEvalContext childCtx, FxNodeFunc evalFunc) {
+        childCtx.putVariable(PROP_CURR_PHASE_EVAL_FUNC, evalFunc);
+    }
+
+
     public static void recurseEvalTo(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
-        FxPhaseRecursiveEvalFunc currFunc = (FxPhaseRecursiveEvalFunc) ctx.lookupVariable(PROP_CURR_PHASE_EVAL_FUNC);
+        FxNodeFunc currFunc = currPhaseEvalFunc(ctx);
         if (currFunc != null) {
             currFunc.eval(dest, ctx, src);
         } else {
@@ -41,18 +50,18 @@ public final class FxCurrEvalCtxUtil {
             FxNodeCopyVisitor.copyTo(dest, src);
         }
     }
-
+    
     public static FxNode recurseEval(FxEvalContext ctx, FxNode src) {
-        FxPhaseRecursiveEvalFunc currFunc = (FxPhaseRecursiveEvalFunc) ctx.lookupVariable(PROP_CURR_PHASE_EVAL_FUNC);
+        FxNodeFunc currFunc = currPhaseEvalFunc(ctx);
         if (currFunc != null) {
-            FxMemRootDocument tmpDoc = new FxMemRootDocument();
+            FxMemRootDocument tmpDoc = new FxMemRootDocument(src.getSourceLoc()); 
             recurseEvalTo(tmpDoc.contentWriter(), ctx, src);
             return tmpDoc.getContent();
         } else {
             return src;
         }
     }
-
+        
     public static boolean recurseEvalToBoolean(FxEvalContext ctx, FxNode src) {
         FxNode tmpres = recurseEval(ctx, src);
         return FxNodeValueUtils.nodeToBoolean(tmpres);
@@ -68,7 +77,7 @@ public final class FxCurrEvalCtxUtil {
         }
         return FxNodeValueUtils.nodeToBoolean(tmpres);
     }
-
+    
     public static String recurseEvalToString(FxEvalContext ctx, FxNode src) {
         FxNode tmpres = recurseEval(ctx, src);
         return FxNodeValueUtils.nodeToString(tmpres);
@@ -132,10 +141,16 @@ public final class FxCurrEvalCtxUtil {
         FxNode tmpres = recurseEval(ctx, src);
         return FxNodeValueUtils.nodeToLong(tmpres);
     }
-
+    
     public static FxObjNode recurseEvalToObj(FxEvalContext ctx, FxNode src) {
         FxNode tmpres = recurseEval(ctx, src);
         return FxNodeValueUtils.nodeToObj(tmpres);
+    }
+
+    public static Map<String,FxNode> recurseEvalToNamedNodes(FxEvalContext ctx, FxNode src) {
+        FxObjNode tmpres = recurseEvalToObj(ctx, src);
+        Map<String,FxNode> res = tmpres.fieldsMap();
+        return res;
     }
 
     public static FxArrayNode recurseEvalToArray(FxEvalContext ctx, FxNode src) {
@@ -154,4 +169,17 @@ public final class FxCurrEvalCtxUtil {
     }
 
 
+    
+    
+    public static void recurseEvalNestedCtxTo(FxChildWriter dest, FxEvalContext childCtx, FxNode src) {
+        List<FxEvalContext> ctxChain = new ArrayList<>();
+        for(FxEvalContext curr = childCtx; curr != null; curr = curr.getParentContext()) {
+            ctxChain.add(0, curr);
+        }
+        FxNode res = src;
+        for(FxEvalContext ctxElt : ctxChain) {
+            res = recurseEval(ctxElt, res);
+        }
+        FxNodeCopyVisitor.copyTo(dest, res);
+    }
 }

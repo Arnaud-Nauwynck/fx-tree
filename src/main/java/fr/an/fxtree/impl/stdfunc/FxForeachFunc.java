@@ -5,6 +5,7 @@ import java.util.Map;
 
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxIntNode;
@@ -16,16 +17,16 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 public class FxForeachFunc extends FxNodeFunc {
 
     public static final String NAME = "foreach";
-
+    
     // ------------------------------------------------------------------------
 
     public static final FxForeachFunc INSTANCE = new FxForeachFunc();
-
+    
     private FxForeachFunc() {
     }
 
     // ------------------------------------------------------------------------
-
+    
     @Override
     public void eval(FxChildWriter dest, FxEvalContext ctx, FxNode src) {
         FxObjNode srcObj = (FxObjNode) src;
@@ -36,40 +37,41 @@ public class FxForeachFunc extends FxNodeFunc {
         if (srcValuesNode == null || templateNode == null) {
             return;
         }
-
+        
         FxArrayNode srcValues = FxCurrEvalCtxUtil.recurseEvalToArray(ctx, srcValuesNode);
         if (srcValues.isEmpty()) {
             return;
         }
-
-        FxArrayNode res = dest.addArray();
+        
+        FxArrayNode res = dest.addArray(src.getSourceLoc());
         FxChildWriter resChildAdder = res.insertBuilder();
-
-        FxMemRootDocument tmpDoc = new FxMemRootDocument();
-        FxObjNode tmpObj = tmpDoc.setContentObj();
-        FxIntNode tmpIndexNode = tmpObj.put(iterIndexName, 0);
-
+                
+        FxSourceLoc loc = FxSourceLoc.newFrom(NAME, src.getSourceLoc());
+        FxMemRootDocument tmpDoc = new FxMemRootDocument(loc); 
+        FxObjNode tmpObj = tmpDoc.setContentObj(loc);
+        FxIntNode tmpIndexNode = tmpObj.put(iterIndexName, 0, loc);
+        
         FxEvalContext childCtx = ctx.createChildContext();
-        Map<String,FxNode> replVars = new HashMap<>();
+        Map<String,FxNode> replVars = new HashMap<String,FxNode>();
         replVars.put(iterIndexName, tmpIndexNode);
         replVars.put(iterValueName, null); //tmp replaced by real value after
 
         FxVarsReplaceFunc replaceVarsFunc = new FxVarsReplaceFunc(replVars);
-
+    
         int len = srcValues.size();
         for(int index = 0; index < len; index++) {
             FxNode srcValue = srcValues.get(index);
-
+            
             tmpIndexNode.setValue(index);
             // already done once... replVars.put(iterIndexName, tmpIndexNode);
             replVars.put(iterValueName, srcValue);
-
+            
             // set iter value,index in child context
             childCtx.putVariable(iterIndexName, index);
             childCtx.putVariable(iterValueName, srcValue);
-
+            
             replaceVarsFunc.eval(resChildAdder, ctx, templateNode);
         }
     }
-
+    
 }

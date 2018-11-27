@@ -6,24 +6,22 @@ import fr.an.fxtree.model.FxTextNode;
 public class FxMemTextNode extends FxTextNode {
 
     private String value;
-
+    
     // ------------------------------------------------------------------------
-
-    protected FxMemTextNode(FxContainerNode parent, FxMemChildId childId, String value) {
-        super(parent, childId);
+    
+    protected FxMemTextNode(FxContainerNode parent, FxMemChildId childId, FxSourceLoc sourceLoc, String value) {
+        super(parent, childId, sourceLoc);
         this.value = value;
     }
 
     // ------------------------------------------------------------------------
-
-    @Override
-	public String getValue() {
+        
+    public String getValue() {
         return value;
     }
 
-    @Override
-	public void setValue(String value) {
+    public void setValue(String value) {
         this.value = value;
     }
-
+    
 }

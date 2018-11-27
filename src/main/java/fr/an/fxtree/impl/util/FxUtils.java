@@ -17,7 +17,7 @@ public class FxUtils {
     }
 
     public static RuntimeException notImplYet() {
-        throw new UnsupportedOperationException("NOT IMPLEMENTED YET");
+        throw new UnsupportedOperationException("FxUtil NOT IMPLEMENTED YET");
     }
 
 }

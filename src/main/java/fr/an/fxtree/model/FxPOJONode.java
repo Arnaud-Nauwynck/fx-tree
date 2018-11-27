@@ -2,12 +2,14 @@ package fr.an.fxtree.model;
 
 import java.text.SimpleDateFormat;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
+
 public abstract class FxPOJONode extends FxValueNode {
 
     // ------------------------------------------------------------------------
 
-    protected FxPOJONode(FxContainerNode parent, FxChildId childId) {
-        super(parent, childId);
+    protected FxPOJONode(FxContainerNode parent, FxChildId childId, FxSourceLoc sourceLoc) {
+        super(parent, childId, sourceLoc);
     }
 
     // ------------------------------------------------------------------------

@@ -1,11 +1,13 @@
 package fr.an.fxtree.model;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
+
 public class FxNullNode extends FxValueNode {
 
     // ------------------------------------------------------------------------
 
-    protected FxNullNode(FxContainerNode parent, FxChildId childId) {
-        super(parent, childId);
+    protected FxNullNode(FxContainerNode parent, FxChildId childId, FxSourceLoc sourceLoc) {
+        super(parent, childId, sourceLoc);
     }
 
     // ------------------------------------------------------------------------

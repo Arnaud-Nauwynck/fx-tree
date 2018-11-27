@@ -1,15 +1,17 @@
 package fr.an.fxtree.model;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
+
 public abstract class FxBoolNode extends FxValueNode {
 
     // ------------------------------------------------------------------------
-
-    protected FxBoolNode(FxContainerNode parent, FxChildId childId) {
-        super(parent, childId);
+    
+    protected FxBoolNode(FxContainerNode parent, FxChildId childId, FxSourceLoc sourceLoc) {
+        super(parent, childId, sourceLoc);
     }
 
     // ------------------------------------------------------------------------
-
+    
     @Override
     public final FxNodeType getNodeType() {
         return FxNodeType.BOOLEAN;
@@ -19,12 +21,12 @@ public abstract class FxBoolNode extends FxValueNode {
     public void accept(FxTreeVisitor visitor) {
         visitor.visitBoolValue(this);
     }
-
+    
     @Override
     public <P, R> R accept(FxTreeVisitor2<P, R> visitor, P param) {
         return visitor.visitBoolValue(this, param);
     }
-
+    
     public abstract boolean getValue();
 
     public abstract void setValue(boolean value);
@@ -49,7 +51,7 @@ public abstract class FxBoolNode extends FxValueNode {
     public boolean asBoolean(boolean defaultValue) {
         return getValue();
     }
-
+    
     @Override
     public int asInt(int defaultValue) {
         return getValue() ? 1 : 0;
@@ -62,9 +64,9 @@ public abstract class FxBoolNode extends FxValueNode {
     public double asDouble(double defaultValue) {
         return getValue() ? 1.0 : 0.0;
     }
-
+    
     // ------------------------------------------------------------------------
-
+    
     @Override
     public int hashCode() {
         return getValue() ? 3 : 1;
@@ -88,5 +90,5 @@ public abstract class FxBoolNode extends FxValueNode {
     public String toString() {
         return Boolean.toString(getValue());
     }
-
+    
 }

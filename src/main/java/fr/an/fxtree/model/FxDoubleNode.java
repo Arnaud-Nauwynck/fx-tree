@@ -5,12 +5,14 @@ import java.math.BigInteger;
 
 import com.fasterxml.jackson.core.io.NumberOutput;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
+
 public abstract class FxDoubleNode extends FxValueNode {
 
     // ------------------------------------------------------------------------
 
-    protected FxDoubleNode(FxContainerNode parent, FxChildId childId) {
-        super(parent, childId);
+    protected FxDoubleNode(FxContainerNode parent, FxChildId childId, FxSourceLoc sourceLoc) {
+        super(parent, childId, sourceLoc);
     }
 
     // ------------------------------------------------------------------------
@@ -50,7 +52,7 @@ public abstract class FxDoubleNode extends FxValueNode {
     @Override public boolean canConvertToLong() {
         return (getValue() >= Long.MIN_VALUE && getValue() <= Long.MAX_VALUE);
     }
-
+    
     @Override
     public Number numberValue() {
         return Double.valueOf(getValue());
@@ -67,7 +69,7 @@ public abstract class FxDoubleNode extends FxValueNode {
 
     @Override
     public float floatValue() { return (float) getValue(); }
-
+    
     @Override
     public double doubleValue() { return getValue(); }
 
@@ -83,7 +85,7 @@ public abstract class FxDoubleNode extends FxValueNode {
     public String asText() {
         return NumberOutput.toString(getValue());
     }
-
+    
     // ------------------------------------------------------------------------
 
     @Override
@@ -111,5 +113,5 @@ public abstract class FxDoubleNode extends FxValueNode {
     public String toString() {
         return Double.toString(getValue());
     }
-
+    
 }

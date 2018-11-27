@@ -23,9 +23,9 @@ import fr.an.fxtree.model.FxTreeVisitor2;
 public class FxNodeCopyDefaultsVisitor extends FxTreeVisitor2<FxNode,FxNode> {
 
     public static final FxNodeCopyDefaultsVisitor INSTANCE = new FxNodeCopyDefaultsVisitor();
-
+    
     // ------------------------------------------------------------------------
-
+    
     public FxNodeCopyDefaultsVisitor() {
     }
 
@@ -37,15 +37,15 @@ public class FxNodeCopyDefaultsVisitor extends FxTreeVisitor2<FxNode,FxNode> {
         }
         src.accept(INSTANCE, dest);
     }
-
+    
     // ------------------------------------------------------------------------
-
+    
     protected void skipMergeTypeMismatch(FxNode src, FxNode dest) {
 //        if (! allowSkipTypeMismatch) {
 //            throw new IllegalArgumentException("can not merge defaults " + dest.getNodeType() + " <- " + src.getNodeType());
 //        }
     }
-
+    
     @Override
     public FxNode visitRoot(FxRootDocument src, FxNode dest) {
         throw new UnsupportedOperationException();
@@ -59,13 +59,13 @@ public class FxNodeCopyDefaultsVisitor extends FxTreeVisitor2<FxNode,FxNode> {
                 Entry<String, FxNode> srcFieldEntry = iter.next();
                 String fieldname = srcFieldEntry.getKey();
                 FxNode srcValue = srcFieldEntry.getValue();
-
+                
                 FxNode destValueNode = destObj.get(fieldname);
                 if (destValueNode == null) {
                     FxChildWriter destChildWriter = destObj.putBuilder(fieldname);
                     // optim using moveCopyTo when allowed
                     FxNodeCopyVisitor.copyTo(destChildWriter, srcValue);
-                } else {
+                } else { 
                     // recurse merge default object field value
                     srcValue.accept(this, destValueNode);
                 }
@@ -107,7 +107,7 @@ public class FxNodeCopyDefaultsVisitor extends FxTreeVisitor2<FxNode,FxNode> {
         } else {
             // can not object<-array, object<-value ...ignore or rethrow
             skipMergeTypeMismatch(src, dest);
-        }
+        }            
         return dest;
     }
 
@@ -158,11 +158,11 @@ public class FxNodeCopyDefaultsVisitor extends FxTreeVisitor2<FxNode,FxNode> {
         // do nothing
         return dest;
     }
-
+    
     @Override
     public FxNode visitNullValue(FxNullNode src, FxNode dest) {
         // do nothing
         return dest;
     }
-
+    
 }

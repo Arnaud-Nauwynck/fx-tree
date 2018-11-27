@@ -22,25 +22,25 @@ public class FxReadProxyNodeWrappers {
     /*pp*/ static RuntimeException throwWriteDenied() {
         throw new RuntimeException("Write acces denied on Read-Only proxy node");
     }
-
+    
     /*pp*/ static RuntimeException throwGetParentDenied() {
         throw new RuntimeException("getParent() acces denied on Read-Only proxy node");
     }
-
+    
     @SuppressWarnings("unchecked")
     public static <T extends FxNode> T wrapROProxy(FxContainerNode proxyParent, boolean allowGetParent, T delegate) {
-        InnerReadWrapProxyVisitor v = InnerReadWrapProxyVisitor.instance(allowGetParent);
+        InnerReadWrapProxyVisitor v = InnerReadWrapProxyVisitor.instance(allowGetParent);  
         return (T) delegate.accept(v, proxyParent);
     }
-
+    
     private static class InnerReadWrapProxyVisitor extends FxTreeVisitor2<FxContainerNode,FxNode> {
-
+        
         static final InnerReadWrapProxyVisitor INSTANCE_ALLOWGETPARENT = new InnerReadWrapProxyVisitor(true);
         static final InnerReadWrapProxyVisitor INSTANCE_DENYGETPARENT = new InnerReadWrapProxyVisitor(false);
         public static InnerReadWrapProxyVisitor instance(boolean allowGetParent) {
-            return allowGetParent? INSTANCE_ALLOWGETPARENT : INSTANCE_DENYGETPARENT;
+            return allowGetParent? INSTANCE_ALLOWGETPARENT : INSTANCE_DENYGETPARENT; 
         }
-
+        
         private final boolean allowGetParent;
         public InnerReadWrapProxyVisitor(boolean allowGetParent) {
             this.allowGetParent = allowGetParent;
@@ -53,12 +53,12 @@ public class FxReadProxyNodeWrappers {
 
         @Override
         public FxNode visitObj(FxObjNode node, FxContainerNode proxyParent) {
-            return new FxReadObjNodeProxy(proxyParent, allowGetParent, node);
+            return new FxReadObjNodeProxy(proxyParent, null, allowGetParent, node);
         }
 
         @Override
         public FxNode visitArray(FxArrayNode node, FxContainerNode proxyParent) {
-            return new FxReadArrayNodeProxy(proxyParent, allowGetParent, node);
+            return new FxReadArrayNodeProxy(proxyParent, null, allowGetParent, node);
         }
 
         @Override
@@ -105,6 +105,6 @@ public class FxReadProxyNodeWrappers {
         public FxNode visitNullValue(FxNullNode node, FxContainerNode proxyParent) {
             throw FxUtils.notImplYet();
         }
-
+        
     }
 }

@@ -4,12 +4,14 @@ import java.util.Arrays;
 
 import com.fasterxml.jackson.core.Base64Variants;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
+
 public abstract class FxBinaryNode extends FxValueNode {
 
     // ------------------------------------------------------------------------
 
-    protected FxBinaryNode(FxContainerNode parent, FxChildId childId) {
-        super(parent, childId);
+    protected FxBinaryNode(FxContainerNode parent, FxChildId childId, FxSourceLoc sourceLoc) {
+        super(parent, childId, sourceLoc);
     }
 
     // ------------------------------------------------------------------------

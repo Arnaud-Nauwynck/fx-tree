@@ -5,21 +5,21 @@ import fr.an.fxtree.model.FxNode;
 /**
  * similar to FxNodecheck without runtime dependency to junit.jar
  * <p>
- * check failed throw IllegalArgumentException(), instead of junit check failed throwing junit AssertionError
+ * check failed throw IllegalArgumentException(), instead of junit check failed throwing junit AssertionError 
  */
 public final class FxNodeCheckUtils {
 
     /** private to force all static */
     private FxNodeCheckUtils() {
     }
-
+    
     public static void checkEquals(FxNode expected, FxNode actual) {
 //        JsonNode expectedJson = Fx2JacksonUtils.fxTreeToJsonNode(expected);
 //        JsonNode actualJson = Fx2JacksonUtils.fxTreeToJsonNode(actual);
         if (! expected.equals(actual)) {
             System.out.println("expecting:" + expected);
             System.out.println("actual   :" + actual);
-
+            
             throw new IllegalArgumentException("expecting\n" + expected + "\nactual\n" + actual);
         }
     }

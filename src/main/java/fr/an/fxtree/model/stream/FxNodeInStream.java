@@ -8,14 +8,14 @@ import fr.an.fxtree.model.FxNode;
  * <BR/>
  * see corresponding pushing class FxNodeInStream.
  * see FXNodeBlockingQueueStream
- *
+ * 
  * <PRE>
  *        --------+  FxNodeInStream
  *    QueueStream |------o
  *          ------+
- *                         -read-
+ *                         -read-  
  *                         \-----> openData
- *
+ *                              
  *                         -read-
  *                         \-----> data
  *                         -read-
@@ -26,19 +26,19 @@ import fr.an.fxtree.model.FxNode;
  *                         -read-
  *                         \-----> closeData
  * </PRE>
- *
+ *  
  * <p>
  * Lifecycle:
  * <PRE>
  *   FxNodeInStream stream = ..;
  *   FxNode openData = stream.readOpen();
  *
- *   FxNodeStreamToken token;
+ *   FxNodeStreamToken token; 
  *   while((token = stream.readNext()) == onItem) {
  *      FxNode item = stream.getCurrentItem();
  *      ..
  *   }
- *
+ *   
  *   if (token == onClose) {
  *     FxNode closeData = stream.getCloseData();
  *   } else {
@@ -47,14 +47,14 @@ import fr.an.fxtree.model.FxNode;
  *   }
  *   // check.. token == onItem
  *   FxNode item0 = stream.getCurrentItem();
- *
+ *   
  *   onItem(item0)
  *   onItem(item1)
  *   ..
  *   onItem(itemN)
- *
+ *   
  *   onClose(..)  OR  onCloseError(.., ex)
- * <PRE> *
+ * <PRE> * 
  */
 public abstract class FxNodeInStream {
 
@@ -73,14 +73,14 @@ public abstract class FxNodeInStream {
     public FxNodeStreamEvent readNextEvent() {
         FxNodeStreamToken eventType = read();
         switch(eventType) {
-        case onOpen: return new FxNodeStreamEvent.FxOpenStreamEvent(getOpenData());
+        case onOpen: return new FxNodeStreamEvent.FxOpenStreamEvent(getOpenData()); 
         case onItem: return new FxNodeStreamEvent.FxItemStreamEvent(getCurrentItem());
-        case onClose: return new FxNodeStreamEvent.FxCloseStreamEvent(getCloseData());
+        case onClose: return new FxNodeStreamEvent.FxCloseStreamEvent(getCloseData()); 
         case onCloseError: return new FxNodeStreamEvent.FxCloseErrorStreamEvent(getCloseErrorData(), getCloseErrorException());
         default: throw new IllegalStateException();
         }
     }
-
+    
     /**
      * helper for <code>readNext(); return getOpenData();</code>
      */

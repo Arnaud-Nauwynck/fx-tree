@@ -10,11 +10,11 @@ import fr.an.fxtree.model.func.FxNodeFunc;
 public class FxExternalDataByIdFunc extends FxNodeFunc {
 
     public static final String NAME = "ext-data";
-
+    
     // ------------------------------------------------------------------------
 
     public static final FxExternalDataByIdFunc INSTANCE = new FxExternalDataByIdFunc();
-
+    
     public FxExternalDataByIdFunc() {
     }
 

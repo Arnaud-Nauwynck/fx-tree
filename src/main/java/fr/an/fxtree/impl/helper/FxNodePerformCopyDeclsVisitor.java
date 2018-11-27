@@ -8,18 +8,18 @@ import fr.an.fxtree.model.func.FxEvalContext;
 import fr.an.fxtree.model.path.FxNodeOuterPath;
 
 public class FxNodePerformCopyDeclsVisitor extends FxDefaultStackTreeVisitor {
-
+    
     private final String declMarkerFieldname;
-
+    
     private FxEvalContext ctx;
-
+    
     // ------------------------------------------------------------------------
 
     public FxNodePerformCopyDeclsVisitor(FxEvalContext ctx, String declMarkerFieldname) {
         this.ctx = ctx;
         this.declMarkerFieldname = declMarkerFieldname;
     }
-
+    
     // ------------------------------------------------------------------------
 
     public static void recursivePerformCopyDeclsOn(FxNode node,
@@ -45,7 +45,7 @@ public class FxNodePerformCopyDeclsVisitor extends FxDefaultStackTreeVisitor {
             FxObjNode declObjNode = (FxObjNode) declNode;
             FxNodeOuterPath fromExtPath = FxCurrEvalCtxUtil.recurseEvalToOuterPath(ctx, declObjNode.get("fromExtPath"));
             FxNodeOuterPath toExtPath = FxCurrEvalCtxUtil.recurseEvalToOuterPath(ctx, declObjNode.get("toExtPath"));
-
+            
             FxNode fromNode = fromExtPath.selectFromStack(currentNodeStack);
             if (fromNode == null) {
                 throw new IllegalStateException("can not find src node to copy using fromExtPath: " + fromExtPath);
@@ -56,12 +56,12 @@ public class FxNodePerformCopyDeclsVisitor extends FxDefaultStackTreeVisitor {
             }
 
             FxNodeCopyVisitor.copyTo(toNodeWriter, fromNode);
-
+            
             // no recurse ... on the contrary: suppress this performed node!
             // super.visitObj(src);
             src.remove(declMarkerFieldname);
         }
-
+        
     }
-
+    
 }
