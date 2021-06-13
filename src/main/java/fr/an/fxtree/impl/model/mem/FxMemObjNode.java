@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import fr.an.fxtree.impl.model.mem.FxMemChildId.FxMemObjNameChildId;
+import fr.an.fxtree.model.FxChildId;
 import fr.an.fxtree.model.FxContainerNode;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
@@ -44,7 +45,7 @@ public class FxMemObjNode extends FxObjNode {
     }
 
     @Override
-	public Map<String, FxNode> fieldsCopy() {
+	public Map<String, FxNode> fieldsMap() {
         return new LinkedHashMap<>(_children);
     }
 
@@ -54,25 +55,25 @@ public class FxMemObjNode extends FxObjNode {
         return (T) _children.get(name);
     }
 
-    @Override
-    public <T extends FxNode> T put(String name, Class<T> clss) {
-        T res = getNodeFactory().newNode(clss);
-        onPut(name, res);
-        return res;
-    }
-
+//    @Override
+//    public <T extends FxNode> T put(String name, Class<T> clss, FxSourceLoc loc) {
+//        T res = getNodeFactory().newNode(clss, loc);
+//        onPut(name, res);
+//        return res;
+//    }
+//
     @Override
     protected <T extends FxNode> T onPut(String name, T node) {
         _children.put(name, node);
-        node._setParent(this, new FxMemObjNameChildId(name));
+        node._setParent(this, FxMemObjNameChildId.of(name));
         return node;
     }
 
     @Override
-    public void remove(FxNode child) {
+    public FxNode remove(FxNode child) {
         if (child.getParent() != this) throw new IllegalArgumentException();
         FxMemObjNameChildId objChildId = (FxMemObjNameChildId) child.getChildId();
-        doRemove(objChildId.getName());
+        return doRemove(objChildId.getName());
     }
 
     @Override

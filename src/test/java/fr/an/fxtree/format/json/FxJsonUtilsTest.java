@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.an.fxtree.format.util.FxReaderUtils;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.impl.util.FxNodeAssert;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxNode;
@@ -27,20 +28,23 @@ import fr.an.fxtree.model.FxObjNode;
 public class FxJsonUtilsTest {
 
     public static FxMemRootDocument getJsonTstFile(String fileName) {
-        FxMemRootDocument doc = new FxMemRootDocument();
+        FxSourceLoc loc = new FxSourceLoc("", fileName);
+		FxMemRootDocument doc = new FxMemRootDocument(loc);
         File inFile = new File("src/test/data/json/" + fileName);
         // Perform
-        FxJsonUtils.readTree(doc.contentWriter(), inFile);
+        FxJsonUtils.readTree(doc.contentWriter(), inFile, loc);
         return doc;
     }
 
     @Test
     public void testReadTree() throws Exception {
         // Prepare
-        FxMemRootDocument doc = new FxMemRootDocument();
-        File inFile = new File("src/test/data/json/file1.json");
+    	String fileName = "src/test/data/json/file1.json";
+		File inFile = new File(fileName);
+        FxSourceLoc loc = new FxSourceLoc("", fileName);
+		FxMemRootDocument doc = new FxMemRootDocument(loc);
         // Perform
-        FxJsonUtils.readTree(doc.contentWriter(), inFile);
+        FxJsonUtils.readTree(doc.contentWriter(), inFile, loc);
         FxNode content = doc.getContent();
         // Post-check
         Assert.assertNotNull(content);
@@ -108,7 +112,8 @@ public class FxJsonUtilsTest {
     @Test
     public void testValueToTree() {
         // Prepare
-        FxMemRootDocument doc = new FxMemRootDocument();
+        FxSourceLoc loc = new FxSourceLoc("", "");
+        FxMemRootDocument doc = new FxMemRootDocument(loc);
         FooObj value = new FooObj("foo", 123);
         // Perform
         FxNode res = FxJsonUtils.valueToTree(doc.contentWriter(), value);
@@ -160,11 +165,12 @@ public class FxJsonUtilsTest {
                 return res;
             }
         };
+        FxSourceLoc loc = new FxSourceLoc("", "");
         // Perform
-        FxNode res0 = FxJsonUtils.readTree(forceReadByteOneByOneInputStream); // consume buffer 0...8000 bytes, even if only 6 bytes are used!
+        FxNode res0 = FxJsonUtils.readTree(forceReadByteOneByOneInputStream, loc); // consume buffer 0...8000 bytes, even if only 6 bytes are used!
         Assert.assertTrue(res0.isObject());
         // Post-check
-        FxNode res1 = FxJsonUtils.readTree(forceReadByteOneByOneInputStream);
+        FxNode res1 = FxJsonUtils.readTree(forceReadByteOneByOneInputStream, loc);
         Assert.assertTrue(res1.isObject());
     }
 

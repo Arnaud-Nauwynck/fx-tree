@@ -28,7 +28,7 @@ public class FxLetFunc extends FxNodeFunc {
         FxObjNode vars = FxNodeValueUtils.getObjOrThrow(srcObj, "vars");
         FxNode letBodyNode = FxNodeValueUtils.getOrThrow(srcObj, "body");
 
-        Map<String,FxNode> replVars = vars.fieldsCopy();
+        Map<String,FxNode> replVars = vars.fieldsMap();
         FxVarsReplaceFunc replaceFunc = new FxVarsReplaceFunc(replVars);
 
         FxEvalContext childCtx = ctx.createChildContext();

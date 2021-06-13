@@ -4,6 +4,7 @@ import java.util.Map;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
 import fr.an.fxtree.impl.helper.FxObjValueHelper;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
@@ -29,12 +30,13 @@ public class FxMergeFunc extends FxNodeFunc {
     	FxObjValueHelper srcH = new FxObjValueHelper((FxObjNode) src);
     	FxObjNode baseNode = srcH.getObjOrThrow("src");
     	FxObjNode mergeNode = srcH.getObjOrThrow("merge");
-
-    	FxObjNode res = dest.addObj();
+    	FxSourceLoc baseNodeLoc = baseNode.getSourceLoc();
+    	
+    	FxObjNode res = dest.addObj(baseNodeLoc);
 		baseNode.forEachFields((f,v) -> {
 			FxNodeCopyVisitor.copyChildTo(res, f, v);
 		});
-    	recursiveMergeAddMissing(res, mergeNode.fieldsCopy());
+    	recursiveMergeAddMissing(res, mergeNode.fieldsMap());
     }
 
 	protected static void recursiveMergeAddMissing(FxObjNode resNode, Map<String,FxNode> remainMissingFields) {
@@ -48,7 +50,7 @@ public class FxMergeFunc extends FxNodeFunc {
 					if (mergeFieldValue instanceof FxObjNode) {
 						FxObjNode mergeFieldObj = (FxObjNode) mergeFieldValue;
 						// *** recurse ***
-						recursiveMergeAddMissing(vObj, mergeFieldObj.fieldsCopy());
+						recursiveMergeAddMissing(vObj, mergeFieldObj.fieldsMap());
 					}// else can not merge Object and non-Object!
 				} else if (v instanceof FxArrayNode) {
 					if (mergeFieldValue instanceof FxArrayNode) {

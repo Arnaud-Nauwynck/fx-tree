@@ -146,7 +146,7 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     }
 
     @Override
-    public Map<String, FxNode> fieldsCopy() {
+    public Map<String, FxNode> fieldsMap() {
         Map<String, FxNode> res = new HashMap<>(delegate.size());
         for(Iterator<Map.Entry<String,FxNode>> iter = delegate.fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();
@@ -180,6 +180,16 @@ public class FxReadObjNodeProxy extends FxObjNode /*implements IFxObjNodeReader*
     }
 
     @Override
+	public FxNode remove(FxNode child) {
+    	throw throwWriteDenied();
+	}
+
+	@Override
+	public FxNode remove(FxChildId childId) {
+    	throw throwWriteDenied();
+	}
+
+	@Override
     public void removeAll() {
         throw throwWriteDenied();
     }

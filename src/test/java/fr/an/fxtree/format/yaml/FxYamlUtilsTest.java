@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
@@ -22,11 +23,13 @@ public class FxYamlUtilsTest {
     @Test
     public void testReadTree() {
         // Prepare
-        FxMemRootDocument doc = new FxMemRootDocument();
-        File inputFile = new File("src/test/data/yaml/file1.yaml");
+    	String filePath = "src/test/data/yaml/file1.yaml";
+        FxSourceLoc loc = new FxSourceLoc("", filePath);
+        FxMemRootDocument doc = new FxMemRootDocument(loc);
+		File inputFile = new File(filePath);
         FxChildWriter contentWriter = doc.contentWriter();
         // Perform
-        FxYamlUtils.readTree(contentWriter, inputFile);
+        FxYamlUtils.readTree(contentWriter, inputFile, loc);
         FxNode content = doc.getContent();
         // Post-check
         Assert.assertNotNull(content);
@@ -59,26 +62,30 @@ public class FxYamlUtilsTest {
     @Test
     public void testReadTree_inputStream() throws Exception {
         // Prepare
-        FxMemRootDocument doc = new FxMemRootDocument();
-        File inputFile = new File("src/test/data/yaml/file1.yaml");
+    	String filePath = "src/test/data/yaml/file1.yaml";
+        FxSourceLoc loc = new FxSourceLoc("", filePath);
+        FxMemRootDocument doc = new FxMemRootDocument(loc);
+		File inputFile = new File(filePath);
         FxChildWriter contentWriter = doc.contentWriter();
         InputStream in = new FileInputStream(inputFile);
         // Perform
-        FxYamlUtils.readTree(contentWriter, in);
+        FxYamlUtils.readTree(contentWriter, in, loc);
         // Post-check
         FxNode content = doc.getContent();
         Assert.assertNotNull(content);
 
         // Perform
-        FxNode content2 = FxYamlUtils.readTree(in);
+        FxNode content2 = FxYamlUtils.readTree(in, loc);
         Assert.assertNotNull(content2);
     }
 
     @Test
     public void testYamlTextToTree() throws Exception {
         // Prepare
-        FxMemRootDocument doc = new FxMemRootDocument();
-        File inputFile = new File("src/test/data/yaml/file1.yaml");
+    	String filePath = "src/test/data/yaml/file1.yaml";
+        FxSourceLoc loc = new FxSourceLoc("", filePath);
+        FxMemRootDocument doc = new FxMemRootDocument(loc);
+		File inputFile = new File(filePath);
         byte[] fileContent = FileUtils.readFileToByteArray(inputFile);
         FxChildWriter contentWriter = doc.contentWriter();
         // Perform
@@ -86,7 +93,7 @@ public class FxYamlUtilsTest {
         // Post-check
         FxNode content = doc.getContent();
         Assert.assertNotNull(content);
-        FxNode check = FxYamlUtils.readTree(inputFile);
+        FxNode check = FxYamlUtils.readTree(inputFile, loc);
         String contentText = content.toString();
         Assert.assertEquals(check.toString(), contentText);
     }
@@ -94,8 +101,10 @@ public class FxYamlUtilsTest {
     @Test
     public void testTreeToYamlText() throws Exception {
         // Prepare
-        File inputFile = new File("src/test/data/yaml/file1.yaml");
-        FxNode inputTree = FxYamlUtils.readTree(inputFile);
+        String filePath = "src/test/data/yaml/file1.yaml";
+        FxSourceLoc loc = new FxSourceLoc("", filePath);
+		File inputFile = new File(filePath);
+        FxNode inputTree = FxYamlUtils.readTree(inputFile, loc);
         // Perform
         String res = FxYamlUtils.treeToYamlText(inputTree);
         // Post-check
@@ -120,8 +129,10 @@ public class FxYamlUtilsTest {
     @Test
     public void testWriteTree() {
      // Prepare
-        File inputFile = new File("src/test/data/yaml/file1.yaml");
-        FxNode inputTree = FxYamlUtils.readTree(inputFile);
+        String filePath = "src/test/data/yaml/file1.yaml";
+        FxSourceLoc loc = new FxSourceLoc("", filePath);
+		File inputFile = new File(filePath);
+        FxNode inputTree = FxYamlUtils.readTree(inputFile, loc);
         File testDir = new File("target/test");
         if (! testDir.exists()) testDir.mkdirs();
         File tmpFile = new File(testDir, "file1.yaml");
@@ -134,8 +145,10 @@ public class FxYamlUtilsTest {
     @Test
     public void testWriteTree_outputstream() throws Exception {
      // Prepare
-        File inputFile = new File("src/test/data/yaml/file1.yaml");
-        FxNode inputTree = FxYamlUtils.readTree(inputFile);
+        String filePath = "src/test/data/yaml/file1.yaml";
+        FxSourceLoc loc = new FxSourceLoc("", filePath);
+		File inputFile = new File(filePath);
+        FxNode inputTree = FxYamlUtils.readTree(inputFile, loc);
         File testDir = new File("target/test");
         if (! testDir.exists()) testDir.mkdirs();
         File tmpFile = new File(testDir, "file1.yaml");

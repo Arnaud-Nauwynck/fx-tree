@@ -26,8 +26,9 @@ public final class FxStdTreeFuncs {
         dest.put(FxMergePathsTreeFunc.NAME, FxMergePathsTreeFunc.INSTANCE);
         dest.put(FxMergeDefaultsTreeFunc.NAME, FxMergeDefaultsTreeFunc.INSTANCE);
         dest.put(FxMergeFunc.NAME, FxMergeFunc.INSTANCE);
-        dest.put(FxArrayElementsInlineFunc.NAME, FxArrayElementsInlineFunc.INSTANCE);
-        dest.put(FxObjectFieldsInlineFunc.NAME, FxObjectFieldsInlineFunc.INSTANCE);
+        // TODO
+//        dest.put(FxArrayElementsInlineFunc.NAME, FxArrayElementsInlineFunc.INSTANCE);
+//        dest.put(FxObjectFieldsInlineFunc.NAME, FxObjectFieldsInlineFunc.INSTANCE);
     }
 
     /**

@@ -7,7 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import com.fasterxml.jackson.core.io.CharTypes;
 
@@ -44,7 +43,7 @@ public abstract class FxObjNode extends FxContainerNode {
 
     public abstract Iterator<Map.Entry<String, FxNode>> fields();
 
-    public Map<String, FxNode> fieldsCopy() {
+    public Map<String, FxNode> fieldsMap() {
         Map<String, FxNode> res = new LinkedHashMap<>();
         for(Iterator<Map.Entry<String, FxNode>> iter = fields(); iter.hasNext(); ) {
             Entry<String, FxNode> e = iter.next();
@@ -54,7 +53,7 @@ public abstract class FxObjNode extends FxContainerNode {
     }
 
     public Iterator<Map.Entry<String, FxNode>> fieldsIterCopy(boolean useCopy) {
-        return (useCopy)? fieldsCopy().entrySet().iterator() : fields();
+        return (useCopy)? fieldsMap().entrySet().iterator() : fields();
     }
 
     @FunctionalInterface
@@ -82,6 +81,10 @@ public abstract class FxObjNode extends FxContainerNode {
     }
 
     public abstract <T extends FxNode> T get(String name);
+
+    public abstract FxNode remove(FxNode child);
+
+    public abstract FxNode remove(FxChildId childId);
 
     public abstract FxNode remove(String name);
 
@@ -186,12 +189,12 @@ public abstract class FxObjNode extends FxContainerNode {
     }
 
     protected boolean _childrenEqual(FxObjNode other) {
-        return fieldsCopy().equals(other.fieldsCopy());
+        return fieldsMap().equals(other.fieldsMap());
     }
 
     @Override
     public int hashCode() {
-        return fieldsCopy().hashCode();
+        return fieldsMap().hashCode();
     }
 
     @Override
