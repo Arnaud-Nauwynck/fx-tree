@@ -17,7 +17,7 @@ public class FxNodeCopyVisitorTest {
         // Prepare
         FxMemRootDocument src = FxJsonUtilsTest.getJsonTstFile("file1.json");
         FxObjNode srcContent = src.getContentObj();
-        FxMemRootDocument dest = new FxMemRootDocument();
+        FxMemRootDocument dest = FxMemRootDocument.newInMem();
         FxChildWriter destOut = dest.contentWriter();
         // Perform
         srcContent.accept(sut, destOut);

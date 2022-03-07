@@ -12,6 +12,7 @@ import com.google.common.collect.ImmutableList;
 
 import fr.an.fxtree.impl.helper.FxPendingJobsFileStoreHelper.PendingEntry;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.impl.util.FxNodeAssert;
 import fr.an.fxtree.model.FxObjNode;
 
@@ -19,6 +20,7 @@ public class FxPendingJobsFileStoreHelperTest {
 
     protected FxPendingJobsFileStoreHelper sut;
     protected FxKeyNodeFileStore pendingStore;
+    private static final FxSourceLoc TST_loc = FxSourceLoc.inMem();
 
     @Before
     public void setup() {
@@ -33,10 +35,10 @@ public class FxPendingJobsFileStoreHelperTest {
 
     @Test
     public void testAddPending_remove_wait() throws InterruptedException {
-        FxObjNode objNode = new FxMemRootDocument().setContentObj();
+        FxObjNode objNode = new FxMemRootDocument(TST_loc).setContentObj(TST_loc);
 
-        FxObjNode job1 = objNode.putObj("job1");
-        job1.put("id", 123);
+        FxObjNode job1 = objNode.putObj("job1", TST_loc);
+        job1.put("id", 123, TST_loc);
         sut.addPending("job1", job1);
 
         Assert.assertTrue(sut.isPending("job1"));

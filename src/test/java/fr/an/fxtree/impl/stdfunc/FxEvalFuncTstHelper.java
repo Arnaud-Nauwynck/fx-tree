@@ -25,11 +25,11 @@ public class FxEvalFuncTstHelper {
         funcRegistry = FxStdFuncs.stdFuncRegistry();
 
         phase0Func = new FxPhaseRecursiveEvalFunc("phase0", funcRegistry);
-        destPhase0 = new FxMemRootDocument();
+        destPhase0 = FxMemRootDocument.newInMem();
         outPhase0 = destPhase0.contentWriter();
 
         phase1Func = new FxPhaseRecursiveEvalFunc("phase1", funcRegistry);
-        destPhase1 = new FxMemRootDocument();
+        destPhase1 = FxMemRootDocument.newInMem();
         outPhase1 = destPhase1.contentWriter();
     }
 

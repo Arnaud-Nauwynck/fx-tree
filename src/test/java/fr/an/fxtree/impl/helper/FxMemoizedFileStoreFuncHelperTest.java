@@ -43,7 +43,7 @@ public class FxMemoizedFileStoreFuncHelperTest {
         // Prepare
         FxNodeFuncRegistry funcRegistry = FxStdFuncs.stdFuncRegistry();
         FxEvalContext ctx = new FxEvalContext(null, funcRegistry);
-        FxMemRootDocument doc = new FxMemRootDocument();
+        FxMemRootDocument doc = FxMemRootDocument.newInMem();
         FxChildWriter writer = doc.contentWriter();
 
         FxRandomIntFunc randomFunc = FxRandomIntFunc.INSTANCE;

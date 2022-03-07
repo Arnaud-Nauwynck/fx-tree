@@ -4,8 +4,8 @@ import java.util.Map;
 
 import fr.an.fxtree.impl.helper.FxNodeCopyDefaultsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeCopyMergeVisitor;
-import fr.an.fxtree.impl.helper.FxNodePerformCopyDeclsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeCopyVisitor;
+import fr.an.fxtree.impl.helper.FxNodePerformCopyDeclsVisitor;
 import fr.an.fxtree.impl.helper.FxNodeValueUtils;
 import fr.an.fxtree.model.FxArrayNode;
 import fr.an.fxtree.model.FxChildWriter;

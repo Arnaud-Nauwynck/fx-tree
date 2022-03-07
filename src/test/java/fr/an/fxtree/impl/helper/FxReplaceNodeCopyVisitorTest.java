@@ -1,5 +1,6 @@
 package fr.an.fxtree.impl.helper;
 
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxChildWriter;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
@@ -17,18 +19,19 @@ import fr.an.fxtree.model.FxTextNode;
 public class FxReplaceNodeCopyVisitorTest {
 
     FxReplaceNodeCopyVisitor sut;
+    private static final FxSourceLoc TST_loc = FxSourceLoc.inMem();
 
     @Before
     public void setup() {
         Map<String, FxNode> repls = new HashMap<>();
-        FxMemRootDocument doc = new FxMemRootDocument();
-        FxObjNode content = doc.contentWriter().addObj();
-        repls.put("var1", content.put("1", "value1"));
-        repls.put("var2", content.put("2", "value2"));
+        FxMemRootDocument doc = new FxMemRootDocument(TST_loc);
+        FxObjNode content = doc.contentWriter().addObj(TST_loc);
+        repls.put("var1", content.put("1", "value1", TST_loc));
+        repls.put("var2", content.put("2", "value2", TST_loc));
 
-        FxObjNode objRepl = content.putObj("3");
-        objRepl.put("subField1", "valueSubField1");
-        objRepl.put("subField2", "valueSubField2");
+        FxObjNode objRepl = content.putObj("3", TST_loc);
+        objRepl.put("subField1", "valueSubField1", TST_loc);
+        objRepl.put("subField2", "valueSubField2", TST_loc);
         repls.put("var3", objRepl);
 
         sut = new FxReplaceNodeCopyVisitor(repls);
@@ -71,8 +74,8 @@ public class FxReplaceNodeCopyVisitorTest {
     }
 
     private void assertReplaceText(String expected, String text) {
-    	FxTextNode textNode = new FxMemRootDocument().setContentText(text);
-        FxChildWriter outWriter = new FxMemRootDocument().contentWriter();
+    	FxTextNode textNode = new FxMemRootDocument(TST_loc).setContentText(text, TST_loc);
+        FxChildWriter outWriter = new FxMemRootDocument(TST_loc).contentWriter();
 		FxNode resNode = sut.visitTextValue(textNode, outWriter);
         Assert.assertTrue(resNode.isTextual());
         Assert.assertEquals(expected, resNode.textValue());

@@ -16,6 +16,7 @@ import fr.an.fxtree.impl.helper.FxAsyncTaskFileStoreHelper.FxAsyncTaskCallback;
 import fr.an.fxtree.impl.helper.FxAsyncTaskFileStoreHelper.FxAsyncTaskLauncher;
 import fr.an.fxtree.impl.helper.FxAsyncTaskFileStoreHelper.TaskStatus;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxObjNode;
 
 public class FxAsyncTaskFileStoreHelperTest {
@@ -50,8 +51,9 @@ public class FxAsyncTaskFileStoreHelperTest {
         AtomicBoolean finishFlag = new AtomicBoolean(false);
         AtomicInteger launchCount = new AtomicInteger(0);
         FxAsyncTaskLauncher taskLauncher = (callback) -> {
-            FxObjNode taskRes = new FxMemRootDocument().setContentObj();
-            taskRes.put("taskTmpData", taskData);
+            FxSourceLoc loc = FxSourceLoc.inMem();
+			FxObjNode taskRes = new FxMemRootDocument(loc).setContentObj(loc);
+            taskRes.put("taskTmpData", taskData, loc);
             callback.onTaskUpdate(taskRes);
 
             threadExecutor.execute(() -> runSlowTask(callback, taskData, finishFlag, launchCount));
@@ -106,8 +108,9 @@ public class FxAsyncTaskFileStoreHelperTest {
             Thread.sleep(200);
         } catch (InterruptedException e) {
         }
-        FxObjNode taskRes = new FxMemRootDocument().setContentObj();
-        taskRes.put("taskFinishedData", "some-data");
+        FxSourceLoc loc = FxSourceLoc.inMem();
+        FxObjNode taskRes = new FxMemRootDocument(loc).setContentObj(loc);
+        taskRes.put("taskFinishedData", "some-data", loc);
         callback.onTaskFinishedOK(taskRes);
 
         finishFlag.set(true);

@@ -39,7 +39,7 @@ public class FxMergeFunc extends FxNodeFunc {
     	recursiveMergeAddMissing(res, mergeNode.fieldsMap());
     }
 
-	protected static void recursiveMergeAddMissing(FxObjNode resNode, Map<String,FxNode> remainMissingFields) {
+	public static void recursiveMergeAddMissing(FxObjNode resNode, Map<String,FxNode> remainMissingFields) {
 		// scan fields from base, find corresponding value in mergeNode then recurse merge
 		resNode.forEachFields((f,v) -> {
 			FxNode mergeFieldValue = remainMissingFields.remove(f);

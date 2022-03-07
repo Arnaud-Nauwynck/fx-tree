@@ -3,6 +3,7 @@ package fr.an.fxtree.impl.helper;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.model.FxNode;
 import fr.an.fxtree.model.FxObjNode;
 
@@ -19,7 +20,7 @@ public class FxObjNodeWithIdAndTypeTreeScanner extends FxDefaultTreeVisitor {
     
     @FunctionalInterface
     public static interface IdTypeObjConsumer {
-         public void accept(String id, String type, FxObjNode node);
+         public void accept(String id, String type, FxObjNode node, FxSourceLoc loc);
     }
 
     private IdTypeObjConsumer consumer;
@@ -40,7 +41,7 @@ public class FxObjNodeWithIdAndTypeTreeScanner extends FxDefaultTreeVisitor {
     
     public static List<FxObjNode> scanFxNodesWithIdTypeObj(FxNode tree, IdTypeObjPredicate idTypeObjPredicate) {
         List<FxObjNode> res = new ArrayList<>();
-        FxObjNodeWithIdAndTypeTreeScanner visitor = new FxObjNodeWithIdAndTypeTreeScanner((id,t,n) -> {
+        FxObjNodeWithIdAndTypeTreeScanner visitor = new FxObjNodeWithIdAndTypeTreeScanner((id,t,n, loc) -> {
             if (idTypeObjPredicate == null || idTypeObjPredicate.test(id,t,n)) {
                 res.add(n);
             }
@@ -61,7 +62,8 @@ public class FxObjNodeWithIdAndTypeTreeScanner extends FxDefaultTreeVisitor {
             if (id != null 
             		// && !id.isEmpty() // accept root=empty id 
             		&& type != null && !type.isEmpty()) {
-                consumer.accept(id, type, node);
+            	FxSourceLoc loc = node.getSourceLoc();
+                consumer.accept(id, type, node, loc);
             }
         }
         super.visitObj(node);

@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import fr.an.fxtree.format.json.FxJsonUtilsTest;
 import fr.an.fxtree.impl.model.mem.FxMemRootDocument;
+import fr.an.fxtree.impl.model.mem.FxSourceLoc;
 import fr.an.fxtree.impl.stdfunc.FxEvalFuncTstHelper;
 import fr.an.fxtree.impl.util.FxNodeAssert;
 import fr.an.fxtree.model.FxNode;
@@ -17,7 +18,8 @@ public class FxExternalDataByIdFuncTest {
 
     protected FxDefaultExternalDataSource dataSource0 = new FxDefaultExternalDataSource();
     protected FxDefaultExternalDataSource dataSource1 = new FxDefaultExternalDataSource();
-
+    protected static final FxSourceLoc TST_loc = FxSourceLoc.inMem();
+    
     protected FxEvalFuncTstHelper tstHelper = new FxEvalFuncTstHelper() {
         @Override
         public void prepareEvalContext(FxEvalContext ctx, boolean phase1) {
@@ -30,18 +32,18 @@ public class FxExternalDataByIdFuncTest {
     public void setup() {
         initDataSourceValues();
     }
-
+    
     @Test
     public void testEvalExtDatasource() {
         tstHelper.doTestFile("eval-extDataSource");
     }
-
+    
     @Test
     public void testEvalExtDatasource_update23_WARN_not_updated() {
         String evalBaseFilename = "eval-extDataSource";
         String inputFilename = evalBaseFilename  + "-input.json";
         String outputFilename = evalBaseFilename + "-expected.json";
-
+        
         // Perform
         FxNode resNode = tstHelper.doEvalTstFile_phase01(inputFilename, false);
         // Post-check
@@ -49,14 +51,14 @@ public class FxExternalDataByIdFuncTest {
         FxNodeAssert.assertEquals(expected, resNode);
 
         String res1Text = resNode.toString();
-
+        
         // Perform
         // re-update external datasource ... check modified tree (no re-eeval)
         updateDataSource(2);
 
         // Post-check
         // FxNode expected2 = FxJsonUtilsTest.getJsonTstFile(outputFilename2).getContentObj();
-        // incremental update DOES NOT WORK "Recursive Func" evaluation ... because of temporary objects node copy!!
+        // incremental update DOES NOT WORK "Recursive Func" evaluation ... because of temporary objects node copy!! 
         // (DataOutput references are lost in recursive evaluation)
 
         String res2Text = resNode.toString();
@@ -65,36 +67,36 @@ public class FxExternalDataByIdFuncTest {
 
 
     private void initDataSourceValues() {
-        FxRootDocument doc0 = new FxMemRootDocument();
-        FxObjNode source0Root = doc0.setContentObj();
-        FxNode nodeA = source0Root.put("key-a", "value-a");
+        FxRootDocument doc0 = FxMemRootDocument.newInMem();
+        FxObjNode source0Root = doc0.setContentObj(TST_loc);
+        FxNode nodeA = source0Root.put("key-a", "value-a", TST_loc);
         dataSource0.putDataValue("key-a", nodeA);
-        FxNode nodeB = source0Root.put("key-b", "value-b");
+        FxNode nodeB = source0Root.put("key-b", "value-b", TST_loc);
         dataSource0.putDataValue("key-b", nodeB);
-
-        FxRootDocument doc1 = new FxMemRootDocument();
-        FxObjNode source1Root = doc1.setContentObj();
-        FxObjNode node1A = source1Root.putObj("key-a");
-        node1A.put("value", "source1-a");
+        
+        FxRootDocument doc1 = FxMemRootDocument.newInMem();
+        FxObjNode source1Root = doc1.setContentObj(TST_loc);
+        FxObjNode node1A = source1Root.putObj("key-a", TST_loc);
+        node1A.put("value", "source1-a", TST_loc);
         dataSource1.putDataValue("key-a", node1A);
     }
-
+    
     protected void updateDataSource(int updateCount) {
-        FxRootDocument doc0 = new FxMemRootDocument();
-        FxObjNode source0Root = doc0.setContentObj();
-        FxNode nodeA = source0Root.put("key-a", "value-a" + updateCount);
+        FxRootDocument doc0 = FxMemRootDocument.newInMem();
+        FxObjNode source0Root = doc0.setContentObj(TST_loc);
+        FxNode nodeA = source0Root.put("key-a", "value-a" + updateCount, TST_loc);
         dataSource0.putDataValue("key-a", nodeA);
         if (updateCount % 2 == 0) {
             dataSource0.putDataValue("key-b", null);
         } else {
-            FxNode nodeB = source0Root.put("key-b", "value-b" + updateCount);
+            FxNode nodeB = source0Root.put("key-b", "value-b" + updateCount, TST_loc);
             dataSource0.putDataValue("key-b", nodeB);
         }
-
-        FxRootDocument doc1 = new FxMemRootDocument();
-        FxObjNode source1Root = doc1.setContentObj();
-        FxObjNode node1A = source1Root.putObj("key-a");
-        node1A.put("value", "source1-a" + updateCount);
+        
+        FxRootDocument doc1 = FxMemRootDocument.newInMem();
+        FxObjNode source1Root = doc1.setContentObj(TST_loc);
+        FxObjNode node1A = source1Root.putObj("key-a", TST_loc);
+        node1A.put("value", "source1-a" + updateCount, TST_loc);
         dataSource1.putDataValue("key-a", node1A);
     }
 }

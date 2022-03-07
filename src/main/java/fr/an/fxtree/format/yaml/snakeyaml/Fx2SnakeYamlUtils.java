@@ -124,7 +124,7 @@ public final class Fx2SnakeYamlUtils {
             ScalarNode srcScalar = (ScalarNode) srcObj;
             Character style = srcScalar.getStyle(); // '', '\'', '"', '|', '>'
             String value = srcScalar.getValue();
-            if (style == '\'' ||  style == '"' ||  style == '|' ||  style == '>') {
+            if (style == null || style == '\'' ||  style == '"' ||  style == '|' ||  style == '>') {
                 // text
                 res = dest.add(value, loc);
             } else {

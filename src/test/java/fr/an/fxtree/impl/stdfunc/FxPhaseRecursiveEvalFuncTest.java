@@ -16,10 +16,10 @@ public class FxPhaseRecursiveEvalFuncTest {
     protected FxPhaseRecursiveEvalFunc sutPhase0 = new FxPhaseRecursiveEvalFunc("phase0", funcRegistry);
     protected FxPhaseRecursiveEvalFunc sutPhase1 = new FxPhaseRecursiveEvalFunc("phase1", funcRegistry);
 
-    protected FxMemRootDocument destPhase0 = new FxMemRootDocument();
+    protected FxMemRootDocument destPhase0 = FxMemRootDocument.newInMem();
     protected FxChildWriter outPhase0 = destPhase0.contentWriter();
 
-    protected FxMemRootDocument destPhase1 = new FxMemRootDocument();
+    protected FxMemRootDocument destPhase1 = FxMemRootDocument.newInMem();
     protected FxChildWriter outPhase1 = destPhase1.contentWriter();
 
     @Test
